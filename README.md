@@ -1,6 +1,6 @@
 # CSCI-413-A-Team-FooBar-Project-01
 
-Date Started:     2 (February) / 18 (Saturday) / 2017 (Fall)
+Date Started:     2 (February) / 16 (Thursday) / 2017 (Fall)
 
 School:           McNeese State University
 
