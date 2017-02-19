@@ -17,6 +17,10 @@ from pygame.locals import *
 import sgc
 from sgc.locals import *
 
+resolution = (600, 600)
+cell_margin = 10
+cell_colors = (255, 255, 255), (0, 0, 0)
+
 grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
@@ -35,23 +39,35 @@ grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
-resolution = (600, 600)
-cell_margin = 10
-cell_colors = (255, 255, 255), (0, 0, 0)
+pygame.init()
+
+pygame.display.set_caption("Team-FooBar-Programming-Assignment-01")
+
+screen = sgc.surface.Screen((600, 600))
+
+input_box = sgc.InputBox((600, 30), label = "", 
+                         default = "Input here, output console...")
+input_box.config(pos = (0,562))
+input_box.add(order = 0)
 
 def main():
-    pygame.init()
-
-    screen = pygame.display.set_mode(resolution)
-
     screen.fill(cell_colors[1])
 
     while True:
         for event in pygame.event.get():
+            sgc.event(event)
+            if event.type == GUI:
+                input_string = event.text.lower()
+                print input_string
+
+                if event.widget is input_box:
+                    input_box.text = ""
+
             if event.type == QUIT:
                 return
 
         draw_maze(screen)
+        sgc.update(1)
         pygame.display.update()
 
 def draw_maze(screen):
