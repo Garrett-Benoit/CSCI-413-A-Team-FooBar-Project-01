@@ -20,6 +20,21 @@ from sgc.locals import *
 resolution = (600, 600)
 cell_margin = 10
 cell_colors = (255, 255, 255), (0, 0, 0)
+player_object = "@"
+player_object_color = (255, 0, 0)
+player_object_position = [9, 13]
+chest_object = "C"
+chest_object_opened = "O"
+chest_object_color = (255, 0, 0)
+chest_object_position = [4, 4]
+key_object = "K"
+key_object_removed = ""
+key_object_color = (255, 0, 0)
+key_object_position = [12, 12]
+door_object = "D"
+door_object_color = (255, 0, 0)
+door_object_position = [8, 8]
+object_size = 35
 
 grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
@@ -51,7 +66,24 @@ input_box.config(pos = (0,562))
 input_box.add(order = 0)
 
 def main():
+    global player_object
+    global chest_object
+    global key_object
+    global door_object
+
     screen.fill(cell_colors[1])
+
+    player_object = pygame.font.Font(None, object_size).render(
+                                     player_object, False, player_object_color)
+
+    chest_object = pygame.font.Font(None, object_size).render(
+                                     chest_object, False, chest_object_color)
+
+    key_object = pygame.font.Font(None, object_size).render(
+                                     key_object, False, key_object_color)
+
+    door_object = pygame.font.Font(None, object_size).render(
+                                     door_object, False, door_object_color)
 
     while True:
         for event in pygame.event.get():
@@ -67,8 +99,14 @@ def main():
                 return
 
         draw_maze(screen)
+        draw_player_object(player_object, screen)
+        draw_chest_object(chest_object, screen)
+        draw_key_object(key_object, screen)
+        draw_door_object(door_object, screen)
+
         sgc.update(1)
         pygame.display.update()
+
 
 def draw_maze(screen):
     for row in xrange(len(grid)):
@@ -83,6 +121,26 @@ def get_cell_rect(coordinates, screen):
     return pygame.Rect(row * cell_width + cell_margin / 2,
                        column * cell_width + cell_margin / 2,
                        adjusted_width, adjusted_width)
+
+def draw_player_object(player_object, screen):
+    rect = player_object.get_rect()
+    rect.center = get_cell_rect(player_object_position, screen).center
+    screen.blit(player_object, rect)
+
+def draw_chest_object(chest_object, screen):
+    rect = chest_object.get_rect()
+    rect.center = get_cell_rect(chest_object_position, screen).center
+    screen.blit(chest_object, rect)
+
+def draw_key_object(key_object, screen):
+    rect = key_object.get_rect()
+    rect.center = get_cell_rect(key_object_position, screen).center
+    screen.blit(key_object, rect)
+
+def draw_door_object(door_object, screen):
+    rect = door_object.get_rect()
+    rect.center = get_cell_rect(door_object_position, screen).center
+    screen.blit(door_object, rect)
 
 if __name__ == "__main__":
     main()
