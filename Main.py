@@ -16,21 +16,22 @@ import pygame
 from pygame.locals import *
 import sgc
 from sgc.locals import *
+import random
 
 resolution = (600, 600)
 cell_margin = 10
 cell_colors = (255, 255, 255), (0, 0, 0)
 player_object = "@"
 player_object_color = (255, 0, 0)
-player_object_position = [9, 13]
+player_object_position = [0, 0]
 chest_object = "C"
 chest_object_opened = "O"
 chest_object_color = (255, 0, 0)
-chest_object_position = [4, 4]
+chest_object_position = [0, 0]
 key_object = "K"
 key_object_removed = ""
 key_object_color = (255, 0, 0)
-key_object_position = [12, 12]
+key_object_position = [0, 0]
 door_object = "D"
 door_object_color = (255, 0, 0)
 door_object_position = [8, 8]
@@ -84,6 +85,8 @@ def main():
 
     door_object = pygame.font.Font(None, object_size).render(
                                      door_object, False, door_object_color)
+
+    generate_random_object_positions()
 
     while True:
         for event in pygame.event.get():
@@ -141,6 +144,52 @@ def draw_door_object(door_object, screen):
     rect = door_object.get_rect()
     rect.center = get_cell_rect(door_object_position, screen).center
     screen.blit(door_object, rect)
+
+def generate_random_object_positions():
+    global player_object_position
+    global chest_object_position
+    global key_object_position
+
+    number_of_objects = 0
+    
+    while number_of_objects != 1:
+        randomx = random.randint(1, 15)
+        randomy = random.randint(1, 14)
+
+        if not is_object_blocked(randomx, randomy):
+            player_object_position = [randomx, randomy]
+            number_of_objects += 1
+
+
+    while number_of_objects != 2:
+        randomx = random.randint(1, 15)
+        randomy = random.randint(1, 14)
+
+        if not is_object_blocked(randomx, randomy):
+            chest_object_position = [randomx, randomy]
+            number_of_objects += 1
+
+    while number_of_objects != 3:
+        randomx = random.randint(1, 15)
+        randomy = random.randint(1, 14)
+
+        if not is_object_blocked(randomx, randomy):
+            key_object_position = [randomx, randomy]
+            number_of_objects += 1
+
+def is_object_blocked(x, y):
+    if grid[x][y] == 0:
+        return True
+    elif [x, y] == player_object_position:
+        return True
+    elif [x, y] == chest_object_position:
+        return True
+    elif [x, y] == key_object_position:
+        return True
+    elif [x, y] == door_object_position:
+        return True
+ 
+    return False
 
 if __name__ == "__main__":
     main()
