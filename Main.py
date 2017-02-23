@@ -36,6 +36,10 @@ door_object = "D"
 door_object_color = (255, 0, 0)
 door_object_position = [8, 8]
 object_size = 35
+player_grabbed_key = False
+player_used_key = False
+player_opened_chest = False
+game_complete = False
 
 grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
@@ -88,17 +92,43 @@ def main():
 
     generate_random_object_positions()
 
-    while True:
+    while game_complete == False:
         for event in pygame.event.get():
             sgc.event(event)
             if event.type == GUI:
                 input_string = event.text.lower()
                 print input_string
+                if input_string == "go forward":
+                    go(0, -1)
+                elif input_string == "go right":
+                    go(1, 0)
+                elif input_string == "go back":
+                    go(0, 1)
+                elif input_string == "go left":
+                    go(-1, 0)
+                elif input_string == "grab key":
+                    grab_key()
+                elif input_string == "open chest":
+                    open_chest()
+                elif input_string == "open door":
+                    open_door()
+                elif input_string == "use key":
+                    use_key()
 
                 if event.widget is input_box:
                     input_box.text = ""
 
-            if event.type == QUIT:
+            if event.type == KEYDOWN:
+                key = event.key
+                if key == K_UP:
+                    go(0, -1)
+                elif key == K_RIGHT:
+                    go(1, 0)
+                elif key == K_DOWN:
+                    go(0, 1)
+                elif key == K_LEFT:
+                    go(-1, 0)
+            elif event.type == QUIT:
                 return
 
         draw_maze(screen)
@@ -191,6 +221,90 @@ def is_object_blocked(x, y):
  
     return False
 
+def go(dx, dy):
+    x, y = player_object_position
+    nx, ny = x + dx, y + dy
+
+    if (nx >= 0 and nx < len(grid) 
+        and ny >= 0 and ny < len(grid[0]) and \
+        grid[ny][nx]):
+            player_object_position[0] = nx
+            player_object_position[1] = ny
+
+def grab_key():
+    global key_object_position
+    global player_grabbed_key
+    global key_object_color
+
+    x, y = player_object_position
+    a, b = key_object_position
+
+    if player_next_to_object(x, y, a, b):
+        key_object_position = [0, 0]
+        key_object = pygame.font.Font(None, object_size).render(
+                                      key_object_removed, False, 
+                                      key_object_color)
+        player_grabbed_key = True
+
+def open_chest():
+    global chest_object
+    global chest_object_position
+    global player_opened_chest
+
+    x, y = player_object_position
+    a, b = chest_object_position
+
+    if player_next_to_object(x, y, a, b):
+        chest_object = pygame.font.Font(None, object_size).render(
+                                        chest_object_opened, False, 
+                                        chest_object_color)
+        player_opened_chest = True
+
+def use_key():
+    global door_object_position
+    global player_used_key
+
+    x, y = player_object_position
+    a, b = door_object_position
+
+    if player_next_to_object(x, y, a, b):
+        if player_grabbed_key and player_opened_chest:
+            player_used_key = True
+
+def open_door():
+    global door_object
+    global door_object_position
+    global player_opened_chest
+    global game_complete
+
+    x, y = player_object_position
+    a, b = door_object_position
+
+    if player_next_to_object(x, y, a, b):
+        if player_used_key:
+            game_complete = True
+
+def player_next_to_object(x, y, a, b):
+    if x - 1 == a and y - 1 == b:
+        return True
+    elif x == a and y - 1 == b:
+        return True
+    elif x + 1 == a and y - 1 == b:
+        return True
+    elif x - 1 == a and y == b:
+        return True
+    elif x + 1 == a and y == b:
+        return True
+    elif x - 1 == a and y + 1 == b:
+        return True
+    elif x == a and y + 1 == b:
+        return True
+    elif x + 1 == a and y + 1 == b:
+        return True
+
+    return False
+
 if __name__ == "__main__":
     main()
     pygame.quit()
+
