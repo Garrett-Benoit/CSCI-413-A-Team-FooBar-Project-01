@@ -91,6 +91,7 @@ def main():
                                      door_object, False, door_object_color)
 
     generate_random_object_positions()
+    print_introduction_message()
 
     while game_complete == False:
         for event in pygame.event.get():
@@ -106,17 +107,84 @@ def main():
                     go(0, 1)
                 elif input_string == "go left":
                     go(-1, 0)
+                elif input_string == "go chest":
+                    print "Output: "
+                elif input_string == "go key":
+                    print "Output: "
+                elif input_string == "go door":
+                    print "Output: "
+                elif input_string == "go wall":
+                    print "Output: "
+                elif input_string == "go marker":
+                    print "Output: "
+                elif input_string == "grab forward":
+                    print "Output: "
+                elif input_string == "grab right":
+                    print "Output: "
+                elif input_string == "grab back":
+                    print "Output: "
+                elif input_string == "grab left":
+                    print "Output: "
+                elif input_string == "grab chest":
+                    print "Output: "
                 elif input_string == "grab key":
-                    grab_key()
+                    if player_grabbed_key:
+                        print "Output: You already have the key."
+                    else:
+                        grab_key()
+                elif input_string == "grab door":
+                    print "Output: "
+                elif input_string == "grab wall":
+                    print "Output: "
+                elif input_string == "grab marker":
+                    print "Output: "
+                elif input_string == "open forward":
+                    print "Output: "
+                elif input_string == "open right":
+                    print "Output: "
+                elif input_string == "open back":
+                    print "Output: "
+                elif input_string == "open left":
+                    print "Output: "
                 elif input_string == "open chest":
-                    open_chest()
+                    if player_opened_chest:
+                        print "Output: You have already opened the chest."
+                    else:
+                        open_chest()
+                elif input_string == "open key":
+                    print "Output: "
                 elif input_string == "open door":
                     open_door()
+                elif input_string == "open wall":
+                    print "Output: "
+                elif input_string == "open marker":
+                    print "Output: "
+                elif input_string == "use forward":
+                    print "Output: "
+                elif input_string == "use right":
+                    print "Output: "
+                elif input_string == "use back":
+                    print "Output: "
+                elif input_string == "use left":
+                    print "Output: "
+                elif input_string == "use chest":
+                    print "Output: "
                 elif input_string == "use key":
-                    use_key()
+                    if player_used_key:
+                        print "You have already unlocked the door."
+                    else:
+                        use_key()
+                elif input_string == "use door":
+                    print "Output: "
+                elif input_string == "use wall":
+                    print "Output: "
+                elif input_string == "use marker":
+                    use_marker()
+                else:
+                    print_input_error()
 
                 if event.widget is input_box:
-                    input_box.text = ""
+                    clear()
 
             if event.type == KEYDOWN:
                 key = event.key
@@ -140,6 +208,21 @@ def main():
         sgc.update(1)
         pygame.display.update()
 
+def print_introduction_message():
+    print ("\nIntroduction: Grab the key, open the chest, "
+            "then find your way out...\n")
+
+def print_input(input):
+    print "\nInput: " + input
+
+def print_go_error():
+    print "Output: Invalid move command..."
+
+def print_input_error():
+    print "Output: Invalid input. Command not recognized..." 
+
+def clear():
+    input_box.text = ""
 
 def draw_maze(screen):
     for row in xrange(len(grid)):
@@ -240,11 +323,14 @@ def grab_key():
     a, b = key_object_position
 
     if player_next_to_object(x, y, a, b):
+        print "Output: You have picked up the key!"
         key_object_position = [0, 0]
         key_object = pygame.font.Font(None, object_size).render(
                                       key_object_removed, False, 
                                       key_object_color)
         player_grabbed_key = True
+    else:
+        print "Output: The key is not within reach..."
 
 def open_chest():
     global chest_object
@@ -255,10 +341,13 @@ def open_chest():
     a, b = chest_object_position
 
     if player_next_to_object(x, y, a, b):
+        print "Output: You have opened the chest!"
         chest_object = pygame.font.Font(None, object_size).render(
                                         chest_object_opened, False, 
                                         chest_object_color)
         player_opened_chest = True
+    else:
+        print "Output: The chest is not within reach..."
 
 def use_key():
     global door_object_position
@@ -269,7 +358,16 @@ def use_key():
 
     if player_next_to_object(x, y, a, b):
         if player_grabbed_key and player_opened_chest:
+            print "Output: You have unlocked the door!"
             player_used_key = True
+        elif player_grabbed_key and not player_opened_chest:
+            print ("Output: You must open the chest "
+                   "before you can open the door.")
+        else:
+            print ("Output: You must grab the "
+                   "key before you can use it.")
+    else:
+        print "Output: the door is not within reach..."
 
 def open_door():
     global door_object
@@ -282,7 +380,20 @@ def open_door():
 
     if player_next_to_object(x, y, a, b):
         if player_used_key:
+            print "Output: You have opened the door!"
+            print "\n\nCongratulations! You have escaped!\n\n"
             game_complete = True
+        elif player_grabbed_key and player_opened_chest:
+            print ("Output: You have to use the key "
+                    "before you can open the door.")
+        elif player_grabbed_key and not player_opened_chest:
+            print ("Output: You must open the chest "
+                    "before you can open the door.")
+        else:
+            print ("Output: You must grab the key and open " 
+                    "the chest before you can open the door.")
+    else:
+        print "Output: The door is not within reach..."
 
 def player_next_to_object(x, y, a, b):
     if x - 1 == a and y - 1 == b:
