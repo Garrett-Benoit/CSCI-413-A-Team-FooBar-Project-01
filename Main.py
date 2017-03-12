@@ -827,7 +827,12 @@ def use_key():
 
 # Function to open the door.
 def open_door():
+    # type: () -> object
     # Needed to change their properties.
+    """
+
+    :rtype: object
+    """
     global door_object
     global door_object_position
     global player_opened_chest
