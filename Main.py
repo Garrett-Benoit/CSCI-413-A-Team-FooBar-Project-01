@@ -48,30 +48,53 @@ door_object = "D" # Symbol representing the door.
 door_object_color = (255, 0, 0) # Color of the door.
 door_object_position = [0, 0] # Position of the door.
 object_size = 35 # Size of all objects drawn to the console window.
-player_used_marker = False
 player_grabbed_key = False
 player_used_key = False
+player_used_marker = False
 player_opened_chest = False
 game_complete = False
 
-# Grid representing the game object positions.
-grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+# A 15x15 Grid representing the game object positions.
+'''grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]'''
+
+grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0],
+        [0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0],
+        [0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 0],
+        [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+
+# Dictionary that holds object positions.
+object_position_dictionary = {}
+
+# List to hold the marked tile coordinates.
+marked_tile_list = []
+
+# List to hold the open tile coordinates.
+open_coordinates_list = []
 
 # Initialize the pygame console window.
 pygame.init()
@@ -80,12 +103,12 @@ pygame.init()
 pygame.display.set_caption("Team-FooBar-Programming-Assignment-01")
 
 # Create a surface to draw on.
-screen = sgc.surface.Screen((600, 600))
+screen = sgc.surface.Screen((600, 635))
 
 # Create and place an input box on the console window.
-input_box = sgc.InputBox((600, 30), label = "", 
+input_box = sgc.InputBox((600, 35), label = "", 
                          default = "Input here, output console...")
-input_box.config(pos = (0,562))
+input_box.config(pos = (0, 599))
 input_box.add(order = 0)
 
 
@@ -101,8 +124,11 @@ def main():
     global key_object
     global door_object
 
+    # Randomly generate the maze using the Depth-first search algorithm.
+    generate_maze_depth_first_search()
+
     # Draw colors to fill the cells of the grid.
-    screen.fill(cell_colors[1])
+    #screen.fill(cell_colors[1])
 
     # Create and define the door object.
     door_object = pygame.font.Font(None, object_size).render(
@@ -116,7 +142,7 @@ def main():
     key_object = pygame.font.Font(None, object_size).render(
                                      key_object, False, key_object_color)
 
-    # Create and define the player character object.
+    # Create and define the player object.
     player_object = pygame.font.Font(None, object_size).render(
                                      player_object, False, player_object_color)
 
@@ -162,12 +188,105 @@ def clear():
 # Rendering
 ################################################################################
 
+# Function that generates a random maze using the Depth-first search algorithm.
+def generate_maze_depth_first_search():
+    # Size of the maze.
+    maze_width = len(grid) - 1
+    maze_height = len(grid) - 1
+
+    # 4 directions in the maze (down, right, up, left)
+    destination_x = [0, 1, 0, -1]
+    destination_y = [-1, 0, 1, 0]
+
+    # Stack that stores coordinates in the maze. 
+    # Starts at a random set of coordinates.
+    coordinates_stack = [(random.randint(1, maze_width - 1), 
+              random.randint(1, maze_height - 1))]
+
+    # Loop until every set of coordinates have been visited.
+    while len(coordinates_stack) > 0:
+        # Set the current coordinates equal to the 
+        # coordinates at the top of the stack.
+        (current_x, current_y) = coordinates_stack[-1]
+        
+        # Destroy the wall at this coordinates.
+        grid[current_y][current_x] = 1
+
+        # List that contains available neighbors.
+        neighbors_list = []
+
+        # Calculate how many neighbors that the current coordinates has.
+        for i in range(4):
+            # Set the new coordinates equal to the current coordinates
+            # plus the adjacent coordinates in a random direction.
+            new_x = current_x + destination_x[i]
+            new_y = current_y + destination_y[i]
+
+            # Continue if the new coordinates are in the range of the maze.
+            if new_x > 0 and new_x < maze_width \
+                and new_y > 0 and new_y < maze_height:
+                # If the new coordinates is a wall, check for neighbors.
+                if grid[new_y][new_x] == 0:
+                    # Counter variable for the number of neighbors.
+                    counter = 0
+                    # Iterate through all 4 directions.
+                    for j in range(4):
+                        # Set the new coordinates.
+                        temporary_x = new_x + destination_x[j]
+                        temporary_y = new_y + destination_y[j]
+
+                        # Continue if the new coordinates
+                        # are in the range of the maze.
+                        if temporary_x > 0 and temporary_x < maze_width \
+                            and temporary_y > 0 and temporary_y < maze_height:
+                            # Determine if there is a neighbor here.
+                            if grid[temporary_y][temporary_x] == 1: 
+                                # No neighbor exists at this coordinates.
+                                counter += 1
+                    # The new coordinates has only one
+                    # neighbor (the old coordinates).
+                    if counter == 1:
+                        # Add the direction of the neighbor to the list.
+                        neighbors_list.append(i)
+
+        # 1 or more neighbors available, randomly select one and move.
+        if len(neighbors_list) > 0:
+            # Choose a random unvisited neighbor.
+            random_neighbor = neighbors_list[random.randint(
+                0, len(neighbors_list) - 1)]
+
+            # Set the current coordinates equal to the destination coordinates.
+            current_x += destination_x[random_neighbor]
+            current_y += destination_y[random_neighbor]
+
+            # Push the current coordinates to the stack.
+            coordinates_stack.append((current_x, current_y))
+
+        # 0 neighbors available, dead end. Pop the previous 
+        # coordinates from the stack and attempt to continue.
+        else: 
+            # Pop the top coordinates off the stack.
+            coordinates_stack.pop()
+
+# Function to get a list of all open coordinates.
+def get_open_tile_coordinates():
+    for row in xrange(len(grid)):
+        for column in xrange(len(grid)):
+            if grid[column][row] == 1:
+                open_coordinates_list.append((column, row))
+
 # Function to draw the maze.
 def draw_maze(screen):
     for row in xrange(len(grid)):
-        for column in xrange(len(grid[0])):
+        for column in xrange(len(grid)):
             screen.fill(cell_colors[grid[column][row]],
                         get_cell_rect((row, column), screen))
+
+    if player_used_marker == True:
+        i = 0
+        while i < len(marked_tile_list):
+            screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[i], screen))
+            i = i + 1
 
 # Function to draw the container of the objects.
 def get_cell_rect(coordinates, screen):
@@ -230,62 +349,79 @@ def generate_random_object_positions():
     global player_object_position
     global chest_object_position
     global key_object_position
+    global door_object_position
 
     # Variable representing the number of objects on the grid.
     number_of_objects = 0
     
     while number_of_objects != 1:
-        # Generate a random x value.
-        randomx = random.randint(1, 15)
-        # Generate a random y value.
-        randomy = random.randint(1, 14)
+        # Generate a random x and y coordinate for the object position.
+        randomx = random.randint(1, len(grid) - 1)
+        randomy = random.randint(1, len(grid) - 1)
 
-        if not is_object_blocked(randomx, randomy):
+        if not position_is_occupied(randomx, randomy):
             # Set the player object position equal to the random x and y values.
             player_object_position[0] = randomx 
             player_object_position[1] = randomy
+
+            # Add the player object position to the dictionary.
+            object_position_dictionary['player'] = randomx, randomy
+
+            # Increment the number of placed objects.
             number_of_objects += 1
 
 
     while number_of_objects != 2:
-        # Generate a random x value.
-        randomx = random.randint(1, 15)
-        # Generate a random y value.
-        randomy = random.randint(1, 14)
+        # Generate a random x and y coordinate for the object position.
+        randomx = random.randint(1, len(grid) - 1)
+        randomy = random.randint(1, len(grid) - 1)
 
-        if not is_object_blocked(randomx, randomy):
+        if not position_is_occupied(randomx, randomy):
             # Set the chest object position equal to the random x and y values.
             chest_object_position[0] = randomx 
             chest_object_position[1] = randomy
+            
+            # Add the chest object position to the dictionary.
+            object_position_dictionary['chest'] = randomx, randomy
+
+            # Increment the number of placed objects.
             number_of_objects += 1
 
     while number_of_objects != 3:
-        # Generate a random x value.
-        randomx = random.randint(1, 15)
-        # Generate a random y value.
-        randomy = random.randint(1, 14)
+        # Generate a random x and y coordinate for the object position.
+        randomx = random.randint(1, len(grid) - 1)
+        randomy = random.randint(1, len(grid) - 1)
 
-        if not is_object_blocked(randomx, randomy):
+        if not position_is_occupied(randomx, randomy):
             # Set the key object position equal to the random x and y values.
             key_object_position[0] = randomx 
             key_object_position[1] = randomy
+
+            # Add the key object position to the dictionary.
+            object_position_dictionary['key'] = randomx, randomy
+
+            # Increment the number of placed objects.
             number_of_objects += 1
 
     while number_of_objects != 4:
-        # Generate a random x value.
-        randomx = random.randint(1, 15)
-        # Generate a random y value.
-        randomy = random.randint(1, 14)
+        # Generate a random x and y coordinate for the object position.
+        randomx = random.randint(1, len(grid) - 1)
+        randomy = random.randint(1, len(grid) - 1)
 
-        if not is_object_blocked(randomx, randomy):
+        if not position_is_occupied(randomx, randomy):
             # Set the door object position equal to the random x and y values.
             door_object_position[0] = randomx 
             door_object_position[1] = randomy
+
+            # Add the door object position to the dictionary.
+            object_position_dictionary['door'] = randomx, randomy
+
+            # Increment the number of placed objects.
             number_of_objects += 1
 
 # Function to determine if the coordinate is blocked by an object or wall.
-def is_object_blocked(x, y):
-    # Return True for the map tile.
+def position_is_occupied(x, y):
+    # Return True for the wall object.
     if grid[x][y] == 0:
         return True
     # Return True for the player object.
@@ -398,10 +534,68 @@ def handle_input():
                     print "Output: "
                 elif input_string == "use marker":
                     use_marker()
-                # Not even close to a valid command or contains some form of 
-                # misspelling or incorrect input (numbers, special characters, etc.).
                 else:
-                    print_input_error()
+                    # Parse the string into substrings and store into a list.
+                    input_substring_list = input_string.split(" ")
+
+                    # Check if the first substring is equal to "go".
+                    if input_substring_list[0] == "go":
+                        # Check if the second substring is equal to "forward".
+                        if input_substring_list[1] == "forward":
+                            # If the third substring is a digit, call the go() 
+                            # command the number of times the digit specifies.
+                            if input_substring_list[2].isdigit(): 
+                                i = 0
+                                while i < int(input_substring_list[2]):
+                                    go(0, -1)
+                                    i = i + 1
+                            # Incorrect third substring.
+                            else:
+                                print_input_error()
+                        # Check if the second substring is equal to "right".
+                        elif input_substring_list[1] == "right":
+                            # If the third substring is a digit, call the go() 
+                            # command the number of times the digit specifies.
+                            if input_substring_list[2].isdigit(): 
+                                i = 0
+                                while i < int(input_substring_list[2]):
+                                    go(1, 0)
+                                    i = i + 1
+                            # Incorrect third substring.
+                            else:
+                                print_input_error()
+                        # Check if the second substring is equal to "back".
+                        elif input_substring_list[1] == "back":
+                            # If the third substring is a digit, call the go() 
+                            # command the number of times the digit specifies.
+                            if input_substring_list[2].isdigit(): 
+                                i = 0
+                                while i < int(input_substring_list[2]):
+                                    go(0, 1)
+                                    i = i + 1
+                            # Incorrect third substring.
+                            else:
+                                print_input_error()
+                        # Check if the second substring is equal to "left".
+                        elif input_substring_list[1] == "left":
+                            # If the third substring is a digit, call the go() 
+                            # command the number of times the digit specifies.
+                            if input_substring_list[2].isdigit(): 
+                                i = 0
+                                while i < int(input_substring_list[2]):
+                                    go(-1, 0)
+                                    i = i + 1
+                            # Incorrect third substring.
+                            else:
+                                print_input_error()
+                        # Incorrect second substring.
+                        else:
+                            print_input_error()
+                    # Not even close to a valid command or contains some 
+                    # form of misspelling or incorrect input 
+                    # (numbers, special characters, etc.).
+                    else:
+                        print_input_error()
 
                 # Clear the contents of the InputBox if it is clicked on.
                 if event.widget is input_box:
@@ -464,27 +658,23 @@ def go(dx, dy):
 
     # Change the player character object position if the new position 
     # is in the game window and the cell is not pre-occupied.
-    if (nx >= 0 and nx < len(grid) and ny >= 0 and ny < len(grid[0]) and \
+    if (nx > 0 and nx < len(grid) and ny > 0 and ny < len(grid) and \
         grid[ny][nx]):
-        
             # Check if the chest object is placed on the destination tile.
             if (nx == chest_object_position[0] 
                 and ny == chest_object_position[1]):
                 # Print out an error for the invalid move.
                 print_go_error()
-                
             # Check if the key object is placed on the destination tile.
             elif (nx == key_object_position[0] 
                   and ny == key_object_position[1]):
                 # Print out an error for the invalid move.
                 print_go_error()
-                
             # Check if the door object is placed on the destination tile.
             elif (nx == door_object_position[0] 
                   and ny == door_object_position[1]):
                 # Print out an error for the invalid move.
                 print_go_error()
-                
             # No objects placed on the destination tile.
             else:
                 player_object_position[0] = nx
@@ -495,29 +685,45 @@ def go(dx, dy):
 
 # Function to use the marker.
 def use_marker():
+    global marked_tile_list
     global player_used_marker
-    global cell_colors
+
+    # Change the value of player_used_marker to True. It is used in the 
+    # draw_maze function to determine when to start drawing the marker.
+    player_used_marker = True
 
     # Set x and y equal to the current player character object position.
     x = player_object_position[0]
     y = player_object_position[1]
 
-    if player_used_marker:
-        # Reset the RBG values representing object colors.
-        cell_colors = (255, 255, 255), (0, 0, 0)
-        player_used_marker = False
-    else:
-        cell_colors = (255, 0, 0), (255, 0, 0)
-        player_used_marker = True
+    # Clear the contents of the marked_tile_list.
+    marked_tile_list = []
 
-    '''grid[x - 1][y - 1] = (255, 0 , 0)
-    grid[x ][y - 1] = (255, 0 , 0)
-    grid[x + 1][y - 1] = (255, 0 , 0)
-    grid[x - 1][y] = (255, 0 , 0)
-    grid[x + 1][y] = (255, 0 , 0)
-    grid[x - 1][y + 1] = (255, 0 , 0)
-    grid[x][y + 1] = (255, 0 , 0)
-    grid[x + 1][y + 1] = (255, 0 , 0)'''
+    # Find and print all available open tiles.
+    get_open_tile_coordinates()
+
+    # Print out the player coordinates and surrounding coordinates.
+    print grid[x - 1][y + 1], grid[x][y + 1], grid[x + 1][y + 1]
+    print grid[x - 1][y], grid[x][y], grid[x + 1][y]
+    print grid[x - 1][y - 1], grid[x][y - 1], grid[x + 1][y - 1]
+
+    # Add the tile coordinates to the marked_tile_list.
+    if grid[x - 1][y - 1] == 0:
+        marked_tile_list.append((x - 1, y - 1))
+    if grid[x][y - 1] == 0:
+        marked_tile_list.append((x, y - 1))
+    if grid[x + 1][y - 1] == 0:
+        marked_tile_list.append((x + 1, y - 1))
+    if grid[x - 1][y] == 0:
+        marked_tile_list.append((x - 1, y))
+    if grid[x + 1][y] == 0:
+        marked_tile_list.append((x + 1, y))
+    if grid[x - 1][y + 1] == 0:
+        marked_tile_list.append((x - 1, y + 1))
+    if grid[x][y + 1] == 0:
+        marked_tile_list.append((x, y + 1))
+    if grid[x + 1][y + 1] == 0:
+        marked_tile_list.append((x + 1, y + 1))
 
 # Function to grab the key.
 def grab_key():
@@ -671,8 +877,11 @@ def open_door():
 # Function that returns true if the player character 
 # object is located next to another object.
 def player_next_to_object(x, y, a, b):
+    # Check the location that the player character object currently is.
+    if x == a and y == b:
+        return True
     # Check the location above and to the left of the player character object.
-    if x - 1 == a and y - 1 == b:
+    elif x - 1 == a and y - 1 == b:
         return True
     # Check the location directly above the player character object.
     elif x == a and y - 1 == b:
