@@ -464,74 +464,100 @@ def handle_input():
                 elif input_string == "go left":
                     go(-1, 0)
                 elif input_string == "go chest":
-                    print "Output: "
+                    print "Output: A chest is for opening, not going." \
+                          "\nTry going in a direction instead."
                 elif input_string == "go key":
-                    print "Output: "
+                    print "Output: A key is for grabbing and/or using, not going." \
+                          "\nTry going in a direction instead."
                 elif input_string == "go door":
-                    print "Output: "
+                    print "Output: A door is for opening, not going." \
+                          "\nTry going in a direction instead."
                 elif input_string == "go wall":
-                    print "Output: "
+                    print "Output: You can't go into a wall. Are you even trying?"
                 elif input_string == "go marker":
-                    print "Output: "
+                    print "Output: A marker is for using, not going." \
+                          "\nTry going in a direction instead."
                 # Possible user input for the grab <Object> command.
                 elif input_string == "grab forward":
-                    print "Output: "
+                    print "Output: Forward is for going, not grabbing." \
+                          "\nTry grabbing when a key is near."
                 elif input_string == "grab right":
-                    print "Output: "
+                    print "Output: Right is for going, not grabbing." \
+                          "\nTry grabbing when a key is near."
                 elif input_string == "grab back":
-                    print "Output: "
+                    print "Output: Back is for going, not grabbing." \
+                          "\nTry grabbing when a key is near."
                 elif input_string == "grab left":
-                    print "Output: "
+                    print "Output: Left is for going, not grabbing." \
+                          "\nTry grabbing when a key is near."
                 elif input_string == "grab chest":
-                    print "Output: "
+                    print "Output: A chest is for opening, not grabbing." \
+                          "\nTry grabbing when a key is near."
                 elif input_string == "grab key":
                     if player_grabbed_key:
                         # Inform the player that they already have the key.
-                        print "Output: You already have the key."
+                        print "Output: You already have the key." \
+                              "\nNow you can use for something, like unlocking a door maybe?"
                     else:
                         grab_key()
                 elif input_string == "grab door":
-                    print "Output: "
+                    print "Output: A door is for opening, not grabbing." \
+                          "\nTry grabbing when a key is near."
                 elif input_string == "grab wall":
-                    print "Output: "
+                    print "Output: You can't grab a wall." \
+                          "\nWell, I guess you could, but it's not helpful." \
+                          "\nTry grabbing when a key is near.""
                 elif input_string == "grab marker":
-                    print "Output: "
+                    print "Output: A marker is for using, not grabbing." \
+                          "\nTry grabbing when a key is near."
                 # Possible user input for the open <Object> command.
                 elif input_string == "open forward":
-                    print "Output: "
+                    print "Output: Forward is for going, not opening." \
+                          "\nTry opening when a door is near."
                 elif input_string == "open right":
-                    print "Output: "
+                    print "Output: Right is for going, not opening." \
+                          "\nTry opening when a door is near."
                 elif input_string == "open back":
-                    print "Output: "
+                    print "Output: Back is for going, not opening." \
+                          "\nTry opening when a door is near."
                 elif input_string == "open left":
-                    print "Output: "
+                    print "Output: Left is for going, not opening." \
+                          "\nTry opening when a door is near."
                 elif input_string == "open chest":
                     open_chest()
                 elif input_string == "open key":
-                    print "Output: "
+                    print "Output: A key is for grabbing and/or using, not opening." \
+                          "\nTry opening when a door is near."
                 elif input_string == "open door":
                     open_door()
                 elif input_string == "open wall":
-                    print "Output: "
+                    print "Output: You can try to open a wall, but it won't be helpful."
                 elif input_string == "open marker":
-                    print "Output: "
+                    print "Output: A marker is for using, not opening." \
+                          "\nTry opening when a door is near."
                 # Possible user input for the use <Object> command.
                 elif input_string == "use forward":
-                    print "Output: "
+                    print "Output: Forward is for going, not using." \
+                          "\nTry using a key when a door is near."
                 elif input_string == "use right":
-                    print "Output: "
+                    print "Output: Right is for going, not using." \
+                          "\nTry using a key when a door is near."
                 elif input_string == "use back":
-                    print "Output: "
+                    print "Output: Back is for going, not using." \
+                          "\nTry using a key when a door is near."
                 elif input_string == "use left":
-                    print "Output: "
+                    print "Output: Left is for going, not using." \
+                          "\nTry using a key when a door is near."
                 elif input_string == "use chest":
-                    print "Output: "
+                    print "Output: A chest is for opening, not using." \
+                          "\nTry using a key when a door is near."
                 elif input_string == "use key":
                     use_key()
                 elif input_string == "use door":
-                    print "Output: "
+                    print "Output: A door is for opening, not using." \
+                          "\nTry using a key when a door is near."
                 elif input_string == "use wall":
-                    print "Output: "
+                    print "Output: You can try to use a wall, but it's not helpful to you."
                 elif input_string == "use marker":
                     use_marker()
                 else:
@@ -742,7 +768,8 @@ def grab_key():
 
     if player_next_to_object(x, y, a, b):
         # Inform the player that they have picked up the key.
-        print "Output: You have picked up the key!"
+        print "Output: You have picked up the key!" \
+              "\nI hear they make doors easier to open...
         # Set the key object position to [0, 0].
         key_object_position[0] = 0
         key_object_position[1] = 0
@@ -775,10 +802,11 @@ def open_chest():
         if player_opened_chest:
             # Inform the player that they have 
             # already opened the chest.
-            print "Output: You have already opened the chest."
+            print "Output: You have already opened the chest, no need to be redundant."
         else:
             # Inform the player that they have picked up the chest.
-            print "Output: You have opened the chest!"
+            print "Output: You have opened the chest!" \
+                  "\nNow maybe the door can be opened...
             # Set the chest object character to 'O'.
             chest_object = pygame.font.Font(None, object_size).render(
                                             chest_object_opened, False, 
@@ -787,7 +815,8 @@ def open_chest():
             player_opened_chest = True
     else:
         # Inform the player that the chest is not within their reach.
-        print "Output: The chest is not within reach..."
+        print "Output: The chest is not within reach..." \
+              "\nTry looking for something chest-shaped.
 
 # Function to use the key.
 def use_key():
@@ -807,19 +836,21 @@ def use_key():
         if player_used_key:
             # Inform the player that they have already 
             # used the key to unlock the door.
-            print "You have already unlocked the door."
+            print "You have already unlocked the door, maybe now it will open."
         elif player_grabbed_key:
             # Inform the player that they have unlocked the door.
-            print "Output: You have unlocked the door!"
+            print "Output: You have unlocked the door!" \
+                  "\nThey key wasn't so useless after all!
             # Set player_used_key equal to True.
             player_used_key = True
         else:
             # Inform the player that they need the key to unlocked the door.
-            print ("Output: You must grab the " 
-                    "key before you can use it.")
+            print "Output: This door is locked. " \
+                    "\nMaybe a key could unlock it..."
     else:
         # Inform the player that the door is not within their reach.
-        print "Output: The door is not within reach..."
+        print "Output: The door is not within reach..." \
+              "\nTry looking for something door-shaped."
 
 # Function to open the door.
 def open_door():
@@ -848,31 +879,32 @@ def open_door():
         elif player_used_key and not player_opened_chest:
             # Inform the player that they need to open the 
             # chest before they can open the door.
-            print ("Output: You must open the chest "
-                    "before you can open the door.")
+            print "Output: You haven't found the chest. " \
+                    "\nMaybe you should open it first."
         elif player_grabbed_key and player_opened_chest:
             # Inform the player that they need to use the 
             # key before they can open the door.
-            print ("Output: You must use the key "
-                    "before you can open the door.")
+            print ("Output: A key can sometimes be "
+                    "used to open doors.")
         elif player_grabbed_key and not player_opened_chest:
             # Inform the player that they need to use the 
             # key before they can open the door.
-            print ("Output: You must use the key and open the "
-                    "chest before you can open the door.")
+            print ("Output: There's a chest somewhere around here. "
+                    "\nMaybe it'll be worth your while to open it first.")
         elif not player_grabbed_key and player_opened_chest:
             # Inform the player that they need to use the 
             # key before they can open the door.
-            print ("Output: You must grab and use the key "
-                    "before you can open the door.")
+            print ("Output: Congrats, you found the door, "
+                    "\nbut you forgot the key and the chest.")
         else:
             # Inform the player that they need to find 
             # the key before they can open the door.
-            print ("Output: You must grab and use the key and open " 
-                    "the chest before you can open the door.")
+            print ("Output: There's a key and a chest somewhere around here... "
+                    "\nMaybe you could go find them and then come back.")
     else:
-        # Inform the player that the chest is not within their reach.
-        print "Output: The door is not within reach..."
+        # Inform the player that the door is not within their reach.
+        print "Output: The door is not within reach..." \
+              "\nTry looking for something door-shaped."
 
 # Function that returns true if the player character 
 # object is located next to another object.
