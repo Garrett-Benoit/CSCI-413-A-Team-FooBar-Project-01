@@ -4,10 +4,10 @@
 # Date Started:     2 (February) / 11 (Saturday) / 2017 (Fall)
 # Date Completed:   2 (February) / 15 (Wednesday) / 2017 (Fall)
 # School:           McNeese State University
-# Class:            Computer Science 413-A - Software Engineering II 
+# Class:            Computer Science 413-A - Software Engineering II
 # Professor:        Dr. Kevin Cherry
 # Team:             FooBar
-# Members:          Taylor Venissat (Team Leader), Phuong Ho, Chance Johnson, 
+# Members:          Taylor Venissat (Team Leader), Phuong Ho, Chance Johnson,
 #                   Garrett Benoit, and Zackary Hermsen.
 # Assignment:       Team-Programming-Assignment-01
 # Language:         Python
@@ -70,8 +70,8 @@ player_used_key = False
 player_used_marker = False
 player_unlocked_chest = False
 player_opened_chest = False
-chest_combination = (chest_combination_1_object + 
-                     chest_combination_2_object + 
+chest_combination = (chest_combination_1_object +
+                     chest_combination_2_object +
                      chest_combination_3_object)
 game_complete = False
 
@@ -133,7 +133,7 @@ pygame.display.set_caption("Team-FooBar-Programming-Assignment-01")
 screen = sgc.surface.Screen((600, 635))
 
 # Create and place an input box on the console window.
-input_box = sgc.InputBox((600, 35), label = "", 
+input_box = sgc.InputBox((600, 35), label = "",
                          default = "Input here, output console...")
 input_box.config(pos = (0, 599))
 input_box.add(order = 0)
@@ -178,17 +178,17 @@ def main():
 
     # Create and define the chest_combination_1 object.
     chest_combination_1_object = pygame.font.Font(None, object_size).render(
-                                     chest_combination_1_object, False, 
+                                     chest_combination_1_object, False,
                                      chest_combination_1_object_color)
-    
+
     # Create and define the chest_combination_2 object.
     chest_combination_2_object = pygame.font.Font(None, object_size).render(
-                                     chest_combination_2_object, False, 
+                                     chest_combination_2_object, False,
                                      chest_combination_2_object_color)
-    
+
     # Create and define the chest_combination_3 object.
     chest_combination_3_object = pygame.font.Font(None, object_size).render(
-                                     chest_combination_3_object, False, 
+                                     chest_combination_3_object, False,
                                      chest_combination_3_object_color)
 
     # Place the objects on the grid.
@@ -224,7 +224,6 @@ def print_introduction_message():
     print "3. open <chest, door>"
     print "4. use <key, marker>"
     print "5. help"
-    print "6. print <maze> (For development)"
     print "\nTo see this message again, enter the help command. Good luck!"
 
 # Function to print out directions and a list of commands.
@@ -250,7 +249,7 @@ def print_go_error():
 
 # Function to print error message for invalid input.
 def print_input_error():
-    print "Output: Invalid input. Command not recognized..." 
+    print "Output: Invalid input. Command not recognized..."
 
 # Function to clear user input from the InputText.
 def clear():
@@ -272,17 +271,17 @@ def generate_maze_depth_first_search():
     destination_x = [0, 1, 0, -1]
     destination_y = [-1, 0, 1, 0]
 
-    # Stack that stores coordinates in the maze. 
+    # Stack that stores coordinates in the maze.
     # Starts at a random set of coordinates.
-    coordinates_stack = [(random.randint(1, maze_width - 1), 
+    coordinates_stack = [(random.randint(1, maze_width - 1),
               random.randint(1, maze_height - 1))]
 
     # Loop until every set of coordinates have been visited.
     while len(coordinates_stack) > 0:
-        # Set the current coordinates equal to the 
+        # Set the current coordinates equal to the
         # coordinates at the top of the stack.
         (current_x, current_y) = coordinates_stack[-1]
-        
+
         # Destroy the wall at this coordinates.
         grid[current_x][current_y] = 1
         #grid[current_y][current_x] = 1
@@ -315,7 +314,7 @@ def generate_maze_depth_first_search():
                         if temporary_x > 0 and temporary_x < maze_width \
                             and temporary_y > 0 and temporary_y < maze_height:
                             # Determine if there is a neighbor here.
-                            if grid[temporary_x][temporary_y] == 1: 
+                            if grid[temporary_x][temporary_y] == 1:
                                 # No neighbor exists at this coordinates.
                                 counter += 1
                     # The new coordinates has only one
@@ -337,9 +336,9 @@ def generate_maze_depth_first_search():
             # Push the current coordinates to the stack.
             coordinates_stack.append((current_x, current_y))
 
-        # 0 neighbors available, dead end. Pop the previous 
+        # 0 neighbors available, dead end. Pop the previous
         # coordinates from the stack and attempt to continue.
-        else: 
+        else:
             # Pop the top coordinates off the stack.
             coordinates_stack.pop()
 
@@ -372,7 +371,7 @@ def draw_maze(screen):
 def get_cell_rect(coordinates, screen):
     # Set row, column equal to the passed parameters.
     row, column = coordinates
-    # Set the width of the cell to the width of the 
+    # Set the width of the cell to the width of the
     # screen divided by the length of the grid.
     cell_width = screen.get_width() / len(grid)
     # Calculate the adjusted width.
@@ -450,7 +449,7 @@ def draw_key_object(key_object, screen):
     rect.center = get_cell_rect(key_object_position, screen).center
     # Draw the key object image.
     screen.blit(key_object, rect)
-    
+
 # Function to draw the player character object to the console window.
 def draw_player_object(player_object, screen):
     # Return the size and offset of the player object.
@@ -488,6 +487,7 @@ def draw_chest_combination_3_object(chest_combination_3_object, screen):
     screen.blit(chest_combination_3_object, rect)
 
 
+
 ################################################################################
 # Object Placement
 ################################################################################
@@ -504,15 +504,16 @@ def generate_random_object_positions():
 
     # Variable representing the number of objects on the grid.
     number_of_objects = 0
-    
+
     while number_of_objects != 1:
         # Generate a random x and y coordinate for the object position.
         randomx = random.randint(1, len(grid) - 1)
         randomy = random.randint(1, len(grid) - 1)
 
-        if not position_is_occupied(randomx, randomy):
+        if grid[randomx][randomy] == 1 and \
+            not position_is_occupied(randomx, randomy):
             # Set the player object position equal to the random x and y values.
-            player_object_position[0] = randomx 
+            player_object_position[0] = randomx
             player_object_position[1] = randomy
 
             # Add the player object position to the dictionary.
@@ -527,11 +528,12 @@ def generate_random_object_positions():
         randomx = random.randint(1, len(grid) - 1)
         randomy = random.randint(1, len(grid) - 1)
 
-        if not position_is_occupied(randomx, randomy):
+        if grid[randomx][randomy] == 1 and \
+            not position_is_occupied(randomx, randomy):
             # Set the chest object position equal to the random x and y values.
-            chest_object_position[0] = randomx 
+            chest_object_position[0] = randomx
             chest_object_position[1] = randomy
-            
+
             # Add the chest object position to the dictionary.
             object_position_dictionary['chest'] = randomx, randomy
 
@@ -543,9 +545,10 @@ def generate_random_object_positions():
         randomx = random.randint(1, len(grid) - 1)
         randomy = random.randint(1, len(grid) - 1)
 
-        if not position_is_occupied(randomx, randomy):
+        if grid[randomx][randomy] == 1 and \
+            not position_is_occupied(randomx, randomy):
             # Set the key object position equal to the random x and y values.
-            key_object_position[0] = randomx 
+            key_object_position[0] = randomx
             key_object_position[1] = randomy
 
             # Add the key object position to the dictionary.
@@ -559,9 +562,10 @@ def generate_random_object_positions():
         randomx = random.randint(1, len(grid) - 1)
         randomy = random.randint(1, len(grid) - 1)
 
-        if not position_is_occupied(randomx, randomy):
+        if grid[randomx][randomy] == 1 and \
+            not position_is_occupied(randomx, randomy):
             # Set the door object position equal to the random x and y values.
-            door_object_position[0] = randomx 
+            door_object_position[0] = randomx
             door_object_position[1] = randomy
 
             # Add the door object position to the dictionary.
@@ -575,10 +579,11 @@ def generate_random_object_positions():
         randomx = random.randint(1, len(grid) - 1)
         randomy = random.randint(1, len(grid) - 1)
 
-        if grid[randomx][randomy] == 0:
-            # Set the chest_combination_1 object position 
+        if grid[randomx][randomy] == 0 and \
+            not position_is_occupied(randomx, randomy):
+            # Set the chest_combination_1 object position
             # equal to the random x and y values.
-            chest_combination_1_object_position[0] = randomx 
+            chest_combination_1_object_position[0] = randomx
             chest_combination_1_object_position[1] = randomy
 
             # Add the chest_combination_1 object position to the dictionary.
@@ -592,11 +597,11 @@ def generate_random_object_positions():
         randomx = random.randint(1, len(grid) - 1)
         randomy = random.randint(1, len(grid) - 1)
 
-        if (grid[randomx][randomy] == 0 and grid[randomx][randomy] 
-            != chest_combination_1_object_position):
-            # Set the chest_combination_2 object position 
+        if grid[randomx][randomy] == 0 and \
+            not position_is_occupied(randomx, randomy):
+            # Set the chest_combination_2 object position
             # equal to the random x and y values.
-            chest_combination_2_object_position[0] = randomx 
+            chest_combination_2_object_position[0] = randomx
             chest_combination_2_object_position[1] = randomy
 
             # Add the chest_combination_2 object position to the dictionary.
@@ -610,12 +615,11 @@ def generate_random_object_positions():
         randomx = random.randint(1, len(grid) - 1)
         randomy = random.randint(1, len(grid) - 1)
 
-        if (grid[randomx][randomy] == 0 and grid[randomx][randomy] 
-            != chest_combination_1_object_position and grid[randomx][randomy] 
-            != chest_combination_2_object_position):
-            # Set the chest_combination_3 object position 
+        if grid[randomx][randomy] == 0 and \
+            not position_is_occupied(randomx, randomy):
+            # Set the chest_combination_3 object position
             # equal to the random x and y values.
-            chest_combination_3_object_position[0] = randomx 
+            chest_combination_3_object_position[0] = randomx
             chest_combination_3_object_position[1] = randomy
 
             # Add the chest_combination_3 object position to the dictionary.
@@ -626,11 +630,8 @@ def generate_random_object_positions():
 
 # Function to determine if the coordinate is blocked by an object or wall.
 def position_is_occupied(x, y):
-    # Return True for the wall object.
-    if grid[x][y] == 0:
-        return True
     # Return True for the player object.
-    elif x == player_object_position[0] and y == player_object_position[1]:
+    if x == player_object_position[0] and y == player_object_position[1]:
         return True
     # Return True for the chest object.
     elif x == chest_object_position[0] and y == chest_object_position[1]:
@@ -641,7 +642,19 @@ def position_is_occupied(x, y):
     # Return True for the door object.
     elif x == door_object_position[0] and y == door_object_position[1]:
         return True
- 
+    # Return True for the first chest combination object.
+    elif x == chest_combination_1_object_position[0] and \
+        y == chest_combination_1_object_position[1]:
+        return True
+    # Return True for the second chest combination object.
+    elif x == chest_combination_2_object_position[0] and \
+        y == chest_combination_2_object_position[1]:
+        return True
+    # Return True for the third chest combination object.
+    elif x == chest_combination_3_object_position[0] and \
+        y == chest_combination_3_object_position[1]:
+        return True
+
     return False
 
 
@@ -649,14 +662,14 @@ def position_is_occupied(x, y):
 ################################################################################
 # Player Input
 ################################################################################
-  
+
 # Function to handle player character movement.
 def handle_input():
     while game_complete == False:
         for event in pygame.event.get():
             sgc.event(event)
             if event.type == GUI:
-                # Print user input string to the output console window. 
+                # Print user input string to the output console window.
                 input_string = event.text.lower()
                 print_input(input_string)
                 # Print the objects and list of commands for the help command.
@@ -675,47 +688,105 @@ def handle_input():
                     print "Output: A chest is for opening, not going." \
                           "\nTry going in a direction instead."
                 elif input_string == "go key":
+                    print "Output: A key is for grabbing and/or using, not going." \
+                          "\nTry going in a direction instead."
                 elif input_string == "go door":
+                    print "Output: A door is for opening, not going." \
+                          "\nTry going in a direction instead."
                 elif input_string == "go wall":
+                    print "Output: You can't go into a wall. Are you even trying?"
                 elif input_string == "go marker":
+                    print "Output: A marker is for using, not going." \
+                          "\nTry going in a direction instead."
                 # Possible user input for the grab <Object> command.
                 elif input_string == "grab forward":
+                    print "Output: Forward is for going, not grabbing." \
+                          "\nTry grabbing when a key is near."
                 elif input_string == "grab right":
+                    print "Output: Right is for going, not grabbing." \
+                          "\nTry grabbing when a key is near."
                 elif input_string == "grab back":
+                    print "Output: Back is for going, not grabbing." \
+                          "\nTry grabbing when a key is near."
                 elif input_string == "grab left":
+                    print "Output: Left is for going, not grabbing." \
+                          "\nTry grabbing when a key is near."
                 elif input_string == "grab chest":
+                    print "Output: A chest is for opening, not grabbing." \
+                          "\nTry grabbing when a key is near."
                 elif input_string == "grab key":
                     if player_grabbed_key:
                         # Inform the player that they already have the key.
+                        print "Output: You already have the key." \
+                              "\nNow you can use it for something, " \
+                              "like unlocking a door maybe?"
                     else:
                         grab_key()
                 elif input_string == "grab door":
+                    print "Output: A door is for opening, not grabbing." \
+                          "\nTry grabbing when a key is near."
                 elif input_string == "grab wall":
+                    print "Output: You can't grab a wall." \
+                          "\nWell, I guess you could, but it's not helpful." \
+                          "\nTry grabbing when a key is near."
                 elif input_string == "grab marker":
+                    print "Output: A marker is for using, not grabbing." \
+                          "\nTry grabbing when a key is near."
                 # Possible user input for the open <Object> command.
                 elif input_string == "open forward":
+                    print "Output: Forward is for going, not opening." \
+                          "\nTry opening when a door is near."
                 elif input_string == "open right":
+                    print "Output: Right is for going, not opening." \
+                          "\nTry opening when a door is near."
                 elif input_string == "open back":
+                    print "Output: Back is for going, not opening." \
+                          "\nTry opening when a door is near."
                 elif input_string == "open left":
+                    print "Output: Left is for going, not opening." \
+                          "\nTry opening when a door is near."
                 elif input_string == "open chest":
                     open_chest()
                 elif input_string == "open key":
+                    print "Output: A key is for grabbing and/or using, " \
+                            "not opening. \nTry opening when a door is near."
                 elif input_string == "open door":
                     open_door()
                 elif input_string == "open wall":
+                    print "Output: You can try to open a wall, " \
+                          "but it won't be helpful."
                 elif input_string == "open marker":
+                    print "Output: A marker is for using, not opening." \
+                          "\nTry opening when a door is near."
                 # Possible user input for the use <Object> command.
                 elif input_string == "use forward":
+                    print "Output: Forward is for going, not using." \
+                          "\nTry using a key when a door is near."
                 elif input_string == "use right":
+                    print "Output: Right is for going, not using." \
+                          "\nTry using a key when a door is near."
                 elif input_string == "use back":
+                    print "Output: Back is for going, not using." \
+                          "\nTry using a key when a door is near."
                 elif input_string == "use left":
+                    print "Output: Left is for going, not using." \
+                          "\nTry using a key when a door is near."
                 elif input_string == "use chest":
+                    print "Output: A chest is for unlocking and opening, " \
+                          "not using. \nTry using a combination on the chest " \
+                          "instead."
                 elif input_string == "use key":
                     use_key()
                 elif input_string == "use door":
+                    print "Output: A door is for opening, not using." \
+                          "\nTry using a key when a door is near."
                 elif input_string == "use wall":
+                    print "Output: You can try to use a wall, " \
+                          "but it's not helpful to you."
                 elif input_string == "use marker":
                     use_marker()
+                elif input_string == "print maze":
+                    print_maze()
                 else:
                     # Parse the string into substrings and store into a list.
                     input_substring_list = input_string.split(" ")
@@ -724,9 +795,9 @@ def handle_input():
                     if input_substring_list[0] == "go":
                         # Check if the second substring is equal to "forward".
                         if input_substring_list[1] == "forward":
-                            # If the third substring is a digit, call the go() 
+                            # If the third substring is a digit, call the go()
                             # command the number of times the digit specifies.
-                            if input_substring_list[2].isdigit(): 
+                            if input_substring_list[2].isdigit():
                                 i = 0
                                 while i < int(input_substring_list[2]):
                                     go(0, -1)
@@ -736,9 +807,9 @@ def handle_input():
                                 print_input_error()
                         # Check if the second substring is equal to "right".
                         elif input_substring_list[1] == "right":
-                            # If the third substring is a digit, call the go() 
+                            # If the third substring is a digit, call the go()
                             # command the number of times the digit specifies.
-                            if input_substring_list[2].isdigit(): 
+                            if input_substring_list[2].isdigit():
                                 i = 0
                                 while i < int(input_substring_list[2]):
                                     go(1, 0)
@@ -748,9 +819,9 @@ def handle_input():
                                 print_input_error()
                         # Check if the second substring is equal to "back".
                         elif input_substring_list[1] == "back":
-                            # If the third substring is a digit, call the go() 
+                            # If the third substring is a digit, call the go()
                             # command the number of times the digit specifies.
-                            if input_substring_list[2].isdigit(): 
+                            if input_substring_list[2].isdigit():
                                 i = 0
                                 while i < int(input_substring_list[2]):
                                     go(0, 1)
@@ -760,9 +831,9 @@ def handle_input():
                                 print_input_error()
                         # Check if the second substring is equal to "left".
                         elif input_substring_list[1] == "left":
-                            # If the third substring is a digit, call the go() 
+                            # If the third substring is a digit, call the go()
                             # command the number of times the digit specifies.
-                            if input_substring_list[2].isdigit(): 
+                            if input_substring_list[2].isdigit():
                                 i = 0
                                 while i < int(input_substring_list[2]):
                                     go(-1, 0)
@@ -778,8 +849,8 @@ def handle_input():
                             unlock_chest(input_substring_list[1])
                         else:
                             print_input_error()
-                    # Not even close to a valid command or contains some 
-                    # form of misspelling or incorrect input 
+                    # Not even close to a valid command or contains some
+                    # form of misspelling or incorrect input
                     # (numbers, special characters, etc.).
                     else:
                         print_input_error()
@@ -792,19 +863,19 @@ def handle_input():
             if event.type == KEYDOWN:
                 # Store the key press event.
                 key = event.key
-                # Move the player character object up if the up arrow key was 
+                # Move the player character object up if the up arrow key was
                 # pressed and if there are no objects blocking the path.
                 if key == K_UP:
                     go(0, -1)
-                # Move the player character object right if the right arrow key 
+                # Move the player character object right if the right arrow key
                 # was pressed and if there are no objects blocking the path.
                 elif key == K_RIGHT:
                     go(1, 0)
-                # Move the player character object down if the down arrow key 
+                # Move the player character object down if the down arrow key
                 # was pressed and if there are no objects blocking the path.
                 elif key == K_DOWN:
                     go(0, 1)
-                # Move the player character object left if the left arrow key 
+                # Move the player character object left if the left arrow key
                 # was pressed and if there are no objects blocking the path.
                 elif key == K_LEFT:
                     go(-1, 0)
@@ -812,7 +883,7 @@ def handle_input():
             elif event.type == QUIT:
                 return
 
-        # Call the function to retrieve tiles in the 
+        # Call the function to retrieve tiles in the
         # field of view and store them into a list.
         get_fov_tile_coordinates()
         # Call the function to draw the maze.
@@ -853,22 +924,22 @@ def go(dx, dy):
     nx = x + dx
     ny = y + dy
 
-    # Change the player character object position if the new position 
+    # Change the player character object position if the new position
     # is in the game window and the cell is not pre-occupied.
     if (nx > 0 and nx < len(grid) and ny > 0 and ny < len(grid) and \
         grid[ny][nx]):
             # Check if the chest object is placed on the destination tile.
-            if (nx == chest_object_position[0] 
+            if (nx == chest_object_position[0]
                 and ny == chest_object_position[1]):
                 # Print out an error for the invalid move.
                 print_go_error()
             # Check if the key object is placed on the destination tile.
-            elif (nx == key_object_position[0] 
+            elif (nx == key_object_position[0]
                   and ny == key_object_position[1]):
                 # Print out an error for the invalid move.
                 print_go_error()
             # Check if the door object is placed on the destination tile.
-            elif (nx == door_object_position[0] 
+            elif (nx == door_object_position[0]
                   and ny == door_object_position[1]):
                 # Print out an error for the invalid move.
                 print_go_error()
@@ -885,7 +956,7 @@ def use_marker():
     global marked_tile_list
     global player_used_marker
 
-    # Change the value of player_used_marker to True. It is used in the 
+    # Change the value of player_used_marker to True. It is used in the
     # draw_maze function to determine when to start drawing the marker.
     player_used_marker = True
 
@@ -933,7 +1004,8 @@ def grab_key():
 
     if player_next_to_object(x, y, a, b):
         # Inform the player that they have picked up the key.
-        print "Output: You have picked up the key!"
+        print "Output: You have picked up the key!" \
+              "\nI hear they make doors easier to open..."
         # Set the key object position to [0, 0].
         key_object_position[0] = 0
         key_object_position[1] = 0
@@ -941,10 +1013,11 @@ def grab_key():
         player_grabbed_key = True
     else:
         # Inform the player that the key is not within their reach.
-        print "Output: The key is not within reach..."
+        print "Output: The key is not within reach..." \
+              "\nTry looking for something key-shaped."
 
 # Function to unlock the chest.
-def unlock_chest(user_input_combination):    
+def unlock_chest(user_input_combination):
     # Needed to change their properties.
     global player_unlocked_chest
 
@@ -958,13 +1031,15 @@ def unlock_chest(user_input_combination):
 
     if player_next_to_object(x, y, a, b):
         if player_unlocked_chest:
-            # Inform the player that they have 
+            # Inform the player that they have
             # already unlocked the chest.
-            print "Output: You have already unlocked the chest."
+            print "Output: You have already unlocked the chest, " \
+                  "no need to be redundant."
         else:
             if user_input_combination == chest_combination:
                 # Inform the player that they have unlocked up the chest.
-                print "Output: You have unlocked the chest!"
+                print "Output: You have unlocked the chest!" \
+                      "\nNow maybe it can be opened..."
                 # Set player_unlocked_chest equal to True.
                 player_unlocked_chest = True
             else:
@@ -972,7 +1047,8 @@ def unlock_chest(user_input_combination):
                 print "Output: incorrect combination..."
     else:
         # Inform the player that the chest is not within their reach.
-        print "Output: The chest is not within reach..."
+        print "Output: The chest is not within reach..." \
+              "\nTry looking for something chest-shaped."
 
 # Function to open the chest.
 def open_chest():
@@ -991,26 +1067,29 @@ def open_chest():
 
     if player_next_to_object(x, y, a, b):
         if player_opened_chest:
-            # Inform the player that they have 
+            # Inform the player that they have
             # already opened the chest.
-            print "Output: You have already opened the chest."
+            print "Output: You have already opened the chest, " \
+                  "no need to be redundant."
         else:
             if player_unlocked_chest:
                 # Inform the player that they have opened up the chest.
-                print "Output: You have opened the chest!"
+                print "Output: You have opened the chest!" \
+                      "\nNow maybe the door can be opened..."
                 # Set the chest object character to 'O'.
                 chest_object = pygame.font.Font(None, object_size).render(
-                                                chest_object_opened, False, 
+                                                chest_object_opened, False,
                                                 chest_object_color)
                 # Set player_grabbed_chest equal to True.
                 player_opened_chest = True
             else:
                 # Inform the player that the combination is incorrect.
-                print "Output: You must enter the correct combination to "
-                print "unlock the chest before you can open it."
+                print "Output: You must enter the correct combination to " \
+                      "unlock the chest before you can open it."
     else:
         # Inform the player that the chest is not within their reach.
-        print "Output: The chest is not within reach..."
+        print "Output: The chest is not within reach..." \
+              "\nTry looking for something chest-shaped."
 
 # Function to use the key.
 def use_key():
@@ -1028,21 +1107,23 @@ def use_key():
 
     if player_next_to_object(x, y, a, b):
         if player_used_key:
-            # Inform the player that they have already 
+            # Inform the player that they have already
             # used the key to unlock the door.
-            print "You have already unlocked the door."
+            print "You have already unlocked the door, maybe now it will open."
         elif player_grabbed_key:
             # Inform the player that they have unlocked the door.
-            print "Output: You have unlocked the door!"
+            print "Output: You have unlocked the door!" \
+                  "\nThe key wasn't so useless after all!"
             # Set player_used_key equal to True.
             player_used_key = True
         else:
             # Inform the player that they need the key to unlocked the door.
-            print ("Output: You must grab the " 
-                    "key before you can use it.")
+            print "Output: This door is locked. " \
+                  "\nMaybe a key could unlock it..."
     else:
         # Inform the player that the door is not within their reach.
-        print "Output: The door is not within reach..."
+        print "Output: The door is not within reach..." \
+              "\nTry looking for something door-shaped."
 
 # Function to open the door.
 def open_door():
@@ -1069,35 +1150,36 @@ def open_door():
             # Set game_complete equal to True.
             game_complete = True
         elif player_used_key and not player_opened_chest:
-            # Inform the player that they need to open the 
+            # Inform the player that they need to open the
             # chest before they can open the door.
-            print ("Output: You must open the chest "
-                    "before you can open the door.")
+            print "Output: You haven't opened the chest. " \
+                  "\nMaybe you should open it first."
         elif player_grabbed_key and player_opened_chest:
-            # Inform the player that they need to use the 
+            # Inform the player that they need to use the
             # key before they can open the door.
-            print ("Output: You must use the key "
-                    "before you can open the door.")
+            print "Output: A key can sometimes be " \
+                  "used to open doors."
         elif player_grabbed_key and not player_opened_chest:
-            # Inform the player that they need to use the 
+            # Inform the player that they need to use the
             # key before they can open the door.
-            print ("Output: You must use the key and open the "
-                    "chest before you can open the door.")
+            print "Output: There's a chest somewhere around here. " \
+                  "\nMaybe it will be worth your while to open it first."
         elif not player_grabbed_key and player_opened_chest:
-            # Inform the player that they need to use the 
+            # Inform the player that they need to use the
             # key before they can open the door.
-            print ("Output: You must grab and use the key "
-                    "before you can open the door.")
+            print "Output: Congrats, you found the door. " \
+                  "\nMaybe you should use the key."
         else:
-            # Inform the player that they need to find 
-            # the key before they can open the door.
-            print ("Output: You must grab and use the key and open " 
-                    "the chest before you can open the door.")
+            # Inform the player that they need to find
+            # the key and chest before they can open the door.
+            print "Output: There's a key and a chest somewhere around here..." \
+                  "\nMaybe you could go find them and then come back."
     else:
         # Inform the player that the door is not within their reach.
-        print "Output: The door is not within reach..."
+        print "Output: The door is not within reach..." \
+              "\nTry looking for something door-shaped."
 
-# Function that returns true if the player character 
+# Function that returns true if the player character
 # object is located next to another object.
 def player_next_to_object(x, y, a, b):
     # Check the location that the player character object currently is.
@@ -1127,7 +1209,7 @@ def player_next_to_object(x, y, a, b):
     # Check the location below and to the right of the player character object.
     elif x + 1 == a and y + 1 == b:
         return True
-    
+
     # Return False if the player is not located directly next to an object.
     return False
 
