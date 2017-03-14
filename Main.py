@@ -234,11 +234,13 @@ def print_input(input):
 
 # Function to print error message for invalid go.
 def print_go_error():
-    print "Output: Invalid move command..."
+    print "Output: You try to move but there is a wall blocking your path." \
+          "\nPerhaps a different direction would be a better option."
 
 # Function to print error message for invalid input.
 def print_input_error():
-    print "Output: Invalid input. Command not recognized..." 
+    print "Output: Invalid input." \
+          "\nTo see a list of valid input commands, type help."
 
 # Function to clear user input from the InputText.
 def clear():
