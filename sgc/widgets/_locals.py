@@ -53,7 +53,7 @@ def update(time):
                 widget.kill()
                 # Reset widget to be added again
                 widget._fade = None
-            elif widget._fade >= 255:
+            elif widget._fade >= 0:
                 widget._fade = None
                 widget.image.set_alpha(255)
 

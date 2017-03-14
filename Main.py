@@ -422,10 +422,6 @@ def generate_random_object_positions():
 # Function to determine if the coordinate is blocked by an object or wall.
 def position_is_occupied(x, y):
     # Return True for the wall object.
-    """
-
-    :rtype: bool
-    """
     if grid[x][y] == 0:
         return True
     # Return True for the player object.
@@ -827,12 +823,7 @@ def use_key():
 
 # Function to open the door.
 def open_door():
-    # type: () -> object
     # Needed to change their properties.
-    """
-
-    :rtype: object
-    """
     global door_object
     global door_object_position
     global player_opened_chest
@@ -886,16 +877,6 @@ def open_door():
 # Function that returns true if the player character 
 # object is located next to another object.
 def player_next_to_object(x, y, a, b):
-    # type: (object, object, object, object) -> object
-    """
-
-    :rtype: bool
-    :param x: 
-    :param y: 
-    :param a: 
-    :param b: 
-    :return: 
-    """
     # Check the location that the player character object currently is.
     if x == a and y == b:
         return True
