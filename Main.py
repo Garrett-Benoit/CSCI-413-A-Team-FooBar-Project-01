@@ -100,13 +100,8 @@ object_position_dictionary = {}
 # List to hold the marked tile coordinates.
 marked_tile_list = []
 
-# List to hold the open tile coordinates.
-open_coordinates_list = []
-
 # List to hold the coordinates of tiles within the player field of view.
-fov_tile_list = []
-# List to hold the color of the tiles within the player field of view.
-fov_tile_color_list = []
+visible_object_list = []
 
 # Initialize the pygame console window.
 pygame.init()
@@ -142,9 +137,6 @@ def main():
 
     # Randomly generate the maze using the Depth-first search algorithm.
     generate_maze_depth_first_search()
-
-    # Draw colors to fill the cells of the grid.
-    #screen.fill(cell_colors[1])
 
     # Create and define the door object.
     door_object = pygame.font.Font(None, object_size).render(
@@ -345,30 +337,153 @@ def generate_maze_depth_first_search():
             # Pop the top coordinates off the stack.
             coordinates_stack.pop()
 
-# Function to draw the maze.
-def draw_maze(screen):
-    # Color the walls of the grid.
-    for x in range(len(grid)):
-        for y in range(len(grid)):
-            # Fill in the color of the grid walls.
-            screen.fill(cell_colors[grid[y][x]], get_cell_rect((x, y), screen))
+# Function to draw the screen.
+def draw_screen(screen):
+    # Color the visible objects of the grid.
+    for i in range(len(visible_object_list)):
+        # Only draw the tile if it is in the range of the grid.
+        if visible_object_list[i][0] >= 0 and \
+            visible_object_list[i][0] < len(grid) and \
+            visible_object_list[i][1] >= 0 and \
+            visible_object_list[i][1] < len(grid):
+            if grid[visible_object_list[i][1]][visible_object_list[i][0]] == 0:
+                # Fill the wall object with the color white.
+                screen.fill((255, 255, 255), \
+                    get_cell_rect((visible_object_list[i][0],
+                                   visible_object_list[i][1]), screen))
 
-    # Change the color of the marked tiles if any exist.
+    # Call the function to draw the door object if visible.
+    if is_object_visible(door_object_position[0], door_object_position[1]):
+        draw_door_object(door_object, screen)
+
+    if is_object_visible(chest_object_position[0], chest_object_position[1]):
+        # Draw the closed chest if the chest has not been opened and is visible.
+        if not player_opened_chest:
+            # Call the function to draw the closed chest object if visible.
+            draw_closed_chest_object(chest_object_closed, screen)
+        # Draw the opened chest if the chest has been opened and is visible.
+        else:
+            # Call the function to draw the opened chest object if visible.
+            draw_opened_chest_object(chest_object_opened, screen)
+
+    # Call the function to draw the key object if visible.
+    if is_object_visible(key_object_position[0], key_object_position[1]):
+        if not player_grabbed_key:
+            draw_key_object(key_object, screen)
+
+    # Call the function to draw the chest_combination_1 object if visible.
+    if is_object_visible(chest_combination_1_object_position[0], \
+        chest_combination_1_object_position[1]):
+        draw_chest_combination_1_object(chest_combination_1_object, screen)
+
+    # Call the function to draw the chest_combination_2 object if visible.
+    if is_object_visible(chest_combination_2_object_position[0], \
+        chest_combination_2_object_position[1]):
+        draw_chest_combination_2_object(chest_combination_2_object, screen)
+
+    # Call the function to draw the chest_combination_3 object if visible.
+    if is_object_visible(chest_combination_3_object_position[0], \
+        chest_combination_3_object_position[1]):
+        draw_chest_combination_3_object(chest_combination_3_object, screen)
+
+    # Change the color of the visible marked tiles if any exist.
     if player_used_marker == True:
-        i = 0
-        while i < len(marked_tile_list):
-            # Fill in the marked tiles with the color red.
-            screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[i], screen))
-            i = i + 1
+        for i in range(len(marked_tile_list)):
+            if is_object_visible(marked_tile_list[i][0], marked_tile_list[i][1]):
+                # Fill in the marked tiles with the color red.
+                screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[i], screen))
 
-    '''# Draw only the tiles that are in the field of view of the player character.
-    i = len(fov_tile_list) - 1
-    while i >= 0:
-        fov_tile_list_string = str(fov_tile_list[i])
+    # Call the function to draw the player character object.
+    draw_player_object(player_object, screen)
 
-        fov_tile_list_substrings = fov_tile_list_string.split(", ")
-        screen.fill((255, 255, 255), get_cell_rect(fov_tile_list[i], screen))
-        i = i - 1'''
+# Function to determine if the given object is within the field of view.
+def is_object_visible(object_position_x, object_position_y):
+    for i in range(len(visible_object_list)):
+        if object_position_x == visible_object_list[i][0] and \
+            object_position_y == visible_object_list[i][1]:
+            return True
+
+    return False
+
+# Function to store object coordinates that are within the field of view.
+def get_visible_object_list():
+    global visible_object_list
+
+    # Set x and y equal to the current player character object position.
+    x = player_object_position[0]
+    y = player_object_position[1]
+
+    # Clear the contents of the visible_object_list.
+    visible_object_list = []
+
+    # Tiles that are within 1 square from the player character object.
+    if x >= 0 and x < len(grid) and y >= 0 and y < len(grid):
+        visible_object_list.append((x, y))
+    if x - 1 >= 0 and x - 1 < len(grid) and y - 1 >= 0 and y - 1 < len(grid):
+        visible_object_list.append((x - 1, y - 1))
+    if x >= 0 and x < len(grid) and y - 1 >= 0 and y - 1 < len(grid):
+        visible_object_list.append((x, y - 1))
+    if x + 1 >= 0 and x + 1 < len(grid) and y - 1 >= 0 and y - 1 < len(grid):
+        visible_object_list.append((x + 1, y - 1))
+    if x - 1 >= 0 and x - 1 < len(grid) and y >= 0 and y < len(grid):
+        visible_object_list.append((x - 1, y))
+    if x + 1 >= 0 and x + 1 < len(grid) and y >= 0 and y < len(grid):
+        visible_object_list.append((x + 1, y))
+    if x - 1 >= 0 and x - 1 < len(grid) and y + 1 >= 0 and y + 1 < len(grid):
+        visible_object_list.append((x - 1, y + 1))
+    if x >= 0 and x < len(grid) and y + 1 >= 0 and y + 1 < len(grid):
+        visible_object_list.append((x, y + 1))
+    if x + 1 >= 0 and x + 1 < len(grid) and y + 1 >= 0 and y + 1 < len(grid):
+        visible_object_list.append((x + 1, y + 1))
+
+    # Tiles that are within 2 squares from the player character object.
+    if x - 1 >= 0 and x + 1 < len(grid) and y - 2 >= 0 and y - 2 < len(grid):
+        if grid[y - 1][x] == 1:
+            visible_object_list.append((x - 1, y - 2))
+            visible_object_list.append((x, y - 2))
+            visible_object_list.append((x + 1, y - 2))
+
+    if x + 2 >= 0 and x + 2 < len(grid) and y - 1 >= 0 and y + 1 < len(grid):
+        if grid[y][x + 1] == 1:
+            visible_object_list.append((x + 2, y - 1))
+            visible_object_list.append((x + 2, y))
+            visible_object_list.append((x + 2, y + 1))
+
+    if x - 1 >= 0 and x + 1 < len(grid) and y + 2 >= 0 and y + 2 < len(grid):
+        if grid[y + 1][x] == 1:
+            visible_object_list.append((x - 1, y + 2))
+            visible_object_list.append((x, y + 2))
+            visible_object_list.append((x + 1, y + 2))
+
+    if x - 2 >= 0 and x - 2 < len(grid) and y - 1 >= 0 and y + 1 < len(grid):
+        if grid[y][x - 1] == 1:
+            visible_object_list.append((x - 2, y - 1))
+            visible_object_list.append((x - 2, y))
+            visible_object_list.append((x - 2, y + 1))
+
+    '''if x - 2 >= 0 and x - 1 < len(grid) and y - 2 >= 0 and y - 1 < len(grid):
+        if grid[y - 1][x - 1] == 1:
+            visible_object_list.append((x - 2, y - 1))
+            visible_object_list.append((x - 2, y - 2))
+            visible_object_list.append((x - 1, y - 2))
+
+    if x + 1 >= 0 and x + 2 < len(grid) and y - 2 >= 0 and y - 1 < len(grid):
+        if grid[y - 1][x + 1] == 1:
+            visible_object_list.append((x + 1, y - 2))
+            visible_object_list.append((x + 2, y - 2))
+            visible_object_list.append((x + 2, y - 1))
+
+    if x + 1 >= 0 and x + 2 < len(grid) and y + 1 >= 0 and y + 2 < len(grid):
+        if grid[y + 1][x + 1] == 1:
+            visible_object_list.append((x + 1, y + 2))
+            visible_object_list.append((x + 2, y + 2))
+            visible_object_list.append((x + 2, y + 1))
+
+    if x - 2 >= 0 and x - 1 < len(grid) and y + 1 >= 0 and y + 2 < len(grid):
+        if grid[y + 1][x - 1] == 1:
+            visible_object_list.append((x - 1, y + 2))
+            visible_object_list.append((x - 2, y + 2))
+            visible_object_list.append((x - 2, y + 1))'''
 
 # Function to draw the container of the objects.
 def get_cell_rect(coordinates, screen):
@@ -383,48 +498,6 @@ def get_cell_rect(coordinates, screen):
     return pygame.Rect(row * cell_width + cell_margin / 2,
                        column * cell_width + cell_margin / 2,
                        adjusted_width, adjusted_width)
-
-# Function to store field of view tiles and colors.
-def get_fov_tile_coordinates():
-    global fov_tile_list
-
-    # Set x and y equal to the current player character object position.
-    x = player_object_position[0]
-    y = player_object_position[1]
-
-    # Clear the contents of the fov_tile_list.
-    fov_tile_list = []
-    # Clear the contents of the fov_tile_color_list.
-    fov_tile_color_list = []
-
-    fov_tile_list.append((x - 2, y - 2))
-    fov_tile_list.append((x - 1, y - 2))
-    # Show the tile if it is not a wall and is in the range of the grid.
-    if x > 0 and x < len(grid) and y - 2 > 0 and y - 2 < len(grid):
-        if grid[y - 2][x] == 1:
-            fov_tile_list.append((x, y - 2))
-    fov_tile_list.append((x + 1, y - 2))
-    fov_tile_list.append((x + 2, y - 2))
-    fov_tile_list.append((x - 2, y - 1))
-    fov_tile_list.append((x + 2, y - 1))
-    # Show the tile if it is not a wall and is in the range of the grid.
-    if x - 2 > 0 and x - 2 < len(grid) and y > 0 and y < len(grid):
-        if grid[y][x - 2] == 1:
-            fov_tile_list.append((x - 2, y))
-    # Show the tile if it is not a wall and is in the range of the grid.
-    if x + 2 > 0 and x + 2 < len(grid) and y > 0 and y < len(grid):
-        if grid[y][x + 2] == 1:
-            fov_tile_list.append((x + 2, y))
-    fov_tile_list.append((x - 2, y + 1))
-    fov_tile_list.append((x + 2, y + 1))
-    fov_tile_list.append((x - 2, y + 2))
-    fov_tile_list.append((x - 1, y + 2))
-    # Show the tile if it is not a wall and is in the range of the grid.
-    if x > 0 and x < len(grid) and y + 2 > 0 and y + 2 < len(grid):
-        if grid[y + 2][x] == 1:
-            fov_tile_list.append((x, y + 2))
-    fov_tile_list.append((x + 1, y + 2))
-    fov_tile_list.append((x + 2, y + 2))
 
 # Function to draw the door object to the console window.
 def draw_door_object(door_object, screen):
@@ -888,32 +961,12 @@ def handle_input():
             elif event.type == QUIT:
                 return
 
-        # Call the function to retrieve tiles in the
-        # field of view and store them into a list.
-        get_fov_tile_coordinates()
-        # Call the function to draw the maze.
-        draw_maze(screen)
-        # Call the function to draw the door object.
-        draw_door_object(door_object, screen)
-        # Draw the closed chest if the chest has not been opened.
-        if not player_opened_chest:
-            # Call the function to draw the closed chest object.
-            draw_closed_chest_object(chest_object_closed, screen)
-        # Draw the opened chest if the chest has been opened.
-        else:
-            # Call the function to draw the opened chest object.
-            draw_opened_chest_object(chest_object_opened, screen)
-        if not player_grabbed_key:
-            # Call the function to draw the key object.
-            draw_key_object(key_object, screen)
-        # Call the function to draw the player character object.
-        draw_player_object(player_object, screen)
-        # Call the function to draw the chest_combination_1 object.
-        draw_chest_combination_1_object(chest_combination_1_object, screen)
-        # Call the function to draw the chest_combination_2 object.
-        draw_chest_combination_2_object(chest_combination_2_object, screen)
-        # Call the function to draw the chest_combination_3 object.
-        draw_chest_combination_3_object(chest_combination_3_object, screen)
+        # Clear the contents of the screen.
+        screen.fill((0,0,0))
+        # Get objects within the field of view and store them into a list.
+        get_visible_object_list()
+        # Call the function to draw the maze and the objects inside.
+        draw_screen(screen)
         # Update the InputText widget.
         sgc.update(1)
         # Update the console window to show changes.
@@ -941,14 +994,6 @@ def go(dx, dy):
         grid[ny][nx]):
             player_object_position[0] = nx
             player_object_position[1] = ny
-            '''# Check if an object is placed on the destination tile.
-            if position_is_object(nx, ny):
-                # Print out an error for the invalid move.
-                print_go_error()
-            # No objects placed on the destination tile.
-            else:
-                player_object_position[0] = nx
-                player_object_position[1] = ny'''
     else:
         # Print out an error for the invalid move.
         print_go_error()
@@ -1026,7 +1071,7 @@ def use_marker():
     global player_used_marker
 
     # Change the value of player_used_marker to True. It is used in the
-    # draw_maze function to determine when to start drawing the marker.
+    # draw_screen function to determine when to start drawing the marker.
     player_used_marker = True
 
     # Set x and y equal to the current player character object position.
