@@ -999,7 +999,10 @@ def handle_input():
         ########################################################################
         ####### Comment out this code to enable the field of view system.#######
         draw_player_object(player_object, screen)
-        draw_closed_chest_object(chest_object_closed, screen)
+        if not player_opened_chest:
+            draw_closed_chest_object(chest_object_closed, screen)
+        else:
+            draw_opened_chest_object(chest_object_opened, screen)
         draw_key_object(key_object, screen)
         draw_door_object(door_object, screen)
         draw_chest_combination_1_object(chest_combination_1_object, screen)
