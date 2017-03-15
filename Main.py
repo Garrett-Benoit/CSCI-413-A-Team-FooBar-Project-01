@@ -26,6 +26,7 @@ import sgc
 from sgc.locals import *
 import random
 import time
+import heapq
 
 
 
@@ -182,6 +183,35 @@ def main():
 
     # Place the objects on the grid.
     generate_random_object_positions()
+
+    '''
+    # Test data for the A* algorithm implementation
+
+    # Create a test grid, which is a graphical version of our grid
+    test_grid = GridWithWeights(15, 15)
+
+    # Traverse the grid to grab all of the wall locations
+    for row in xrange(len(grid)):
+        for column in xrange(len(grid[0])):
+            if grid[column][row] == 0:
+                wall = (row, column)
+                # Add the wall locations to the graph's list of walls
+                test_grid.walls.append(wall)
+
+
+    # The starting location of the player
+    start = (player_object_position[0], player_object_position[1])
+    # The position of the door, or the exit condition
+    goal = (door_object_position[0], door_object_position[1])
+    came_from, cost_so_far = a_star_search(test_grid, start, goal)
+
+    # the came_from and cost_so_far dictionaries can be used to generate the items along this optimal path
+
+    print came_from
+    print cost_so_far
+    print start
+    print goal
+    '''
 
     # Print out introductory message.
     print_introduction_message()
@@ -602,6 +632,115 @@ def draw_chest_combination_3_object(chest_combination_3_object, screen):
     screen.blit(chest_combination_3_object, rect)
 
 
+################################################################################
+# Path finding
+################################################################################
+
+
+# Optimal A* algorithm
+
+# SquareGrid class that will be used to make a graph object for the algorithm
+class SquareGrid:
+    # Initialize the parameters
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.walls = []
+
+    # in_bounds function
+    def in_bounds(self, id):
+        (x, y) = id
+        return 0 <= x < self.width and 0 <= y < self.height
+
+    # The element is valid if it is not a wall
+    def passable(self, id):
+        return id not in self.walls
+
+    # Find the neighbors, which are the elements surrounding the current element
+    def neighbors(self, id):
+        (x, y) = id
+        results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1)]
+        if (x + y) % 2 == 0: results.reverse() # aesthetics
+        results = filter(self.in_bounds, results)
+        results = filter(self.passable, results)
+        return results
+
+# Subclass of SquareGrid. Used to access the cost function
+class GridWithWeights(SquareGrid, object):
+    def __init__(self, width, height):
+        super(GridWithWeights, self).__init__(width, height)
+        self.weights = {}
+
+    # cost function used to calculate the cost to move from from_node to to_node
+    def cost(self, from_node, to_node):
+        return self.weights.get(to_node, 1)
+
+# Class used for the algorithm implementation
+# associates each item with a priority
+# when returning an item, it picks the one with the lowest number
+class PriorityQueue:
+    def __init__(self):
+        self.elements = []
+
+    def empty(self):
+        return len(self.elements) == 0
+
+    def put(self, item, priority):
+        heapq.heappush(self.elements, (priority, item))
+
+    def get(self):
+        return heapq.heappop(self.elements)[1]
+
+# Function used to
+def heuristic(a, b):
+    (x1, y1) = a
+    (x2, y2) = b
+    return abs(x1 - x2) + abs(y1 - y2)
+
+# A* algorithm
+# parameters are graph: the graph we will search
+# start: the starting location (the location of the character at spawn)
+# goal: the ending location (the location of the door)
+def a_star_search(graph, start, goal):
+    # frontier is an expanding queue that keeps track of the path
+    frontier = PriorityQueue()
+    # initialize frontier
+    frontier.put(start, 0)
+    came_from = {}
+    # dictionary that maps the coordinates to the cost (how many steps it takes)
+    cost_so_far = {}
+    # initialize variables
+    came_from[start] = None
+    cost_so_far[start] = 0
+
+    # loop until the frontier queue is empty
+    while not frontier.empty():
+        # get the current element of the queue
+        current = frontier.get()
+
+        # if the current element is the goal, we are done
+        if current == goal:
+            break
+
+        # iterate through the neighbors in the graph at the current location
+        for next in graph.neighbors(current):
+            # assign the new cost
+            new_cost = cost_so_far[current] + graph.cost(current, next)
+            # if the current element is not in the current dictionary
+            # or the new cost is less than the current cost
+            if next not in cost_so_far or new_cost < cost_so_far[next]:
+                # the cost of the next element is the current cost
+                cost_so_far[next] = new_cost
+                # set the priority to the new cost plus the heuristic
+                # of the goal and next locations
+                priority = new_cost + heuristic(goal, next)
+                # put the next element in the queue
+                frontier.put(next, priority)
+                # set the dictionary element to the current element
+                came_from[next] = current
+
+    # return came_from and cost_so_far
+    return came_from, cost_so_far
 
 ################################################################################
 # Object Placement
