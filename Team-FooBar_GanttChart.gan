@@ -116,20 +116,20 @@
             <task id="92" name="Develop Test Cases" color="#8cb6ce" meeting="false" start="2017-03-02" duration="13" complete="0" expand="true"/>
         </task>
         <task id="128" name="Reliability" color="#ff9900" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2017-03-15" duration="4" complete="0" expand="false">
-            <task id="119" name="R&amp;D/N-Version Prog" color="#8cb6ce" meeting="false" start="2017-03-15" duration="3" complete="0" expand="true"/>
+            <task id="119" name="R&amp;D/N-Version Prog" color="#8cb6ce" meeting="false" start="2017-03-15" duration="4" complete="0" expand="true"/>
             <task id="94" name="Log File Implementation" color="#8cb6ce" meeting="false" start="2017-03-15" duration="4" complete="0" expand="true"/>
-            <task id="107" name="Game Over Condition" color="#8cb6ce" meeting="false" start="2017-03-15" duration="3" complete="0" expand="true"/>
+            <task id="107" name="Game Over Condition" color="#8cb6ce" meeting="false" start="2017-03-15" duration="4" complete="0" expand="true"/>
         </task>
-        <task id="129" name="Documentation" color="#ff9900" meeting="false" start="2017-03-15" duration="2" complete="0" expand="false">
-            <task id="111" name="Submission Report" color="#8cb6ce" meeting="false" start="2017-03-15" duration="1" complete="0" expand="true">
+        <task id="129" name="Documentation" color="#ff9900" meeting="false" start="2017-03-15" duration="5" complete="0" expand="false">
+            <task id="111" name="Submission Report" color="#8cb6ce" meeting="false" start="2017-03-15" duration="4" complete="0" expand="true">
                 <depend id="115" type="2" difference="0" hardness="Strong"/>
             </task>
-            <task id="115" name="Final Report" color="#8cb6ce" meeting="false" start="2017-03-16" duration="1" complete="0" expand="true"/>
+            <task id="115" name="Final Report" color="#8cb6ce" meeting="false" start="2017-03-19" duration="1" complete="0" expand="true"/>
         </task>
     </tasks>
     <resources>
         <resource id="0" name="Taylor Venissat" function="Default:1" contacts="" phone=""/>
-        <resource id="1" name="Phuon Ho" function="SoftwareDevelopment:5" contacts="" phone=""/>
+        <resource id="1" name="Phuong Ho" function="SoftwareDevelopment:5" contacts="" phone=""/>
         <resource id="2" name="Zackary Hermsen" function="SoftwareDevelopment:2" contacts="" phone=""/>
         <resource id="3" name="Garrett Beniot" function="SoftwareDevelopment:2" contacts="" phone=""/>
         <resource id="4" name="Chance Johnson" function="SoftwareDevelopment:2" contacts="" phone=""/>
