@@ -15,6 +15,7 @@
 
 
 
+
 ################################################################################
 # Imports
 ################################################################################
@@ -27,16 +28,19 @@ from sgc.locals import *
 import random
 import time
 import heapq
+import os
 
-
-
+class Cls(object):
+    def __repr__(self):
+        os.system('cls')
+        return ''
 ################################################################################
 # Initialization
 ################################################################################
 
 cell_margin = 5 # Pre-defined space between cells.
 cell_colors = (255, 255, 255), (0, 0, 0) # RBG values representing cell colors.
-player_object = "@" # Symbol representing the player character.
+player_object = "P" # Symbol representing the player character.
 player_object_color = (255, 255, 255) # Color of the player character.
 player_object_position = [0, 0] # Position of the player character.
 chest_object_closed = "C" # Symbol representing the closed chest.
@@ -49,6 +53,7 @@ key_object_position = [0, 0] # Position of the key.
 door_object = "D" # Symbol representing the door.
 door_object_color = (255, 255, 255) # Color of the door.
 door_object_position = [0, 0] # Position of the door.
+
 # Symbol representing the first chest combination.
 chest_combination_1_object = str(random.randint(0, 9))
 # Color of the chest_combination_1_object.
@@ -184,7 +189,7 @@ def main():
     # Place the objects on the grid.
     generate_random_object_positions()
 
-    '''
+
     # Test data for the A* algorithm implementation
 
     # Create a test grid, which is a graphical version of our grid
@@ -203,15 +208,20 @@ def main():
     start = (player_object_position[0], player_object_position[1])
     # The position of the door, or the exit condition
     goal = (door_object_position[0], door_object_position[1])
+    #position of the key
+    key = (key_object_position[0],key_object_position[1])
+    chest = (chest_object_position[0],chest_object_position[1])
+
     came_from, cost_so_far = a_star_search(test_grid, start, goal)
 
     # the came_from and cost_so_far dictionaries can be used to generate the items along this optimal path
 
-    print came_from
-    print cost_so_far
+  #  print came_from
+  # print cost_so_far
     print start
     print goal
-    '''
+    print key
+    print chest
 
     # Print out introductory message.
     print_introduction_message()
@@ -286,6 +296,112 @@ def log():
         file.write("Hello, World!")
     file.closed
 
+
+##############################################################################
+#functions that generates the solution using DFS
+#############################################################################
+def isValid(point,grid):
+    if (point[0] > 14) or (point [1] > 14)  or (grid[point[0]][point[1]] == 0):
+        return False
+    else:
+        return True
+
+def add_neighbours(point,neighbours_list,visited_list,grid,dict):
+    if point == [] :
+        return
+    negh1 = [point[0] + 1, point[1]]
+    negh2 = [point[0] - 1, point[1]]
+    negh3 = [point[0], point[1] + 1]
+    negh4 = [point[0], point[1] - 1]
+    if isValid(negh4, grid):
+        if not visited_list.__contains__(negh4):
+            neighbours_list.append(negh4)
+            add_to_dictionary(dict,point,negh4)
+    if isValid(negh3, grid):
+        if not visited_list.__contains__(negh3):
+            neighbours_list.append(negh3)
+            add_to_dictionary(dict, point, negh3)
+    if isValid(negh2, grid):
+        if not visited_list.__contains__(negh2):
+            neighbours_list.append(negh2)
+            add_to_dictionary(dict, point, negh2)
+    if isValid(negh1, grid):
+        if not visited_list.__contains__(negh1):
+            neighbours_list.append(negh1)
+            add_to_dictionary(dict, point, negh1)
+    visited_list.append(point)
+
+def add_to_dictionary(dictionary,parent,child):
+    p_l = map(str, parent)
+    c_l = map(str,child)
+    p_l = ','.join(p_l)
+    c_l = ','.join(c_l)
+    dictionary[c_l] = p_l
+
+def depth_first_search(start_point, end_point, graph, dict):
+    neighbours_list = [[]]
+    visited_list = [[]]
+    add_neighbours(start_point,neighbours_list,visited_list,graph,dict)
+    neighbours_list.remove([])
+    visited_list.remove([])
+    while (not visited_list.__contains__(end_point)):
+        print "Point: ", end_point
+        print neighbours_list
+        if len(neighbours_list) == 0:
+            break
+        point = neighbours_list.pop()
+        add_neighbours(point, neighbours_list, visited_list, graph, dict)
+        print visited_list
+
+def draw_hierarchy(dict, point):
+    list = []
+    p_l = map(str, point)
+    p_l = ','.join(p_l)
+    list.append('['+p_l+']')
+    for a in range(len(dict)):
+        try:
+            if list.__contains__('['+dict[p_l]+']'):
+                continue
+            list.append('[' + dict[p_l] + ']')
+            p_l = dict[p_l]
+        except:
+            break
+    return list
+
+def perform_dfs():
+    # The starting location of the player
+    start = (player_object_position[1], player_object_position[0])
+    # The position of the door, or the exit condition
+    goal = (door_object_position[1], door_object_position[0])
+    #position of the key
+    key = (key_object_position[1],key_object_position[0])
+    chest = (chest_object_position[1],chest_object_position[0])
+    #me editing print the solution
+
+    dict = {}
+    depth_first_search(start,key,grid,dict)
+    key_path_list = draw_hierarchy(dict,key)
+    depth_first_search(key, chest, grid, dict)
+    chest_path_list = draw_hierarchy(dict, chest)
+    depth_first_search(chest, goal, grid, dict)
+    goal_path_list = draw_hierarchy(dict, goal)
+    cls = Cls()
+    os.system("cls")
+    print "here is the complete path"
+    print "Player to key: ",
+    show(key_path_list)
+    print ""
+    print "Key to chest: ",
+    show(chest_path_list)
+    print ""
+    print "Chest to door: ",
+    show(goal_path_list)
+def show(l):
+    for a in range(len(l)):
+        print l.pop(),
+###############################################################################
+#end of solution functions here
+###############################################################################
 
 
 ################################################################################
@@ -964,6 +1080,9 @@ def handle_input():
                 # Print the objects and list of commands for the help command.
                 if input_string == "help":
                     help()
+                #user asks for path in case of difficulty
+                elif input_string == "search path":
+                    perform_dfs()
                 # Possible user input for the go <Direction> command.
                 elif input_string == "go forward":
                     go(0, -1)
