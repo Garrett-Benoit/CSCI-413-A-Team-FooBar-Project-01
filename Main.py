@@ -357,13 +357,14 @@ def depth_first_search(start_point, end_point, graph, dict):
     visited_list.remove([])
     #loop until the desired location is not found
     while (not visited_list.__contains__(end_point)):
-        print "Point: ", end_point
-        print neighbours_list
+        #print "Point: ", end_point
+        #print neighbours_list
+
         if len(neighbours_list) == 0:
             break
         point = neighbours_list.pop()
         add_neighbours(point, neighbours_list, visited_list, graph, dict)
-        print visited_list
+        #print visited_list
 
 #main logic of the BFS algorithm
 def breath_first_search(start_point, end_point, graph, dict):
@@ -374,8 +375,8 @@ def breath_first_search(start_point, end_point, graph, dict):
     visited_list.remove([])
     # loop until the desired location is not found
     while (not visited_list.__contains__(end_point)):
-        print "Point: ", end_point
-        print neighbours_list
+        #print "Point: ", end_point
+        #print neighbours_list
         if len(neighbours_list) == 0:
             break
         old_list = neighbours_list
@@ -384,20 +385,20 @@ def breath_first_search(start_point, end_point, graph, dict):
         #here all childs are traversed level by level
         for a in old_list:
             add_neighbours(a, neighbours_list, visited_list, graph, dict)
-        print visited_list
+        #print visited_list
 
 #at the end when the locations are found here they are added to list(stack)
 def draw_hierarchy(dict, point):
     list = []
     p_l = map(str, point)
     p_l = ','.join(p_l)
-    list.append('['+p_l+']')
+    list.append(p_l)
     #using the dictionary the success path is added to the stack
     for a in range(len(dict)):
         try:
-            if list.__contains__('['+dict[p_l]+']'):
+            if list.__contains__(dict[p_l]):
                 continue
-            list.append('[' + dict[p_l] + ']')
+            list.append(dict[p_l])
             p_l = dict[p_l]
         except:
             break
@@ -455,7 +456,9 @@ def perform_search():
 #this function is used to output stuff only
 def show(l):
     for a in range(len(l)):
-        print l.pop(),
+        str = l.pop()
+        str = str.split(",")
+        print '['+str[1]+', '+str[0]+']',
 ###############################################################################
 #end of solution functions here
 ###############################################################################
