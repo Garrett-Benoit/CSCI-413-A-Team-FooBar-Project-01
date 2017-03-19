@@ -297,22 +297,27 @@ def log():
     file.closed
 
 
-##############################################################################
-#functions that generates the solution using DFS
-#############################################################################
+##################################################################################################
+#Functions that generates the solution using Depth First Search(DFS) and Breath First Search(BFS)
+##################################################################################################
+#before adding a point as neighbour it is checked to see the validity
 def isValid(point,grid):
+    #here it checks the out of range and wall check
     if (point[0] > 14) or (point [1] > 14)  or (grid[point[0]][point[1]] == 0):
         return False
     else:
         return True
-
+#add neighbour function to add all the neighbours of the selected point to the list(stack)
 def add_neighbours(point,neighbours_list,visited_list,grid,dict):
+    #returns if the point is null
     if point == [] :
         return
+    #making the neighbour points
     negh1 = [point[0] + 1, point[1]]
     negh2 = [point[0] - 1, point[1]]
     negh3 = [point[0], point[1] + 1]
     negh4 = [point[0], point[1] - 1]
+    #here each neighbours validity is checked before adding to the stack(list)
     if isValid(negh4, grid):
         if not visited_list.__contains__(negh4):
             neighbours_list.append(negh4)
@@ -331,6 +336,8 @@ def add_neighbours(point,neighbours_list,visited_list,grid,dict):
             add_to_dictionary(dict, point, negh1)
     visited_list.append(point)
 
+#a dictionary is being maintained for all the child and parent relations
+#this dictionary is used to print the success path at the end
 def add_to_dictionary(dictionary,parent,child):
     p_l = map(str, parent)
     c_l = map(str,child)
@@ -338,12 +345,17 @@ def add_to_dictionary(dictionary,parent,child):
     c_l = ','.join(c_l)
     dictionary[c_l] = p_l
 
+#main logic of the DFS algorithm is performed here
 def depth_first_search(start_point, end_point, graph, dict):
+    # a list of neighbours is maintained
     neighbours_list = [[]]
+    #a list of visited nodes is maintained
     visited_list = [[]]
+    #add neighbours function used to add neighbours after validation
     add_neighbours(start_point,neighbours_list,visited_list,graph,dict)
     neighbours_list.remove([])
     visited_list.remove([])
+    #loop until the desired location is not found
     while (not visited_list.__contains__(end_point)):
         print "Point: ", end_point
         print neighbours_list
@@ -353,11 +365,34 @@ def depth_first_search(start_point, end_point, graph, dict):
         add_neighbours(point, neighbours_list, visited_list, graph, dict)
         print visited_list
 
+#main logic of the BFS algorithm
+def breath_first_search(start_point, end_point, graph, dict):
+    neighbours_list = [[]]
+    visited_list = [[]]
+    add_neighbours(start_point,neighbours_list,visited_list,graph,dict)
+    neighbours_list.remove([])
+    visited_list.remove([])
+    # loop until the desired location is not found
+    while (not visited_list.__contains__(end_point)):
+        print "Point: ", end_point
+        print neighbours_list
+        if len(neighbours_list) == 0:
+            break
+        old_list = neighbours_list
+        neighbours_list = [[]]
+        neighbours_list.remove([])
+        #here all childs are traversed level by level
+        for a in old_list:
+            add_neighbours(a, neighbours_list, visited_list, graph, dict)
+        print visited_list
+
+#at the end when the locations are found here they are added to list(stack)
 def draw_hierarchy(dict, point):
     list = []
     p_l = map(str, point)
     p_l = ','.join(p_l)
     list.append('['+p_l+']')
+    #using the dictionary the success path is added to the stack
     for a in range(len(dict)):
         try:
             if list.__contains__('['+dict[p_l]+']'):
@@ -368,7 +403,8 @@ def draw_hierarchy(dict, point):
             break
     return list
 
-def perform_dfs():
+#main function which uses both searching algorithms and finds all the paths
+def perform_search():
     # The starting location of the player
     start = (player_object_position[1], player_object_position[0])
     # The position of the door, or the exit condition
@@ -379,15 +415,24 @@ def perform_dfs():
     #me editing print the solution
 
     dict = {}
+    # here is the DFS calling
     depth_first_search(start,key,grid,dict)
     key_path_list = draw_hierarchy(dict,key)
     depth_first_search(key, chest, grid, dict)
     chest_path_list = draw_hierarchy(dict, chest)
     depth_first_search(chest, goal, grid, dict)
     goal_path_list = draw_hierarchy(dict, goal)
-    cls = Cls()
-    os.system("cls")
-    print "here is the complete path"
+
+    dict1 = {}
+    #here is the BFS calling
+    breath_first_search(start, key, grid, dict1)
+    key_path_list1 = draw_hierarchy(dict1, key)
+    breath_first_search(key, chest, grid, dict)
+    chest_path_list1 = draw_hierarchy(dict1, chest)
+    breath_first_search(chest, goal, grid, dict1)
+    goal_path_list1 = draw_hierarchy(dict1, goal)
+
+    print "Here is the complete path using DFS"
     print "Player to key: ",
     show(key_path_list)
     print ""
@@ -396,6 +441,18 @@ def perform_dfs():
     print ""
     print "Chest to door: ",
     show(goal_path_list)
+
+    print ""
+    print "Here is the complete path using BFS"
+    print "Player to key: ",
+    show(key_path_list1)
+    print ""
+    print "Key to chest: ",
+    show(chest_path_list1)
+    print ""
+    print "Chest to door: ",
+    show(goal_path_list1)
+#this function is used to output stuff only
 def show(l):
     for a in range(len(l)):
         print l.pop(),
@@ -1082,7 +1139,7 @@ def handle_input():
                     help()
                 #user asks for path in case of difficulty
                 elif input_string == "search path":
-                    perform_dfs()
+                    perform_search()
                 # Possible user input for the go <Direction> command.
                 elif input_string == "go forward":
                     go(0, -1)
