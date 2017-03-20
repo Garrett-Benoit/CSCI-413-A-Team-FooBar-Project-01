@@ -15,7 +15,6 @@
 
 
 
-
 ################################################################################
 # Imports
 ################################################################################
@@ -28,19 +27,16 @@ from sgc.locals import *
 import random
 import time
 import heapq
-import os
 
-class Cls(object):
-    def __repr__(self):
-        os.system('cls')
-        return ''
+
+
 ################################################################################
 # Initialization
 ################################################################################
 
 cell_margin = 5 # Pre-defined space between cells.
 cell_colors = (255, 255, 255), (0, 0, 0) # RBG values representing cell colors.
-player_object = "P" # Symbol representing the player character.
+player_object = "@" # Symbol representing the player character.
 player_object_color = (255, 255, 255) # Color of the player character.
 player_object_position = [0, 0] # Position of the player character.
 chest_object_closed = "C" # Symbol representing the closed chest.
@@ -53,7 +49,6 @@ key_object_position = [0, 0] # Position of the key.
 door_object = "D" # Symbol representing the door.
 door_object_color = (255, 255, 255) # Color of the door.
 door_object_position = [0, 0] # Position of the door.
-
 # Symbol representing the first chest combination.
 chest_combination_1_object = str(random.randint(0, 9))
 # Color of the chest_combination_1_object.
@@ -141,13 +136,13 @@ def main():
     global chest_combination_2_object
     global chest_combination_3_object
 
-    # Randomly generate the maze using the Depth-first search algorithm.
-    generate_maze_depth_first_search()
-        
-    # Randomly generate the maze using the sidewinder algorithm.
-    #generate_maze_sidewinder()
-
-    screen.fill(cell_colors[1])
+    # Randomly decide which maze generation algorithm to use.
+    if random.randint(0, 1) == 1:
+        # Randomly generate the maze using the Recursive Backtracker algorithm.
+        generate_maze_recursive_backtracker()
+    else:
+        # Randomly generate the maze using the Binary Tree algorithm.
+        generate_maze_binary_tree()
 
     # Create and define the door object.
     door_object = pygame.font.Font(None, object_size).render(
@@ -188,40 +183,6 @@ def main():
 
     # Place the objects on the grid.
     generate_random_object_positions()
-
-
-    # Test data for the A* algorithm implementation
-
-    # Create a test grid, which is a graphical version of our grid
-    test_grid = GridWithWeights(15, 15)
-
-    # Traverse the grid to grab all of the wall locations
-    for row in xrange(len(grid)):
-        for column in xrange(len(grid[0])):
-            if grid[column][row] == 0:
-                wall = (row, column)
-                # Add the wall locations to the graph's list of walls
-                test_grid.walls.append(wall)
-
-
-    # The starting location of the player
-    start = (player_object_position[0], player_object_position[1])
-    # The position of the door, or the exit condition
-    goal = (door_object_position[0], door_object_position[1])
-    #position of the key
-    key = (key_object_position[0],key_object_position[1])
-    chest = (chest_object_position[0],chest_object_position[1])
-
-    came_from, cost_so_far = a_star_search(test_grid, start, goal)
-
-    # the came_from and cost_so_far dictionaries can be used to generate the items along this optimal path
-
-  #  print came_from
-  # print cost_so_far
-    print start
-    print goal
-    print key
-    print chest
 
     # Print out introductory message.
     print_introduction_message()
@@ -274,13 +235,11 @@ def print_input(input):
 
 # Function to print error message for invalid go.
 def print_go_error():
-    print "Output: You try to move but there is a wall blocking your path." \
-          "\nPerhaps a different direction would be a better option."
+    print "Output: Invalid move command..."
 
 # Function to print error message for invalid input.
 def print_input_error():
-    print "Output: Invalid input." \
-          "\nTo see a list of valid input commands, type help."
+    print "Output: Invalid input. Command not recognized..." 
 
 # Function to clear user input from the InputText.
 def clear():
@@ -293,183 +252,17 @@ def log():
     
     # Create the new file and open it in write mode.
     with open(filename, "wb") as file:
-        file.write("Hello, World!")
+        file.write("")
     file.closed
 
-
-##################################################################################################
-#Functions that generates the solution using Depth First Search(DFS) and Breath First Search(BFS)
-##################################################################################################
-#before adding a point as neighbour it is checked to see the validity
-def isValid(point,grid):
-    #here it checks the out of range and wall check
-    if (point[0] > 14) or (point [1] > 14)  or (grid[point[0]][point[1]] == 0):
-        return False
-    else:
-        return True
-#add neighbour function to add all the neighbours of the selected point to the list(stack)
-def add_neighbours(point,neighbours_list,visited_list,grid,dict):
-    #returns if the point is null
-    if point == [] :
-        return
-    #making the neighbour points
-    negh1 = [point[0] + 1, point[1]]
-    negh2 = [point[0] - 1, point[1]]
-    negh3 = [point[0], point[1] + 1]
-    negh4 = [point[0], point[1] - 1]
-    #here each neighbours validity is checked before adding to the stack(list)
-    if isValid(negh4, grid):
-        if not visited_list.__contains__(negh4):
-            neighbours_list.append(negh4)
-            add_to_dictionary(dict,point,negh4)
-    if isValid(negh3, grid):
-        if not visited_list.__contains__(negh3):
-            neighbours_list.append(negh3)
-            add_to_dictionary(dict, point, negh3)
-    if isValid(negh2, grid):
-        if not visited_list.__contains__(negh2):
-            neighbours_list.append(negh2)
-            add_to_dictionary(dict, point, negh2)
-    if isValid(negh1, grid):
-        if not visited_list.__contains__(negh1):
-            neighbours_list.append(negh1)
-            add_to_dictionary(dict, point, negh1)
-    visited_list.append(point)
-
-#a dictionary is being maintained for all the child and parent relations
-#this dictionary is used to print the success path at the end
-def add_to_dictionary(dictionary,parent,child):
-    p_l = map(str, parent)
-    c_l = map(str,child)
-    p_l = ','.join(p_l)
-    c_l = ','.join(c_l)
-    dictionary[c_l] = p_l
-
-#main logic of the DFS algorithm is performed here
-def depth_first_search(start_point, end_point, graph, dict):
-    # a list of neighbours is maintained
-    neighbours_list = [[]]
-    #a list of visited nodes is maintained
-    visited_list = [[]]
-    #add neighbours function used to add neighbours after validation
-    add_neighbours(start_point,neighbours_list,visited_list,graph,dict)
-    neighbours_list.remove([])
-    visited_list.remove([])
-    #loop until the desired location is not found
-    while (not visited_list.__contains__(end_point)):
-        #print "Point: ", end_point
-        #print neighbours_list
-
-        if len(neighbours_list) == 0:
-            break
-        point = neighbours_list.pop()
-        add_neighbours(point, neighbours_list, visited_list, graph, dict)
-        #print visited_list
-
-#main logic of the BFS algorithm
-def breath_first_search(start_point, end_point, graph, dict):
-    neighbours_list = [[]]
-    visited_list = [[]]
-    add_neighbours(start_point,neighbours_list,visited_list,graph,dict)
-    neighbours_list.remove([])
-    visited_list.remove([])
-    # loop until the desired location is not found
-    while (not visited_list.__contains__(end_point)):
-        #print "Point: ", end_point
-        #print neighbours_list
-        if len(neighbours_list) == 0:
-            break
-        old_list = neighbours_list
-        neighbours_list = [[]]
-        neighbours_list.remove([])
-        #here all childs are traversed level by level
-        for a in old_list:
-            add_neighbours(a, neighbours_list, visited_list, graph, dict)
-        #print visited_list
-
-#at the end when the locations are found here they are added to list(stack)
-def draw_hierarchy(dict, point):
-    list = []
-    p_l = map(str, point)
-    p_l = ','.join(p_l)
-    list.append(p_l)
-    #using the dictionary the success path is added to the stack
-    for a in range(len(dict)):
-        try:
-            if list.__contains__(dict[p_l]):
-                continue
-            list.append(dict[p_l])
-            p_l = dict[p_l]
-        except:
-            break
-    return list
-
-#main function which uses both searching algorithms and finds all the paths
-def perform_search():
-    # The starting location of the player
-    start = (player_object_position[1], player_object_position[0])
-    # The position of the door, or the exit condition
-    goal = (door_object_position[1], door_object_position[0])
-    #position of the key
-    key = (key_object_position[1],key_object_position[0])
-    chest = (chest_object_position[1],chest_object_position[0])
-    #me editing print the solution
-
-    dict = {}
-    # here is the DFS calling
-    depth_first_search(start,key,grid,dict)
-    key_path_list = draw_hierarchy(dict,key)
-    depth_first_search(key, chest, grid, dict)
-    chest_path_list = draw_hierarchy(dict, chest)
-    depth_first_search(chest, goal, grid, dict)
-    goal_path_list = draw_hierarchy(dict, goal)
-
-    dict1 = {}
-    #here is the BFS calling
-    breath_first_search(start, key, grid, dict1)
-    key_path_list1 = draw_hierarchy(dict1, key)
-    breath_first_search(key, chest, grid, dict)
-    chest_path_list1 = draw_hierarchy(dict1, chest)
-    breath_first_search(chest, goal, grid, dict1)
-    goal_path_list1 = draw_hierarchy(dict1, goal)
-
-    print "Here is the complete path using DFS"
-    print "Player to key: ",
-    show(key_path_list)
-    print ""
-    print "Key to chest: ",
-    show(chest_path_list)
-    print ""
-    print "Chest to door: ",
-    show(goal_path_list)
-
-    print ""
-    print "Here is the complete path using BFS"
-    print "Player to key: ",
-    show(key_path_list1)
-    print ""
-    print "Key to chest: ",
-    show(chest_path_list1)
-    print ""
-    print "Chest to door: ",
-    show(goal_path_list1)
-#this function is used to output stuff only
-def show(l):
-    for a in range(len(l)):
-        str = l.pop()
-        str = str.split(",")
-        print '['+str[1]+', '+str[0]+']',
-###############################################################################
-#end of solution functions here
-###############################################################################
 
 
 ################################################################################
 # Rendering
 ################################################################################
 
-# Function that generates a random maze using the Depth-first search algorithm.
-def generate_maze_depth_first_search():
+# Function that generates a random maze using the Recursive Backtracker algorithm.
+def generate_maze_recursive_backtracker():
     # Size of the maze.
     maze_width = len(grid) - 1
     maze_height = len(grid) - 1
@@ -550,42 +343,69 @@ def generate_maze_depth_first_search():
             # Pop the top coordinates off the stack.
             coordinates_stack.pop()
 
-# Function that generates a random maze using the sidewinder algorithm.
-def generate_maze_sidewinder():
+# Function that generates a random maze using the Binary Tree algorithm.
+def generate_maze_binary_tree():
     # Size of the maze.
     maze_width = len(grid) - 1
     maze_height = len(grid) - 1
+    
+    y = 1
+    # Iterate through each row of the maze.
+    while y < maze_height + 1:
 
-    # 4 directions in the maze (down, right, up, left)
-    destination_x = [0, 1, 0, -1]
-    destination_y = [-1, 0, 1, 0]
+        x = 1
+        # Iterate through each column of the maze.
+        while x < maze_height + 1:
+            # Set the value of direction randomly to 0 or 1.
+            direction = random.randint(0, 1)
 
-    x = 1
-    # Iterate through each row of the grid.
-    while x < len(grid):  
-        # Variable that stores the beginning of 
-        # the current run to the first cell.
-        run_start = 0
+            # Carve passage North.
+            if direction == 1:
 
-        y = 1
-        # Iterate through each column of the grid.
-        while y < len(grid):
-            if (y > 0) and (x + 1 == len(grid) or random.randint(0,1) == 0):
-                # End current run and carve passage north.
-                cell = run_start + random.randint(0, x - run_start + 1)
-                grid[y][cell] = 1
-                grid[y - 1][cell] = 1
-                run_start = x + 1
-            elif x + 1 < len(grid):
-                # Continue to carve passage east.
+                # Carve out the current position.
                 grid[y][x] = 1
-                grid[y][x + 1] = 1
-            else:
-                print "error"
+                
+                # Carve out the position above.
+                grid[y - 1][x] = 1
+                                
+            # Carve passage West.
+            elif direction == 0:
+                # Carve out the current position.
+                grid[y][x] = 1
+                # Carve out the next position to the left.
+                grid[y][x - 1] = 1
 
-            y = y + 1
+            # Increment x.
+            x = x + 2
 
-        x = x + 1
+        # Increment y.
+        y = y + 2
+
+    # Carve out the first column and row of the maze.
+    i = 1
+    while i < len(grid) - 1:
+        # Carve out first column of the maze.
+        grid[i][1] = 1
+        # Carve out first row of the maze.
+        grid[1][i] = 1
+        i = i + 1
+
+    # Block in the bounds of the maze.
+    for y in range(len(grid)):
+        # Block first column.
+        grid[y][0] = 0
+
+    for x in range(len(grid)):
+        # Block first row.
+        grid[0][x] = 0
+    
+    for y in range(len(grid)):
+        # Block last column.
+        grid[len(grid) - 1][y] = 0
+
+    for x in range(len(grid)):
+        # Block last row.
+        grid[x][len(grid) - 1] = 0
 
 # Function to draw the screen.
 def draw_screen(screen):
@@ -808,115 +628,6 @@ def draw_chest_combination_3_object(chest_combination_3_object, screen):
     screen.blit(chest_combination_3_object, rect)
 
 
-################################################################################
-# Path finding
-################################################################################
-
-
-# Optimal A* algorithm
-
-# SquareGrid class that will be used to make a graph object for the algorithm
-class SquareGrid:
-    # Initialize the parameters
-    def __init__(self, width, height):
-        self.width = width
-        self.height = height
-        self.walls = []
-
-    # in_bounds function
-    def in_bounds(self, id):
-        (x, y) = id
-        return 0 <= x < self.width and 0 <= y < self.height
-
-    # The element is valid if it is not a wall
-    def passable(self, id):
-        return id not in self.walls
-
-    # Find the neighbors, which are the elements surrounding the current element
-    def neighbors(self, id):
-        (x, y) = id
-        results = [(x+1, y), (x, y-1), (x-1, y), (x, y+1)]
-        if (x + y) % 2 == 0: results.reverse() # aesthetics
-        results = filter(self.in_bounds, results)
-        results = filter(self.passable, results)
-        return results
-
-# Subclass of SquareGrid. Used to access the cost function
-class GridWithWeights(SquareGrid, object):
-    def __init__(self, width, height):
-        super(GridWithWeights, self).__init__(width, height)
-        self.weights = {}
-
-    # cost function used to calculate the cost to move from from_node to to_node
-    def cost(self, from_node, to_node):
-        return self.weights.get(to_node, 1)
-
-# Class used for the algorithm implementation
-# associates each item with a priority
-# when returning an item, it picks the one with the lowest number
-class PriorityQueue:
-    def __init__(self):
-        self.elements = []
-
-    def empty(self):
-        return len(self.elements) == 0
-
-    def put(self, item, priority):
-        heapq.heappush(self.elements, (priority, item))
-
-    def get(self):
-        return heapq.heappop(self.elements)[1]
-
-# Function used to
-def heuristic(a, b):
-    (x1, y1) = a
-    (x2, y2) = b
-    return abs(x1 - x2) + abs(y1 - y2)
-
-# A* algorithm
-# parameters are graph: the graph we will search
-# start: the starting location (the location of the character at spawn)
-# goal: the ending location (the location of the door)
-def a_star_search(graph, start, goal):
-    # frontier is an expanding queue that keeps track of the path
-    frontier = PriorityQueue()
-    # initialize frontier
-    frontier.put(start, 0)
-    came_from = {}
-    # dictionary that maps the coordinates to the cost (how many steps it takes)
-    cost_so_far = {}
-    # initialize variables
-    came_from[start] = None
-    cost_so_far[start] = 0
-
-    # loop until the frontier queue is empty
-    while not frontier.empty():
-        # get the current element of the queue
-        current = frontier.get()
-
-        # if the current element is the goal, we are done
-        if current == goal:
-            break
-
-        # iterate through the neighbors in the graph at the current location
-        for next in graph.neighbors(current):
-            # assign the new cost
-            new_cost = cost_so_far[current] + graph.cost(current, next)
-            # if the current element is not in the current dictionary
-            # or the new cost is less than the current cost
-            if next not in cost_so_far or new_cost < cost_so_far[next]:
-                # the cost of the next element is the current cost
-                cost_so_far[next] = new_cost
-                # set the priority to the new cost plus the heuristic
-                # of the goal and next locations
-                priority = new_cost + heuristic(goal, next)
-                # put the next element in the queue
-                frontier.put(next, priority)
-                # set the dictionary element to the current element
-                came_from[next] = current
-
-    # return came_from and cost_so_far
-    return came_from, cost_so_far
 
 ################################################################################
 # Object Placement
@@ -1097,7 +808,7 @@ def position_is_wall(x, y):
 
 # Function that resets the position of the player 
 # and confiscates all gathered items.
-def game_over(): 
+def reset(): 
     # Global variables used to store objective states. 
     global player_grabbed_key
     global player_used_key
@@ -1127,7 +838,7 @@ def game_over():
 ################################################################################
 # Player Input
 ################################################################################
-  
+
 # Function to handle player character movement.
 def handle_input():
     while game_complete == False:
@@ -1140,9 +851,6 @@ def handle_input():
                 # Print the objects and list of commands for the help command.
                 if input_string == "help":
                     help()
-                #user asks for path in case of difficulty
-                elif input_string == "search path":
-                    perform_search()
                 # Possible user input for the go <Direction> command.
                 elif input_string == "go forward":
                     go(0, -1)
@@ -1693,7 +1401,266 @@ def player_next_to_object(x, y, a, b):
     return False
 
 
+################################################################################
+# Path-finding (A* algorithm, Breath-first search, and Depth-first search)
+################################################################################
 
+# Class used to make a graph object for the algorithm.
+class SquareGrid:
+    # Initialize the parameters.
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.walls = []
+
+    # Function to determine if the neighbors are in bounds.
+    def in_bounds(self, id):
+        (x, y) = id
+        return 0 <= x < self.width and 0 <= y < self.height
+
+    # Function to determine if an element is valid.
+    def passable(self, id):
+        return id not in self.walls
+
+    # Function to find the neighbors.
+    def neighbors(self, id):
+        (x, y) = id
+        results = [(x + 1, y), (x, y - 1), (x - 1, y), (x, y + 1)]
+        if (x + y) % 2 == 0: results.reverse()
+        results = filter(self.in_bounds, results)
+        results = filter(self.passable, results)
+        return results
+
+# Subclass used to access the cost function.
+class GridWithWeights(SquareGrid, object):
+    # Function to...
+    def __init__(self, width, height):
+        super(GridWithWeights, self).__init__(width, height)
+        self.weights = {}
+
+    # Function used to calculate the cost to move from from_node to to_node.
+    def cost(self, from_node, to_node):
+        return self.weights.get(to_node, 1)
+
+# Class that associates each item with a priority.
+class PriorityQueue:
+    # Function to...
+    def __init__(self):
+        self.elements = []
+
+    # Function to...
+    def empty(self):
+        return len(self.elements) == 0
+    
+    # Function to...
+    def put(self, item, priority):
+        heapq.heappush(self.elements, (priority, item))
+    
+    # Function to...
+    def get(self):
+        return heapq.heappop(self.elements)[1]
+
+# Function used to..
+def heuristic(a, b):
+    (x1, y1) = a
+    (x2, y2) = b
+    return abs(x1 - x2) + abs(y1 - y2)
+
+# Function that implements the A* algorithm.
+# Parameters: 
+#   1) graph - the graph we will search.
+#   2) start - the starting location (character location at start).
+#   3) goal - the ending location (door location at start).
+def a_star_search(graph, start, goal):
+    # Initialize variables.
+    frontier = PriorityQueue() # Expanding queue that keeps track of the path.
+    came_from = {} # Dictionary that maps the coordinates to the cost.
+    cost_so_far = {} # Dictionary that maps the coordinates to the cost.
+
+    # Set variables.
+    frontier.put(start, 0)
+    came_from[start] = None
+    cost_so_far[start] = 0
+
+    # Loop until the frontier queue is empty.
+    while not frontier.empty():
+        # Get the current element of the queue.
+        current = frontier.get()
+
+        # Break if the current element is the goal.
+        if current == goal:
+            break
+
+        # Iterate through the neighbors in the graph at the current location.
+        for next in graph.neighbors(current):
+            # Assign the new cost.
+            new_cost = cost_so_far[current] + graph.cost(current, next)
+
+            # If the current element is not in the current dictionary
+            # or the new cost is less than the current cost, then...
+            if next not in cost_so_far or new_cost < cost_so_far[next]:
+                # The cost of the next element is the current cost.
+                cost_so_far[next] = new_cost
+                # Set the priority equal to the sum of the new cost and 
+                # the heuristic of the goal and next locations.
+                priority = new_cost + heuristic(goal, next)
+                # Put the next element in the queue.
+                frontier.put(next, priority)
+                # Set the dictionary element to the current element.
+                came_from[next] = current
+
+    # Return came_from and cost_so_far.
+    return came_from, cost_so_far
+
+
+
+# Class used for...
+class Cls(object):
+    def __repr__(self):
+        os.system('cls')
+        return ''
+
+# Function to check the validity of a point before it is added as a neighbor.
+def is_valid(point, grid):
+    # Check if the point of the grid is out of range or is a wall.
+    if (point[0] > 14) or (point [1] > 14)  or (grid[point[0]][point[1]] == 0):
+        return False
+    else:
+        return True
+
+# Function to add all the neighbors of the selected point to the stack (list).
+def add_neighbours(point, neighbours_list, visited_list, grid, dict):
+    # Return if the point is null.
+    if point == []:
+        return
+
+    # Define the neighbor points.
+    neighbor_point_1 = [point[0] + 1, point[1]]
+    neighbor_point_2 = [point[0] - 1, point[1]]
+    neighbor_point_3 = [point[0], point[1] + 1]
+    neighbor_point_4 = [point[0], point[1] - 1]
+
+    # Check the validity of each neighbor and then add them to the stack (list).
+    if is_valid(neighbor_point_4, grid):
+        if not visited_list.__contains__(neighbor_point_4):
+            neighbours_list.append(neighbor_point_4)
+            add_to_dictionary(dict,point,neighbor_point_4)
+    if is_valid(neighbor_point_3, grid):
+        if not visited_list.__contains__(neighbor_point_3):
+            neighbours_list.append(neighbor_point_3)
+            add_to_dictionary(dict, point, neighbor_point_3)
+    if is_valid(neighbor_point_2, grid):
+        if not visited_list.__contains__(neighbor_point_2):
+            neighbours_list.append(neighbor_point_2)
+            add_to_dictionary(dict, point, neighbor_point_2)
+    if is_valid(neighbor_point_1, grid):
+        if not visited_list.__contains__(neighbor_point_1):
+            neighbours_list.append(neighbor_point_1)
+            add_to_dictionary(dict, point, neighbor_point_1)
+    visited_list.append(point)
+
+# Dictionary used to print the success path after it has been generated.
+def add_to_dictionary(dictionary,parent,child):
+    p_l = map(str, parent)
+    c_l = map(str,child)
+    p_l = ','.join(p_l)
+    c_l = ','.join(c_l)
+    dictionary[c_l] = p_l
+
+# Function that implements the main logic of the DFS algorithm.
+def depth_first_search(start_point, end_point, graph, dict):
+    # List of neighbors.
+    neighbours_list = [[]]
+    # List of visited nodes.
+    visited_list = [[]]
+
+    # Add neighbors after they have been validated.
+    add_neighbours(start_point, neighbours_list, visited_list, graph, dict)
+    # Remove...
+    neighbours_list.remove([])
+    # Remove...
+    visited_list.remove([])
+
+    # Loop until the desired location is not found.
+    while (not visited_list.__contains__(end_point)):
+        # Break if the length of neighbors_list is equal to 0.
+        if len(neighbours_list) == 0:
+            break
+        # Set the value of point equal to the top element of the stack.
+        point = neighbours_list.pop()
+        add_neighbours(point, neighbours_list, visited_list, graph, dict)
+
+# Function that contains the main logic of the BFS algorithm.
+def breath_first_search(start_point, end_point, graph, dict):
+    neighbours_list = [[]]
+    visited_list = [[]]
+    add_neighbours(start_point, neighbours_list, visited_list, graph, dict)
+    neighbours_list.remove([])
+    visited_list.remove([])
+
+    # Loop until the desired location is not found.
+    while (not visited_list.__contains__(end_point)):
+        if len(neighbours_list) == 0:
+            break
+        old_list = neighbours_list
+        neighbours_list = [[]]
+        neighbours_list.remove([])
+        # Here, all of the children are traversed level-by-level.
+        for a in old_list:
+            add_neighbours(a, neighbours_list, visited_list, graph, dict)
+
+# Function to add the locations at the end to the list (stack).
+def draw_hierarchy(dict, point):
+    list = []
+    p_l = map(str, point)
+    p_l = ','.join(p_l)
+    list.append(p_l)
+
+    # Using the dictionary the success path is added to the stack.
+    for a in range(len(dict)):
+        try:
+            if list.__contains__(dict[p_l]):
+                continue
+            list.append(dict[p_l])
+            p_l = dict[p_l]
+        except:
+            break
+    return list
+
+# Function that uses both searching algorithms to find all available paths.
+def perform_search():
+    # The starting location of the player.
+    start = (player_object_position[1], player_object_position[0])
+    # The position of the door, or the exit condition.
+    goal = (door_object_position[1], door_object_position[0])
+    # The position of the key.
+    key = (key_object_position[1], key_object_position[0])
+    # The position of the chest.
+    chest = (chest_object_position[1], chest_object_position[0])
+
+    # The DFS calling.
+    dict = {}
+    depth_first_search(start, key, grid, dict)
+    key_path_list = draw_hierarchy(dict, key)
+    depth_first_search(key, chest, grid, dict)
+    chest_path_list = draw_hierarchy(dict, chest)
+    depth_first_search(chest, goal, grid, dict)
+    goal_path_list = draw_hierarchy(dict, goal)
+
+    # The BFS calling.
+    dict1 = {}
+    breath_first_search(start, key, grid, dict1)
+    key_path_list1 = draw_hierarchy(dict1, key)
+    breath_first_search(key, chest, grid, dict)
+    chest_path_list1 = draw_hierarchy(dict1, chest)
+    breath_first_search(chest, goal, grid, dict1)
+    goal_path_list1 = draw_hierarchy(dict1, goal)
+
+
+
+################################################################################
+# Start
+################################################################################
 # Executes the main function.
 if __name__ == "__main__":
     # Create log file.
