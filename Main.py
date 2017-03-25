@@ -182,7 +182,9 @@ def main():
                                      chest_combination_3_object_color)
 
     # Place the objects on the grid.
+    # Comment this and uncomment the other function to test the optimal placement
     generate_random_object_positions()
+    #generate_optimal_object_positions()
 
     # Print out introductory message.
     print_introduction_message()
@@ -633,6 +635,120 @@ def draw_chest_combination_3_object(chest_combination_3_object, screen):
 # Object Placement
 ################################################################################
 
+# Function to generate random positions for the objects on the optimal path
+def generate_optimal_object_positions():
+    global player_object_position
+    global chest_object_position
+    global key_object_position
+    global door_object_position
+    global chest_combination_1_object_position
+    global chest_combination_2_object_position
+    global chest_combination_3_object_position
+
+    # Variable representing the number of objects on the grid.
+    number_of_objects = 0
+
+    while number_of_objects != 1:
+        # Generate a random x and y coordinate for the object position.
+        randomx = random.randint(1, len(grid) - 1)
+        randomy = random.randint(1, len(grid) - 1)
+
+        if not position_is_wall(randomx, randomy) and \
+            not position_is_object(randomx, randomy):
+            # Set the player object position equal to the random x and y values.
+            player_object_position[0] = randomx
+            player_object_position[1] = randomy
+
+            # Add the player object position to the dictionary.
+            object_position_dictionary['player'] = randomx, randomy
+
+            # Increment the number of placed objects.
+            number_of_objects += 1
+
+    while number_of_objects != 2:
+        # Generate a random x and y coordinate for the object position.
+        randomx = random.randint(1, len(grid) - 1)
+        randomy = random.randint(1, len(grid) - 1)
+
+        if not position_is_wall(randomx, randomy) and \
+            not position_is_object(randomx, randomy):
+            # Set the door object position equal to the random x and y values.
+            door_object_position[0] = randomx
+            door_object_position[1] = randomy
+
+            # Add the door object position to the dictionary.
+            object_position_dictionary['door'] = randomx, randomy
+
+            # Increment the number of placed objects.
+            number_of_objects += 1
+
+    # Use the A* Algorithm to generate a list to be used for the rest of the object placement
+    # Create a test grid, which is a graphical version of our grid
+    test_grid = GridWithWeights(15, 15)
+
+    # Traverse the grid to grab all of the wall locations
+    for row in xrange(len(grid)):
+        for column in xrange(len(grid[0])):
+            if grid[column][row] == 0:
+                wall = (row, column)
+                # Add the wall locations to the graph's list of walls
+                test_grid.walls.append(wall)
+
+
+    # The starting location of the player
+    start = (player_object_position[0], player_object_position[1])
+    # The position of the door, or the exit condition
+    goal = (door_object_position[0], door_object_position[1])
+    # Get dictionaries mapping positions using the A* search algorithm
+    came_from, cost_so_far = a_star_search(test_grid, start, goal)
+
+
+    # Loop through cost_so_far until we find coordinates that are not where the player is and also not
+    # where the door is.
+    for coordinates, cost in cost_so_far.iteritems():
+        if cost > 0 and not coordinates == object_position_dictionary['door']:
+            chest_object_position = coordinates
+            object_position_dictionary['chest'] = coordinates
+
+    # Loop through cost_so_far until we find coordinates that are not where the player is and also not
+    # where the door is and also not where the chest is.
+    for coordinates, cost in cost_so_far.iteritems():
+        if cost > 0 and not coordinates == object_position_dictionary['door'] and not \
+                        coordinates == object_position_dictionary['chest']:
+            key_object_position = coordinates
+            object_position_dictionary['key'] = coordinates
+
+    # Loop through cost_so_far until we find coordinates that can be used for the chest combination.
+    for coordinates, cost in cost_so_far.iteritems():
+        if cost > 0 and not coordinates == object_position_dictionary['door'] and not \
+                coordinates == object_position_dictionary['chest'] and not \
+                coordinates == object_position_dictionary['key']:
+            x, y = coordinates
+            chest_combination_1_object_position = (x + 1, y + 1)
+            object_position_dictionary['chest combination 1'] = chest_combination_1_object_position
+
+    # for coordinates, cost in cost_so_far.iteritems():
+    #     if cost > 0 and not coordinates == object_position_dictionary['door'] and not \
+    #             coordinates == object_position_dictionary['chest'] and not \
+    #             coordinates == object_position_dictionary['key']:
+    #         x, y = coordinates
+    #         chest_combination_2_object_position = (x - 2, y - 2)
+    #         object_position_dictionary['chest combination 2'] = chest_combination_2_object_position
+    #
+    # for coordinates, cost in cost_so_far.iteritems():
+    #     if cost > 0 and not coordinates == object_position_dictionary['door'] and not \
+    #             coordinates == object_position_dictionary['chest'] and not \
+    #             coordinates == object_position_dictionary['key']:
+    #         x, y = coordinates
+    #         chest_combination_3_object_position = (x - 1, y - 1)
+    #         object_position_dictionary['chest combination 3'] = chest_combination_3_object_position
+
+
+
+
+
+
+
 # Function to generate a random position for the player character to start at.
 def generate_random_object_positions():
     global player_object_position
@@ -662,7 +778,6 @@ def generate_random_object_positions():
 
             # Increment the number of placed objects.
             number_of_objects += 1
-
 
     while number_of_objects != 2:
         # Generate a random x and y coordinate for the object position.
