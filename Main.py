@@ -210,8 +210,9 @@ def print_introduction_message():
     print "to capture you. If they catch you, they will drag you back to "
     print "where you started and confiscate all of your items. "
     print "The following is a list of available commands. "
-    print "\nCommand List: "
-    print "1. go <forward, right, back, left> <number>"
+    print "\nCommand List: "    
+    print "1. go <forward, up, north, right, east, back, down," \
+    "south, left, west> <number>"
     print "2. grab <key>"
     print "3. open <chest, door>"
     print "4. use <key, marker, 123>"
@@ -225,7 +226,8 @@ def help():
     print "2) Open the chest"
     print "3) Open the door"
     print "\nCommand List: "
-    print "1. go <forward, right, back, left> <number>"
+    print "1. go <forward, up, north, right, east, back, down," \
+    "south, left, west> <number>"
     print "2. grab <key>"
     print "3. open <chest, door>"
     print "4. use <key, marker, 123>"
