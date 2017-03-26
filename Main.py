@@ -75,6 +75,7 @@ player_opened_chest = False
 chest_combination = (chest_combination_1_object + 
                      chest_combination_2_object + 
                      chest_combination_3_object)
+maze_is_valid = False
 game_complete = False
 
 # A 15x15 Grid representing the game object positions.
@@ -134,14 +135,7 @@ def main():
     global chest_combination_1_object
     global chest_combination_2_object
     global chest_combination_3_object
-
-    # Randomly decide which maze generation algorithm to use.
-    if random.randint(0, 1) == 1:
-        # Randomly generate the maze using the Recursive Backtracker algorithm.
-        generate_maze_recursive_backtracker()
-    else:
-        # Randomly generate the maze using the Binary Tree algorithm.
-        generate_maze_binary_tree()
+    global maze_is_valid
 
     # Create and define the door object.
     door_object = pygame.font.Font(None, object_size).render(
@@ -180,11 +174,66 @@ def main():
                                      chest_combination_3_object, False, 
                                      chest_combination_3_object_color)
 
-    # Place the player, door, chest, and key objects randomly on the grid.
-    generate_random_object_positions()
-    # Place the chest combination objects along the optimal path.
-    # Place the enemies near the door.
-    generate_optimal_object_positions()
+    i = 0
+    # Keep generating a random maze until it is valid.
+    while not maze_is_valid:
+        # Generate the maze randomly using the Recursive Backtracker algorithm.
+        # If it fails four times, switch and use the Binary Tree algorithm.
+        if i < 4:
+            # Reset the maze.
+            reset_maze()
+
+            # Generate the maze using the Recursive Backtracker algorithm.
+            generate_maze_recursive_backtracker()
+
+            # Place the player, door, chest, and
+            # key objects randomly on the grid.
+            generate_random_object_positions()
+
+            # Test the validity of the maze.
+            if check_maze_for_validity_player_door() == 0:
+                if check_maze_for_validity_player_key() == 0:
+                    if check_maze_for_validity_player_chest() == 0:
+                        # Place the chest combination objects along the 
+                        # optimal path and the enemies near the door.
+                        generate_optimal_object_positions()
+
+                        # Set the boolean to True and exit 
+                        # the loop. The maze is valid.
+                        maze_is_valid = True
+
+        # Generate the maze randomly using the Binary Tree algorithm.
+        # If it fails four times, switch and use the Recursive Backtracker 
+        # algorithm.
+        elif i < 8:
+            # Reset the maze.
+            reset_maze()
+
+            # Generate the maze using the Binary Tree algorithm.
+            generate_maze_binary_tree()
+
+            # Place the player, door, chest, and
+            # key objects randomly on the grid.
+            generate_random_object_positions()
+
+            # Test the validity of the maze.
+            if check_maze_for_validity_player_door() == 0:
+                if check_maze_for_validity_player_key() == 0:
+                    if check_maze_for_validity_player_chest() == 0:
+                        # Place the chest combination objects along the 
+                        # optimal path and the enemies near the door.
+                        generate_optimal_object_positions()
+
+                        # Set the boolean to True and exit 
+                        # the loop. The maze is valid.
+                        maze_is_valid = True
+        else:
+            # If the maze cannot be generated within 8 
+            # tries, set i equal to 0 and start again.
+            i = 0
+
+        # Increment i.
+        i = i + 1
 
     # Print out introduction message.
     print_introduction_message()
@@ -211,7 +260,7 @@ def print_introduction_message():
     print "where you started and confiscate all of your items. "
     print "The following is a list of available commands. "
     print "\nCommand List: "    
-    print "1. go <forward, up, north, right, east, back, down," \
+    print "1. go <forward, up, north, right, east, back, down, " \
     "south, left, west> <number>"
     print "2. grab <key>"
     print "3. open <chest, door>"
@@ -226,7 +275,7 @@ def help():
     print "2) Open the chest"
     print "3) Open the door"
     print "\nCommand List: "
-    print "1. go <forward, up, north, right, east, back, down," \
+    print "1. go <forward, up, north, right, east, back, down, " \
     "south, left, west> <number>"
     print "2. grab <key>"
     print "3. open <chest, door>"
@@ -410,6 +459,126 @@ def generate_maze_binary_tree():
     for x in range(len(grid)):
         # Block last row.
         grid[x][len(grid) - 1] = 0
+
+# Function to reset the maze back to its original state.
+def reset_maze():
+    global grid
+
+    # Reset the grid.
+    grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+
+# Function to test the maze for validity by checking 
+# the path from the player to the door object.
+def check_maze_for_validity_player_door():
+    # Create a test grid, which will be used in the A* algorithm 
+    # to test the maze to ensure that the player can reach the door.
+    test_grid = GridWithWeights(len(grid), len(grid))
+
+    # Traverse the grid to grab all of the wall locations.
+    for row in xrange(len(grid)):
+        for column in xrange(len(grid[0])):
+            if grid[column][row] == 0:
+                wall = (row, column)
+                # Add the wall locations to the graph's list of walls.
+                test_grid.walls.append(wall)
+
+    # The current position of the player.
+    start = (player_object_position[0], player_object_position[1])
+    # The current position of the door.
+    goal = (door_object_position[0], door_object_position[1])
+    # Get dictionaries mapping positions using the A* search algorithm.
+    came_from, cost_so_far = a_star_search(test_grid, start, goal)
+
+    # Check all possible coordinates to see if the door object 
+    # is in the optimal path. If it is, then the maze is valid.
+    for coordinates in came_from.iteritems():
+        if ((coordinates[0][0], coordinates[0][1]) == 
+            (door_object_position[0], door_object_position[1])):
+            # Return 0, the maze is valid.
+            return 0
+
+    # Return 1, the maze is invalid.
+    return 1
+
+# Function to test the maze for validity by checking 
+# the path from the player to the key object.
+def check_maze_for_validity_player_key():
+    # Create a test grid, which will be used in the A* algorithm 
+    # to test the maze to ensure that the player can reach the key.
+    test_grid = GridWithWeights(len(grid), len(grid))
+
+    # Traverse the grid to grab all of the wall locations.
+    for row in xrange(len(grid)):
+        for column in xrange(len(grid[0])):
+            if grid[column][row] == 0:
+                wall = (row, column)
+                # Add the wall locations to the graph's list of walls.
+                test_grid.walls.append(wall)
+
+    # The current position of the player.
+    start = (player_object_position[0], player_object_position[1])
+    # The current position of the key.
+    goal = (key_object_position[0], key_object_position[1])
+    # Get dictionaries mapping positions using the A* search algorithm.
+    came_from, cost_so_far = a_star_search(test_grid, start, goal)
+
+    # Check all possible coordinates to see if the key object 
+    # is in the optimal path. If it is, then the maze is valid.
+    for coordinates in came_from.iteritems():
+        if ((coordinates[0][0], coordinates[0][1]) == 
+            (key_object_position[0], key_object_position[1])):
+            # Return 0, the maze is valid.
+            return 0
+
+    # Return 1, the maze is invalid.
+    return 1
+
+# Function to test the maze for validity by checking 
+# the path from the player to the chest object.
+def check_maze_for_validity_player_chest():
+    # Create a test grid, which will be used in the A* algorithm 
+    # to test the maze to ensure that the player can reach the chest.
+    test_grid = GridWithWeights(len(grid), len(grid))
+
+    # Traverse the grid to grab all of the wall locations.
+    for row in xrange(len(grid)):
+        for column in xrange(len(grid[0])):
+            if grid[column][row] == 0:
+                wall = (row, column)
+                # Add the wall locations to the graph's list of walls.
+                test_grid.walls.append(wall)
+
+    # The current position of the player.
+    start = (player_object_position[0], player_object_position[1])
+    # The current position of the chest.
+    goal = (chest_object_position[0], chest_object_position[1])
+    # Get dictionaries mapping positions using the A* search algorithm.
+    came_from, cost_so_far = a_star_search(test_grid, start, goal)
+
+    # Check all possible coordinates to see if the chest object 
+    # is in the optimal path. If it is, then the maze is valid.
+    for coordinates in came_from.iteritems():
+        if ((coordinates[0][0], coordinates[0][1]) == 
+            (chest_object_position[0], chest_object_position[1])):
+            # Return 0, the maze is valid.
+            return 0
+
+    # Return 1, the maze is invalid.
+    return 1
 
 # Function to draw the screen.
 def draw_screen(screen):
@@ -749,9 +918,9 @@ def generate_optimal_object_positions():
     # Store all possible coordinates into the optimal_path_coordinates_list.
     for coordinates, cost in cost_so_far.iteritems():
         if cost > 0 and not position_is_object(coordinates[0], coordinates[1]):
-             optimal_path_coordinates_list.append(coordinates)
+            optimal_path_coordinates_list.append(coordinates)
 
-    while number_of_objects != 1:    
+    while number_of_objects != 1:
         # Generate a random x and y coordinate for the object position.
         temp = random.randint(0, len(optimal_path_coordinates_list) - 1)
         x = optimal_path_coordinates_list[temp][0]
@@ -1182,6 +1351,7 @@ def handle_input():
 
 # Function to move the player character object through the maze.
 def go(dx, dy):
+
     # Set x and y equal to the current player character object position.
     x = player_object_position[0]
     y = player_object_position[1]
