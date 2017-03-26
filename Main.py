@@ -33,6 +33,11 @@ import heapq
 # Initialization
 ################################################################################
 
+# Create a string equal to the current time.
+filename = time.strftime("Log_%m-%d-%y_%H-%M-%S.txt")
+# Declare a file variable for global use.
+file = None
+
 cell_margin = 5 # Pre-defined space between cells.
 cell_colors = (255, 255, 255), (0, 0, 0) # RBG values representing cell colors.
 player_object = "@" # Symbol representing the player character.
@@ -298,15 +303,56 @@ def print_input_error():
 def clear():
     input_box.text = ""
 
-# Function to create a new log file with the date as the filename.
-def log():
-    # Create a string equal to the current time.
-    filename = time.strftime("Log_%m-%d-%y_%H-%M-%S.txt")
-    
-    # Create the new file and open it in write mode.
-    with open(filename, "wb") as file:
-        file.write("")
-    file.closed
+
+
+################################################################################
+# File Input/Output
+################################################################################
+
+# Function to manage the number of log files in the directory.
+def manage_log_files():
+    # List to store all filenames in the current working directory.
+    general_filenames_list = []
+    # List to store the filenames for log files.
+    log_filenames_list = []
+
+    # Get the list of all directory filenames.
+    general_filenames_list = os.listdir(os.getcwd())
+
+    # Iterate through the general_filenames_list and store each
+    # log file's filename into the log_filenames_list.
+    for filename in general_filenames_list:
+        if filename[:4] == "Log_":
+            log_filenames_list.append(filename)
+
+    # Variable to store the number of log files.
+    number_of_log_files = len(log_filenames_list)
+
+    # Delete all except the 3 most recent log files.
+    if number_of_log_files > 2:
+        for i in range(number_of_log_files - 2):
+            # Remove the log file from the hard drive.
+            os.remove(log_filenames_list[i])
+
+# Function to open the log file.
+def open_log_file():
+    global file
+    global filename
+
+    # Open the log file in write mode.
+    file = open(filename, "wb")
+
+# Function to write to the log file.
+def write_to_log_file(string):
+    global file
+
+    file.write(string)
+
+# Function to close the opened log file.
+def close_log_file():
+    global file
+
+    file.close()
 
 
 
@@ -1958,9 +2004,13 @@ def perform_search():
 ################################################################################
 # Executes the main function.
 if __name__ == "__main__":
-    # Create log file.
-    log()
+    # Manage the log files.
+    manage_log_files()
+    # Open the log file.
+    open_log_file()
     # Call function main.
     main()
+    # Close the log file.
+    close_log_file()
     # Exit the console window.
     pygame.quit()
