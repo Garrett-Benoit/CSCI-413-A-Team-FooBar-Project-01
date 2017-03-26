@@ -973,13 +973,15 @@ def handle_input():
                 if input_string == "help":
                     help()
                 # Possible user input for the go <Direction> command.
-                elif input_string == "go forward":
+                elif input_string == "go forward" or input_string == "go up" \
+                or input_string == "go north":
                     go(0, -1)
-                elif input_string == "go right":
+                elif input_string == "go right" or input_string == "go east":
                     go(1, 0)
-                elif input_string == "go back":
+                elif input_string == "go back" or input_string == "go down" \
+                or input_string == "go south":
                     go(0, 1)
-                elif input_string == "go left":
+                elif input_string == "go left" or input_string == "go west":
                     go(-1, 0)
                 elif input_string == "go chest":
                     print "Output: A chest is for opening, not going." \
