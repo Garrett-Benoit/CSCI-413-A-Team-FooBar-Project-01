@@ -53,6 +53,12 @@ key_object_position = [0, 0] # Position of the key.
 door_object = "D" # Symbol representing the door.
 door_object_color = (255, 255, 255) # Color of the door.
 door_object_position = [0, 0] # Position of the door.
+simple_enemy_object = "E" # Symbol representing the simple enemy.
+simple_enemy_object_color = (255, 0, 0) # Color of the simple enemy.
+simple_enemy_object_position = [0, 0] # Position of the simple enemy.
+smart_enemy_object = "S" # Symbol representing the smart enemy.
+smart_enemy_object_color = (255, 0, 0) # Color of the smart enemy.
+smart_enemy_object_position = [0, 0] # Position of the smart enemy.
 # Symbol representing the first chest combination.
 chest_combination_1_object = str(random.randint(0, 9))
 # Color of the chest_combination_1_object.
@@ -81,6 +87,7 @@ chest_combination = (chest_combination_1_object +
                      chest_combination_2_object + 
                      chest_combination_3_object)
 maze_is_valid = False
+enemy_grabbed_player = False
 game_complete = False
 
 # A 15x15 Grid representing the game object positions.
@@ -137,6 +144,8 @@ def main():
     global chest_object_opened
     global key_object
     global door_object
+    global simple_enemy_object
+    global smart_enemy_object
     global chest_combination_1_object
     global chest_combination_2_object
     global chest_combination_3_object
@@ -163,6 +172,16 @@ def main():
     # Create and define the player object.
     player_object = pygame.font.Font(None, object_size).render(
                                      player_object, False, player_object_color)
+
+    # Create and define the simple enemy object.
+    simple_enemy_object = pygame.font.Font(None, object_size).render(
+                                     simple_enemy_object, False, 
+                                     simple_enemy_object_color)
+
+    # Create and define the smart enemy object.
+    smart_enemy_object = pygame.font.Font(None, object_size).render(
+                                     smart_enemy_object, False, 
+                                     smart_enemy_object_color)
 
     # Create and define the chest_combination_1 object.
     chest_combination_1_object = pygame.font.Font(None, object_size).render(
@@ -671,6 +690,16 @@ def draw_screen(screen):
     if is_object_visible(key_object_position[0], key_object_position[1]):
         if not player_grabbed_key:
             draw_key_object(key_object, screen)
+
+    # Call the function to draw the simple enemy object if visible.
+    if is_object_visible(simple_enemy_object_position[0], 
+    simple_enemy_object_position[1]):
+        draw_simple_enemy_object(simple_enemy_object, screen)
+
+    # Call the function to draw the smart enemy object if visible.
+    if is_object_visible(smart_enemy_object_position[0], 
+    smart_enemy_object_position[1]):
+        draw_smart_enemy_object(smart_enemy_object, screen)
             
     # Call the function to draw the chest_combination_1 object if visible.
     if is_object_visible(chest_combination_1_object_position[0], \
@@ -819,6 +848,24 @@ def draw_player_object(player_object, screen):
     # Draw the player object image.
     screen.blit(player_object, rect)
 
+# Function to draw the simple enemy object to the console window.
+def draw_simple_enemy_object(simple_enemy_object, screen):
+    # Return the size and offset of the simple enemy object.
+    rect = simple_enemy_object.get_rect()
+    # Receive the center of the simple enemy object.
+    rect.center = get_cell_rect(simple_enemy_object_position, screen).center
+    # Draw the simple enemy object image.
+    screen.blit(simple_enemy_object, rect)
+
+# Function to draw the smart enemy object to the console window.
+def draw_smart_enemy_object(smart_enemy_object, screen):
+    # Return the size and offset of the smart enemy object.
+    rect = smart_enemy_object.get_rect()
+    # Receive the center of the smart enemy object.
+    rect.center = get_cell_rect(smart_enemy_object_position, screen).center
+    # Draw the smart enemy object image.
+    screen.blit(smart_enemy_object, rect)
+
 # Function to draw the chest combination 1 object to the console window.
 def draw_chest_combination_1_object(chest_combination_1_object, screen):
     # Return the size and offset of the chest_combination_1 object.
@@ -852,12 +899,15 @@ def draw_chest_combination_3_object(chest_combination_3_object, screen):
 # Object Placement
 ################################################################################
 
-# Function to generate a random position for the player character to start at.
+# Function to generate random start positions for
+# the player, chest, key, door, and enemy objects.
 def generate_random_object_positions():
     global player_object_position
     global chest_object_position
     global key_object_position
     global door_object_position
+    global simple_enemy_object_position
+    global smart_enemy_object_position
 
     # Variable representing the number of objects on the grid.
     number_of_objects = 0
@@ -926,6 +976,42 @@ def generate_random_object_positions():
 
             # Add the door object position to the dictionary.
             object_position_dictionary['door'] = randomx, randomy
+
+            # Increment the number of placed objects.
+            number_of_objects += 1
+
+    while number_of_objects != 5:
+        # Generate a random x and y coordinate for the object position.
+        randomx = random.randint(1, len(grid) - 1)
+        randomy = random.randint(1, len(grid) - 1)
+
+        if not position_is_wall(randomx, randomy) and \
+            not position_is_object(randomx, randomy):
+            # Set the simple enemy object position 
+            # equal to the random x and y values.
+            simple_enemy_object_position[0] = randomx 
+            simple_enemy_object_position[1] = randomy
+
+            # Add the simple enemy object position to the dictionary.
+            object_position_dictionary['simple enemy'] = randomx, randomy
+
+            # Increment the number of placed objects.
+            number_of_objects += 1
+
+    while number_of_objects != 6:
+        # Generate a random x and y coordinate for the object position.
+        randomx = random.randint(1, len(grid) - 1)
+        randomy = random.randint(1, len(grid) - 1)
+
+        if not position_is_wall(randomx, randomy) and \
+            not position_is_object(randomx, randomy):
+            # Set the smart enemy object position 
+            # equal to the random x and y values.
+            smart_enemy_object_position[0] = randomx 
+            smart_enemy_object_position[1] = randomy
+
+            # Add the smart enemy object position to the dictionary.
+            object_position_dictionary['smart enemy'] = randomx, randomy
 
             # Increment the number of placed objects.
             number_of_objects += 1
@@ -1121,6 +1207,14 @@ def position_is_object(x, y):
     # Return True for the door object.
     elif x == door_object_position[0] and y == door_object_position[1]:
         return True
+    # Return True for the simple enemy object.
+    elif x == simple_enemy_object_position[0] and \
+        y == simple_enemy_object_position[1]:
+        return True
+    # Return True for the smart enemy object.
+    elif x == smart_enemy_object_position[0] and \
+        y == smart_enemy_object_position[1]:
+        return True
     # Return True for the first chest combination object.
     elif x == chest_combination_1_object_position[0] and \
         y == chest_combination_1_object_position[1]:
@@ -1146,7 +1240,7 @@ def position_is_wall(x, y):
 
 # Function that resets the position of the player 
 # and confiscates all gathered items.
-def reset(): 
+def reset_object_positions_and_state_conditions():
     # Global variables used to store objective states. 
     global player_grabbed_key
     global player_used_key
@@ -1156,6 +1250,8 @@ def reset():
     # Global variables used to store object positions.  
     global player_object_position
     global key_object_position
+    global simple_enemy_object_position
+    global smart_enemy_object_position
 
     # Reset all objective states.
     player_grabbed_key = False
@@ -1170,6 +1266,12 @@ def reset():
 
     key_object_position = [object_position_dictionary['key'][0],
     object_position_dictionary['key'][1]]
+
+    simple_enemy_object_position = [object_position_dictionary['simple enemy'][0],
+    object_position_dictionary['simple enemy'][1]]
+
+    smart_enemy_object_position = [object_position_dictionary['smart enemy'][0],
+    object_position_dictionary['smart enemy'][1]]
 
 
 
@@ -1353,6 +1455,10 @@ def handle_input():
                 # was pressed and if there are no objects blocking the path.
                 elif key == K_LEFT:
                     go(-1, 0)
+
+                # Call the function to move the enemies.
+                move_simple_enemy()
+                move_smart_enemy()
             # Quit the game if the user closes the window.
             elif event.type == QUIT:
                 return
@@ -1373,6 +1479,8 @@ def handle_input():
             draw_opened_chest_object(chest_object_opened, screen)
         draw_key_object(key_object, screen)
         draw_door_object(door_object, screen)
+        draw_simple_enemy_object(simple_enemy_object, screen)
+        draw_smart_enemy_object(smart_enemy_object, screen)
         draw_chest_combination_1_object(chest_combination_1_object, screen)
         draw_chest_combination_2_object(chest_combination_2_object, screen)
         draw_chest_combination_3_object(chest_combination_3_object, screen)
@@ -1397,24 +1505,49 @@ def handle_input():
 
 # Function to move the player character object through the maze.
 def go(dx, dy):
+    global enemy_grabbed_player
 
-    # Set x and y equal to the current player character object position.
-    x = player_object_position[0]
-    y = player_object_position[1]
-
-    # Set nx and ny equal to the new player character object position.
-    nx = x + dx
-    ny = y + dy
-
-    # Change the player character object position if the new position 
-    # is in the game window and the cell is not pre-occupied.
-    if (nx > 0 and nx < len(grid) and ny > 0 and ny < len(grid) and \
-        grid[ny][nx]):
-            player_object_position[0] = nx
-            player_object_position[1] = ny
+    # Determine if the player position matches the simple enemy position.
+    if player_object_position == simple_enemy_object_position:
+        enemy_grabbed_player = True
     else:
-        # Print out an error for the invalid move.
-        print_go_error()
+        enemy_grabbed_player = False
+
+    # Reset the game if the player has been caught.
+    if enemy_grabbed_player:
+        # Call the function to reset the game if the player character 
+        # is in the same coordinate as either enemy.
+        if player_object_position == simple_enemy_object_position \
+            or player_object_position == smart_enemy_object_position:
+            # Print out an message informing the user that they lost.
+            print "Output: The enemy grabbed you! Your stuff was confiscated "
+            print "\tand you were returned to where you started. "
+            print "\tYou will have to try your luck again...\n"
+            # Reset the locations of all objects.
+            reset_game()
+    # Continue if the player has not been caught yet.
+    else:
+        # Set x and y equal to the current player character object position.
+        x = player_object_position[0]
+        y = player_object_position[1]
+
+        # Set nx and ny equal to the new player character object position.
+        nx = x + dx
+        ny = y + dy
+
+        # Change the player character object position if the new position 
+        # is in the game window and the cell is not pre-occupied.
+        if (nx > 0 and nx < len(grid) and ny > 0 and ny < len(grid) and \
+            grid[ny][nx]):
+                player_object_position[0] = nx
+                player_object_position[1] = ny
+        else:
+            # Print out an error for the invalid move.
+            print_go_error()
+
+        # Call the function to move the enemies.
+        move_simple_enemy()
+        move_smart_enemy()
 
 # Function to move the player character object through 
 # the maze for the number of times they specify.
@@ -1519,6 +1652,10 @@ def use_marker():
     if grid[y + 1][x + 1] == 0:
         marked_tile_list.append((x + 1, y + 1))
 
+    # Call the function to move the enemies.
+    move_simple_enemy()
+    move_smart_enemy()
+
 # Function to grab the key.
 def grab_key():
     # Needed to change their properties.
@@ -1547,6 +1684,10 @@ def grab_key():
         # Inform the player that the key is not within their reach.
         print "Output: The key is not within reach..." \
               "\nTry looking for something key-shaped."
+
+    # Call the function to move the enemies.
+    move_simple_enemy()
+    move_smart_enemy()
 
 # Function to unlock the chest.
 def unlock_chest(user_input_combination):    
@@ -1581,6 +1722,10 @@ def unlock_chest(user_input_combination):
         # Inform the player that the chest is not within their reach.
         print "Output: The chest is not within reach..." \
               "\nTry looking for something chest-shaped."
+
+    # Call the function to move the enemies.
+    move_simple_enemy()
+    move_smart_enemy()
 
 # Function to open the chest.
 def open_chest():
@@ -1619,6 +1764,10 @@ def open_chest():
         print "Output: The chest is not within reach..." \
               "\nTry looking for something chest-shaped."
 
+    # Call the function to move the enemies.
+    move_simple_enemy()
+    move_smart_enemy()
+
 # Function to use the key.
 def use_key():
     # Needed to change their properties.
@@ -1652,6 +1801,10 @@ def use_key():
         # Inform the player that the door is not within their reach.
         print "Output: The door is not within reach..." \
               "\nTry looking for something door-shaped."
+
+    # Call the function to move the enemies.
+    move_simple_enemy()
+    move_smart_enemy()
 
 # Function to open the door.
 def open_door():
@@ -1707,6 +1860,10 @@ def open_door():
         print "Output: The door is not within reach..." \
               "\nTry looking for something door-shaped."
 
+    # Call the function to move the enemies.
+    move_simple_enemy()
+    move_smart_enemy()
+
 # Function that returns true if the player character 
 # object is located next to another object.
 def player_next_to_object(x, y, a, b):
@@ -1740,6 +1897,217 @@ def player_next_to_object(x, y, a, b):
     
     # Return False if the player is not located directly next to an object.
     return False
+
+ 
+
+################################################################################
+# Enemies
+################################################################################
+
+# Function to move the simple enemy object in a random direction.
+def move_simple_enemy():    
+    global simple_enemy_object_position
+    global enemy_grabbed_player
+    
+    # Determine if the player position matches the simple enemy position.
+    if player_object_position == simple_enemy_object_position:
+        enemy_grabbed_player = True
+    else:
+        enemy_grabbed_player = False
+
+    # Reset the game if the player has been caught.
+    if enemy_grabbed_player:
+        # Call the function to reset the game if the player character 
+        # is in the same coordinate as either enemy.
+        if player_object_position == simple_enemy_object_position \
+            or player_object_position == smart_enemy_object_position:
+            # Print out an message informing the user that they lost.
+            print "Output: The enemy grabbed you! Your stuff was confiscated "
+            print "\tand you were returned to where you started. "
+            print "\tYou will have to try your luck again...\n"
+            # Reset the locations of all objects and state conditions.
+            reset_object_positions_and_state_conditions()
+    # Continue if the player has not been caught yet.
+    else:
+        # Set x and y equal to the simple enemy object position.
+        x = simple_enemy_object_position[0]
+        y = simple_enemy_object_position[1]
+
+        direction = random.randint(1, 4)
+
+        # Set nx and ny equal to the new simple enemy object position.
+        if direction == 1:
+            # Move the simple enemy object position one coordinate North.
+            nx = x
+            ny = y - 1
+        elif direction == 2:
+            # Move the simple enemy object position one coordinate East.
+            nx = x + 1
+            ny = y
+        elif direction == 3:
+            # Move the simple enemy object position one coordinate South.
+            nx = x
+            ny = y + 1
+        elif direction == 4:
+            # Move the simple enemy object position one coordinate West.
+            nx = x - 1
+            ny = y
+
+        # Change the simple enemy object position if the new position 
+        # is in the game window and the cell is not pre-occupied.
+        if (nx > 0 and nx < len(grid) and ny > 0 and ny < len(grid) and \
+            grid[ny][nx]):
+                simple_enemy_object_position[0] = nx
+                simple_enemy_object_position[1] = ny
+
+# Function to move the smart enemy in a direction towards the player.
+def move_smart_enemy():
+    global smart_enemy_object_position
+    global enemy_grabbed_player
+        
+    # Determine if the player position matches the simple enemy position.
+    if player_object_position == smart_enemy_object_position:
+        enemy_grabbed_player = True
+    else:
+        enemy_grabbed_player = False
+
+    # Reset the game if the player has been caught.
+    if enemy_grabbed_player:
+        # Call the function to reset the game if the player character 
+        # is in the same coordinate as either enemy.
+        if player_object_position == simple_enemy_object_position \
+            or player_object_position == smart_enemy_object_position:
+            # Print out an message informing the user that they lost.
+            print "Output: The enemy grabbed you! Your stuff was confiscated "
+            print "\tand you were returned to where you started. "
+            print "\tYou will have to try your luck again...\n"
+            # Reset the locations of all objects and state conditions.
+            reset_object_positions_and_state_conditions()
+    # Continue if the player has not been caught yet.
+    else:
+        # Create a test grid to use with the A* algorithm.
+        test_grid = GridWithWeights(15, 15)
+
+        # Traverse the grid to grab all of the wall locations.
+        for row in xrange(len(grid)):
+            for column in xrange(len(grid[0])):
+                if grid[column][row] == 0:
+                    wall = (row, column)
+                    # Add the wall locations to the graph's list of walls.
+                    test_grid.walls.append(wall)
+
+        # The location of the smart enemy.
+        start = (smart_enemy_object_position[0], smart_enemy_object_position[1])
+        # The location of the player.
+        goal = (player_object_position[0], player_object_position[1])
+
+        # Get dictionaries mapping positions using the A* search algorithm.
+        came_from, cost_so_far = a_star_search(test_grid, start, goal)
+
+        # Loop through cost_so_far until we find the next position to go to.
+        for coordinates, cost in cost_so_far.iteritems():
+            if cost == 1:
+                nx, ny = coordinates
+                break
+
+        #print cost_so_far
+        
+        '''# The current location of the smart enemy.
+        start = (smart_enemy_object_position[0], smart_enemy_object_position[1])
+        # The current location of the player.
+        goal = (player_object_position[0], player_object_position[1])
+
+        # The DFS calling.
+        dict = {}
+        depth_first_search(start, goal, grid, dict)
+        goal_path_list = draw_hierarchy(dict, goal)
+
+        # The BFS calling.
+        dict1 = {}
+        breath_first_search(start, goal, grid, dict1)
+        goal_path_list1 = draw_hierarchy(dict1, goal)
+
+        if len(goal_path_list) == 1:
+            next_coordinates = goal_path_list[0]
+        else:
+            next_coordinates = goal_path_list[-2]'''
+
+
+
+        # Change the simple enemy object position if the new position 
+        # is in the game window and the cell is not pre-occupied.
+        if (nx > 0 and nx < len(grid) and ny > 0 and ny < len(grid) and \
+            grid[ny][nx]):
+                smart_enemy_object_position[0] = nx
+                smart_enemy_object_position[1] = ny
+
+        '''# Variable that store the enemy location.
+        smart_enemy_location = (smart_enemy_object_position[0], 
+                                  smart_enemy_object_position[1])
+        # Variable that store the current location.
+        player_location = (player_object_position[0], 
+                                   player_object_position[1])
+
+        # Call the a_star_search algorithm to get the next position to move to.
+        test_grid = GridWithWeights(15, 15) # Test grid.
+
+        # Traverse the grid to grab all of the wall locations
+        for row in xrange(len(grid)):
+            for column in xrange(len(grid[0])):
+                if grid[column][row] == 0:
+                    wall = (row, column)
+                    # Add the wall locations to the graph's list of walls
+                    test_grid.walls.append(wall)
+
+        # The location of the smart enemy.
+        start = (smart_enemy_object_position[0], smart_enemy_object_position[1])
+        # The position of the player.
+        goal = (player_object_position[0], player_object_position[1])
+
+        came_from, cost_so_far = a_star_search(test_grid, start, goal)
+
+        # Execute search algorithm 1.
+        A1, cost_so_far = a_star_search(grid, smart_enemy_location, player_location)
+
+        # Execute search algorithm 2.
+        A2, cost_so_far = a_star_search(grid, smart_enemy_location, player_location)
+
+        # Execute search algorithm 3.
+        A3, cost_so_far = a_star_search(grid, smart_enemy_location, player_location)
+
+        # Compare the 3 search algorithms for equality.
+        if A1 == A2:
+            if A2 == A3:
+                # All search algorithms match.
+                smart_enemy_object_position[0] = A1[0]
+                smart_enemy_object_position[1] = A1[1]
+            elif A1 != A3:
+                # A3 does not match.
+                smart_enemy_object_position[0] = A1[0]
+                smart_enemy_object_position[1] = A1[1]
+            else:
+                # Logic error, re-spawn enemy.
+                respawn_smart_enemy()
+        elif A1 == A3:
+            # A2 does not match.
+            smart_enemy_object_position[0] = A1[0]
+            smart_enemy_object_position[1] = A1[1]
+        elif A2 == A3:
+            # A1 does not match.
+            smart_enemy_object_position[0] = A2[0]
+            smart_enemy_object_position[1] = A2[1]
+        else:
+            # No two algorithms match, re-spawn enemy.
+            respawn_smart_enemy()'''
+
+# Function to reset the smart enemy object position.
+def respawn_smart_enemy():
+    global smart_enemy_object_position
+
+    # Reset the smart enemy object's position.
+    smart_enemy_object_position = [object_position_dictionary['smart enemy'][0],
+    object_position_dictionary['smart enemy'][1]]
+
 
 
 ################################################################################
