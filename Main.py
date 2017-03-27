@@ -19,6 +19,7 @@
 ################################################################################
 
 import os
+import sys
 import pygame
 from pygame.locals import *
 import sgc
@@ -87,7 +88,6 @@ chest_combination = (chest_combination_1_object +
                      chest_combination_2_object + 
                      chest_combination_3_object)
 maze_is_valid = False
-enemy_grabbed_player = False
 game_complete = False
 
 # A 15x15 Grid representing the game object positions.
@@ -197,19 +197,34 @@ def main():
     chest_combination_3_object = pygame.font.Font(None, object_size).render(
                                      chest_combination_3_object, False, 
                                      chest_combination_3_object_color)
-
-    i = 0
+    
+    # Variable used to keep track of the number of attempts.
+    current_number_of_attempts = 0
+    # Variable used to keep track of the number of switches.
+    number_of_switches = 0
+    # Variable used to keep track of the number iterations.
+    total_number_of_attempts = 0
     # Keep generating a random maze until it is valid.
     while not maze_is_valid:
+        #print current_number_of_attempts, number_of_switches, 
+        #total_number_of_attempts
+
         # Generate the maze randomly using the Recursive Backtracker algorithm.
         # If it fails four times, switch and use the Binary Tree algorithm.
-        if i < 4:
+        if current_number_of_attempts < 4:
             # Reset the maze.
             reset_maze()
 
             # Generate the maze using the Recursive Backtracker algorithm.
             generate_maze_recursive_backtracker()
 
+            # Code to break the maze generation and test the number of switches.
+            '''for x in range(len(grid)):
+                for y in range(len(grid)):
+                    if current_number_of_attempts < 4:
+                        grid[7][x] = 0
+                        grid[y][7] = 0'''
+
             # Place the player, door, chest, and
             # key objects randomly on the grid.
             generate_random_object_positions()
@@ -222,20 +237,40 @@ def main():
                         # optimal path and the enemies near the door.
                         generate_optimal_object_positions()
 
+                        # Print to log file that the maze successfully
+                        # generated along with the number of times it 
+                        # took and the maze generation algorithm used.
+                        write_to_log_file(str(time.strftime("%H-%M-%S")) \
+                                          + ": Maze successfully generated " \
+                                          + "using the " \
+                                          + "Recursive Backtracker\n " \
+                                          + "\t\t\talgorithm after " \
+                                          + "switching " \
+                                          + str(number_of_switches) \
+                                          + " time(s) and " \
+                                          + str(total_number_of_attempts + 1) \
+                                          + " attempt(s)") 
+
                         # Set the boolean to True and exit 
                         # the loop. The maze is valid.
                         maze_is_valid = True
-
         # Generate the maze randomly using the Binary Tree algorithm.
         # If it fails four times, switch and use the Recursive Backtracker 
         # algorithm.
-        elif i < 8:
+        elif current_number_of_attempts < 8:
             # Reset the maze.
             reset_maze()
 
             # Generate the maze using the Binary Tree algorithm.
             generate_maze_binary_tree()
 
+            # Code to break the maze generation and test the number of switches.
+            '''for x in range(len(grid)):
+                for y in range(len(grid)):
+                    if current_number_of_attempts < 8:
+                        grid[7][x] = 0
+                        grid[y][7] = 0'''
+
             # Place the player, door, chest, and
             # key objects randomly on the grid.
             generate_random_object_positions()
@@ -248,16 +283,36 @@ def main():
                         # optimal path and the enemies near the door.
                         generate_optimal_object_positions()
 
+                        # Print to log file that the maze successfully 
+                        # generated along with the number of times it 
+                        # took and the maze generation algorithm used.
+                        write_to_log_file(str(time.strftime("%H-%M-%S")) \
+                                          + ": Maze successfully generated " \
+                                          + "using the " \
+                                          + "Binary Tree\n " \
+                                          + "\t\t\talgorithm after " \
+                                          + "switching " \
+                                          + str(number_of_switches) \
+                                          + " time(s) and " \
+                                          + str(total_number_of_attempts + 1) \
+                                          + " attempt(s)") 
+
                         # Set the boolean to True and exit 
                         # the loop. The maze is valid.
                         maze_is_valid = True
-        else:
-            # If the maze cannot be generated within 8 
-            # tries, set i equal to 0 and start again.
-            i = 0
+        # Increment current_number_of_attempts every attempt.
+        current_number_of_attempts = current_number_of_attempts + 1
+        # Increment total_number_of_attempts every attempt.
+        total_number_of_attempts = total_number_of_attempts + 1
 
-        # Increment i.
-        i = i + 1
+        if current_number_of_attempts >= 8:
+            # If the maze cannot be generated within 8 tries, set
+            # current_number_of_attempts equal to 0 and start again.
+            current_number_of_attempts = 0
+
+        # Increment number_of_switches every 4 attempts.
+        if current_number_of_attempts % 4 == 0:
+            number_of_switches = number_of_switches + 1
 
     # Print out introduction message.
     print_introduction_message()
@@ -365,12 +420,16 @@ def open_log_file():
 def write_to_log_file(string):
     global file
 
-    file.write(string)
+    # Write the string to the log file.
+    file.write(string + "\n")
+    # Update the changes to the log file.
+    file.flush()
 
 # Function to close the opened log file.
 def close_log_file():
     global file
 
+    # Close the log file.
     file.close()
 
 
@@ -1281,221 +1340,238 @@ def reset_object_positions_and_state_conditions():
 
 # Function to handle player character movement.
 def handle_input():
+    # Continue running until the player completes the game or closes the window.
     while game_complete == False:
-        for event in pygame.event.get():
-            sgc.event(event)
-            if event.type == GUI:
-                # Print user input string to the output console window. 
-                input_string = event.text.lower()
-                print_input(input_string)
-                # Print the objects and list of commands for the help command.
-                if input_string == "help":
-                    help()
-                # Possible user input for the go <Direction> command.
-                elif input_string == "go forward" or input_string == "go up" \
-                or input_string == "go north":
-                    go(0, -1)
-                elif input_string == "go right" or input_string == "go east":
-                    go(1, 0)
-                elif input_string == "go back" or input_string == "go down" \
-                or input_string == "go south":
-                    go(0, 1)
-                elif input_string == "go left" or input_string == "go west":
-                    go(-1, 0)
-                elif input_string == "go chest":
-                    print "Output: A chest is for opening, not going." \
-                          "\nTry going in a direction instead."
-                elif input_string == "go key":
-                    print "Output: A key is for grabbing and/or using, not going." \
-                          "\nTry going in a direction instead."
-                elif input_string == "go door":
-                    print "Output: A door is for opening, not going." \
-                          "\nTry going in a direction instead."
-                elif input_string == "go wall":
-                    print "Output: You can't go into a wall. Are you even trying?"
-                elif input_string == "go marker":
-                    print "Output: A marker is for using, not going." \
-                          "\nTry going in a direction instead."
-                # Possible user input for the grab <Object> command.
-                elif input_string == "grab forward":
-                    print "Output: Forward is for going, not grabbing." \
-                          "\nTry grabbing when a key is near."
-                elif input_string == "grab right":
-                    print "Output: Right is for going, not grabbing." \
-                          "\nTry grabbing when a key is near."
-                elif input_string == "grab back":
-                    print "Output: Back is for going, not grabbing." \
-                          "\nTry grabbing when a key is near."
-                elif input_string == "grab left":
-                    print "Output: Left is for going, not grabbing." \
-                          "\nTry grabbing when a key is near."
-                elif input_string == "grab chest":
-                    print "Output: A chest is for opening, not grabbing." \
-                          "\nTry grabbing when a key is near."
-                elif input_string == "grab key":
-                    if player_grabbed_key:
-                        # Inform the player that they already have the key.
-                        print "Output: You already have the key." \
-                              "\nNow you can use it for something, " \
-                              "like unlocking a door maybe?"
-                    else:
-                        grab_key()
-                elif input_string == "grab door":
-                    print "Output: A door is for opening, not grabbing." \
-                          "\nTry grabbing when a key is near."
-                elif input_string == "grab wall":
-                    print "Output: You can't grab a wall." \
-                          "\nWell, I guess you could, but it's not helpful." \
-                          "\nTry grabbing when a key is near."
-                elif input_string == "grab marker":
-                    print "Output: A marker is for using, not grabbing." \
-                          "\nTry grabbing when a key is near."
-                # Possible user input for the open <Object> command.
-                elif input_string == "open forward":
-                    print "Output: Forward is for going, not opening." \
-                          "\nTry opening when a door is near."
-                elif input_string == "open right":
-                    print "Output: Right is for going, not opening." \
-                          "\nTry opening when a door is near."
-                elif input_string == "open back":
-                    print "Output: Back is for going, not opening." \
-                          "\nTry opening when a door is near."
-                elif input_string == "open left":
-                    print "Output: Left is for going, not opening." \
-                          "\nTry opening when a door is near."
-                elif input_string == "open chest":
-                    open_chest()
-                elif input_string == "open key":
-                    print "Output: A key is for grabbing and/or using, " \
-                            "not opening. \nTry opening when a door is near."
-                elif input_string == "open door":
-                    open_door()
-                elif input_string == "open wall":
-                    print "Output: You can try to open a wall, " \
-                          "but it won't be helpful."
-                elif input_string == "open marker":
-                    print "Output: A marker is for using, not opening." \
-                          "\nTry opening when a door is near."
-                # Possible user input for the use <Object> command.
-                elif input_string == "use forward":
-                    print "Output: Forward is for going, not using." \
-                          "\nTry using a key when a door is near."
-                elif input_string == "use right":
-                    print "Output: Right is for going, not using." \
-                          "\nTry using a key when a door is near."
-                elif input_string == "use back":
-                    print "Output: Back is for going, not using." \
-                          "\nTry using a key when a door is near."
-                elif input_string == "use left":
-                    print "Output: Left is for going, not using." \
-                          "\nTry using a key when a door is near."
-                elif input_string == "use chest":
-                    print "Output: A chest is for unlocking and opening, " \
-                          "not using. \nTry using a combination on the chest " \
-                          "instead."
-                elif input_string == "use key":
-                    use_key()
-                elif input_string == "use door":
-                    print "Output: A door is for opening, not using." \
-                          "\nTry using a key when a door is near."
-                elif input_string == "use wall":
-                    print "Output: You can try to use a wall, " \
-                          "but it's not helpful to you."
-                elif input_string == "use marker":
-                    use_marker()
-                else:
-                    # Parse the string into substrings and store into a list.
-                    input_substring_list = input_string.split(" ")
-
-                    # If the string has 3 substrings, attempt to parse it.
-                    if len(input_substring_list) == 3:
-                        # Check if the first substring is equal to "go".
-                        if input_substring_list[0] == "go" and \
-                            input_substring_list[1].isalpha() and \
-                            input_substring_list[2].isdigit():
-                            go_length(input_substring_list[1], 
-                                      input_substring_list[2])
+        # Catch all exceptions that may occur while accepting user input.
+        try:
+            # Iterate through all of the events gathered from pygame.
+            for event in pygame.event.get():
+                sgc.event(event)
+                if event.type == GUI:
+                    # Print user input string to the output console window. 
+                    input_string = event.text.lower()
+                    print_input(input_string)
+                    # Print error message if user input is empty.
+                    if input_string == "":
+                        print "Output: You aren't even trying, are you?" \
+                              "\nTry entering actual text next time."
+                    # Print the objects and list of commands for the help command.
+                    elif input_string == "help":
+                        help()
+                    # Possible user input for the go <Direction> command.
+                    elif input_string == "go forward" or input_string == "go up" \
+                    or input_string == "go north":
+                        go(0, -1)
+                    elif input_string == "go right" or input_string == "go east":
+                        go(1, 0)
+                    elif input_string == "go back" or input_string == "go down" \
+                    or input_string == "go south":
+                        go(0, 1)
+                    elif input_string == "go left" or input_string == "go west":
+                        go(-1, 0)
+                    elif input_string == "go chest":
+                        print "Output: A chest is for opening, not going." \
+                              "\nTry going in a direction instead."
+                    elif input_string == "go key":
+                        print "Output: A key is for grabbing and/or using, not going." \
+                              "\nTry going in a direction instead."
+                    elif input_string == "go door":
+                        print "Output: A door is for opening, not going." \
+                              "\nTry going in a direction instead."
+                    elif input_string == "go wall":
+                        print "Output: You can't go into a wall. Are you even trying?"
+                    elif input_string == "go marker":
+                        print "Output: A marker is for using, not going." \
+                              "\nTry going in a direction instead."
+                    # Possible user input for the grab <Object> command.
+                    elif input_string == "grab forward":
+                        print "Output: Forward is for going, not grabbing." \
+                              "\nTry grabbing when a key is near."
+                    elif input_string == "grab right":
+                        print "Output: Right is for going, not grabbing." \
+                              "\nTry grabbing when a key is near."
+                    elif input_string == "grab back":
+                        print "Output: Back is for going, not grabbing." \
+                              "\nTry grabbing when a key is near."
+                    elif input_string == "grab left":
+                        print "Output: Left is for going, not grabbing." \
+                              "\nTry grabbing when a key is near."
+                    elif input_string == "grab chest":
+                        print "Output: A chest is for opening, not grabbing." \
+                              "\nTry grabbing when a key is near."
+                    elif input_string == "grab key":
+                        if player_grabbed_key:
+                            # Inform the player that they already have the key.
+                            print "Output: You already have the key." \
+                                  "\nNow you can use it for something, " \
+                                  "like unlocking a door maybe?"
                         else:
-                            print_input_error()
-                    # If the string has 3 substrings, attempt to parse it.
-                    elif len(input_substring_list) == 2:
-                        # Check if the first substring is equal to "use".
-                        if input_substring_list[0] == "use":
-                            if input_substring_list[1].isdigit():
-                                unlock_chest(input_substring_list[1])
+                            grab_key()
+                    elif input_string == "grab door":
+                        print "Output: A door is for opening, not grabbing." \
+                              "\nTry grabbing when a key is near."
+                    elif input_string == "grab wall":
+                        print "Output: You can't grab a wall." \
+                              "\nWell, I guess you could, but it's not helpful." \
+                              "\nTry grabbing when a key is near."
+                    elif input_string == "grab marker":
+                        print "Output: A marker is for using, not grabbing." \
+                              "\nTry grabbing when a key is near."
+                    # Possible user input for the open <Object> command.
+                    elif input_string == "open forward":
+                        print "Output: Forward is for going, not opening." \
+                              "\nTry opening when a door is near."
+                    elif input_string == "open right":
+                        print "Output: Right is for going, not opening." \
+                              "\nTry opening when a door is near."
+                    elif input_string == "open back":
+                        print "Output: Back is for going, not opening." \
+                              "\nTry opening when a door is near."
+                    elif input_string == "open left":
+                        print "Output: Left is for going, not opening." \
+                              "\nTry opening when a door is near."
+                    elif input_string == "open chest":
+                        open_chest()
+                    elif input_string == "open key":
+                        print "Output: A key is for grabbing and/or using, " \
+                                "not opening. \nTry opening when a door is near."
+                    elif input_string == "open door":
+                        open_door()
+                    elif input_string == "open wall":
+                        print "Output: You can try to open a wall, " \
+                              "but it won't be helpful."
+                    elif input_string == "open marker":
+                        print "Output: A marker is for using, not opening." \
+                              "\nTry opening when a door is near."
+                    # Possible user input for the use <Object> command.
+                    elif input_string == "use forward":
+                        print "Output: Forward is for going, not using." \
+                              "\nTry using a key when a door is near."
+                    elif input_string == "use right":
+                        print "Output: Right is for going, not using." \
+                              "\nTry using a key when a door is near."
+                    elif input_string == "use back":
+                        print "Output: Back is for going, not using." \
+                              "\nTry using a key when a door is near."
+                    elif input_string == "use left":
+                        print "Output: Left is for going, not using." \
+                              "\nTry using a key when a door is near."
+                    elif input_string == "use chest":
+                        print "Output: A chest is for unlocking and opening, " \
+                              "not using. \nTry using a combination on the chest " \
+                              "instead."
+                    elif input_string == "use key":
+                        use_key()
+                    elif input_string == "use door":
+                        print "Output: A door is for opening, not using." \
+                              "\nTry using a key when a door is near."
+                    elif input_string == "use wall":
+                        print "Output: You can try to use a wall, " \
+                              "but it's not helpful to you."
+                    elif input_string == "use marker":
+                        use_marker()
+                    else:
+                        # Parse the string into substrings and store into a list.
+                        input_substring_list = input_string.split(" ")
+
+                        # If the string has 3 substrings, attempt to parse it.
+                        if len(input_substring_list) == 3:
+                            # Check if the first substring is equal to "go".
+                            if input_substring_list[0] == "go" and \
+                                input_substring_list[1].isalpha() and \
+                                input_substring_list[2].isdigit():
+                                go_length(input_substring_list[1], 
+                                          input_substring_list[2])
                             else:
                                 print_input_error()
-                    # Not even close to a valid command or contains some 
-                    # form of misspelling or incorrect input 
-                    # (numbers, special characters, etc.).
-                    else:
-                        print_input_error()
+                        # If the string has 3 substrings, attempt to parse it.
+                        elif len(input_substring_list) == 2:
+                            # Check if the first substring is equal to "use".
+                            if input_substring_list[0] == "use":
+                                if input_substring_list[1].isdigit():
+                                    unlock_chest(input_substring_list[1])
+                                else:
+                                    print_input_error()
+                            else:
+                                print_input_error()
+                        # Not even close to a valid command or contains some 
+                        # form of misspelling or incorrect input 
+                        # (numbers, special characters, etc.).
+                        else:
+                            print_input_error()
 
-                # Clear the contents of the InputBox if it is clicked on.
-                if event.widget is input_box:
-                    clear()
+                    # Clear the contents of the InputBox if it is clicked on.
+                    if event.widget is input_box:
+                        clear()
 
-            # Possible user input using the arrow keys.
-            if event.type == KEYDOWN:
-                # Store the key press event.
-                key = event.key
-                # Move the player character object up if the up arrow key was 
-                # pressed and if there are no objects blocking the path.
-                if key == K_UP:
-                    go(0, -1)
-                # Move the player character object right if the right arrow key 
-                # was pressed and if there are no objects blocking the path.
-                elif key == K_RIGHT:
-                    go(1, 0)
-                # Move the player character object down if the down arrow key 
-                # was pressed and if there are no objects blocking the path.
-                elif key == K_DOWN:
-                    go(0, 1)
-                # Move the player character object left if the left arrow key 
-                # was pressed and if there are no objects blocking the path.
-                elif key == K_LEFT:
-                    go(-1, 0)
+                # Possible user input using the arrow keys.
+                if event.type == KEYDOWN:
+                    # Store the key press event.
+                    key = event.key
+                    # Move the player character object up if the up arrow key was 
+                    # pressed and if there are no objects blocking the path.
+                    if key == K_UP:
+                        go(0, -1)
+                    # Move the player character object right if the right arrow key 
+                    # was pressed and if there are no objects blocking the path.
+                    elif key == K_RIGHT:
+                        go(1, 0)
+                    # Move the player character object down if the down arrow key 
+                    # was pressed and if there are no objects blocking the path.
+                    elif key == K_DOWN:
+                        go(0, 1)
+                    # Move the player character object left if the left arrow key 
+                    # was pressed and if there are no objects blocking the path.
+                    elif key == K_LEFT:
+                        go(-1, 0)
+                # Quit the game if the user closes the window.
+                elif event.type == QUIT:
+                    return
 
-                # Call the function to move the enemies.
-                move_simple_enemy()
-                move_smart_enemy()
-            # Quit the game if the user closes the window.
-            elif event.type == QUIT:
-                return
+            # Clear the contents of the screen.
+            screen.fill((0,0,0))
+            # Get objects within the field of view and store them into a list.
+            get_visible_object_list()
+            # Call the function to draw the maze and the objects inside.
+            draw_screen(screen)
 
-        # Clear the contents of the screen.
-        screen.fill((0,0,0))
-        # Get objects within the field of view and store them into a list.
-        get_visible_object_list()
-        # Call the function to draw the maze and the objects inside.
-        draw_screen(screen)
+            ####################################################################
+            ##### Comment out this code to enable the field of view system.#####
+            draw_player_object(player_object, screen)
+            if not player_opened_chest:
+                draw_closed_chest_object(chest_object_closed, screen)
+            else:
+                draw_opened_chest_object(chest_object_opened, screen)
+            draw_key_object(key_object, screen)
+            draw_door_object(door_object, screen)
+            draw_simple_enemy_object(simple_enemy_object, screen)
+            draw_smart_enemy_object(smart_enemy_object, screen)
+            draw_chest_combination_1_object(chest_combination_1_object, screen)
+            draw_chest_combination_2_object(chest_combination_2_object, screen)
+            draw_chest_combination_3_object(chest_combination_3_object, screen)
 
-        ########################################################################
-        ####### Comment out this code to enable the field of view system.#######
-        draw_player_object(player_object, screen)
-        if not player_opened_chest:
-            draw_closed_chest_object(chest_object_closed, screen)
-        else:
-            draw_opened_chest_object(chest_object_opened, screen)
-        draw_key_object(key_object, screen)
-        draw_door_object(door_object, screen)
-        draw_simple_enemy_object(simple_enemy_object, screen)
-        draw_smart_enemy_object(smart_enemy_object, screen)
-        draw_chest_combination_1_object(chest_combination_1_object, screen)
-        draw_chest_combination_2_object(chest_combination_2_object, screen)
-        draw_chest_combination_3_object(chest_combination_3_object, screen)
-
-        if player_used_marker == True:
-            for i in range(len(marked_tile_list)):
-                if is_object_visible(marked_tile_list[i][0], marked_tile_list[i][1]):
+            if player_used_marker == True:
+                for i in range(len(marked_tile_list)):
                     # Fill in the marked tiles with the color red.
-                    screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[i], screen))
-        ########################################################################
+                    screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[i], 
+                                                           screen))
+            ####################################################################
 
-        # Update the InputText widget.
-        sgc.update(1)
-        # Update the console window to show changes.
-        pygame.display.update()
+            # Update the InputText widget.
+            sgc.update(1)
+            # Update the console window to show changes.
+            pygame.display.update()
+        # End the catch block and print the exception 
+        # (if one occurred) to the log file and continue.
+        except:
+            # Store the exception.
+            e = sys.exc_info()[0]
+            # Piece the exception message together for printing.
+            exception_message = (str(time.strftime("%H-%M-%S")) + ": Error: "
+                                 + str(e) + " \n\t\t\tIgnoring your feeble " 
+                                 + "attempts to crash the game and continuing.")
+            # Print the exception to the log file.
+            write_to_log_file(exception_message)
 
 
 
@@ -1505,26 +1581,16 @@ def handle_input():
 
 # Function to move the player character object through the maze.
 def go(dx, dy):
-    global enemy_grabbed_player
-
-    # Determine if the player position matches the simple enemy position.
-    if player_object_position == simple_enemy_object_position:
-        enemy_grabbed_player = True
-    else:
-        enemy_grabbed_player = False
-
-    # Reset the game if the player has been caught.
-    if enemy_grabbed_player:
-        # Call the function to reset the game if the player character 
-        # is in the same coordinate as either enemy.
-        if player_object_position == simple_enemy_object_position \
-            or player_object_position == smart_enemy_object_position:
-            # Print out an message informing the user that they lost.
-            print "Output: The enemy grabbed you! Your stuff was confiscated "
-            print "\tand you were returned to where you started. "
-            print "\tYou will have to try your luck again...\n"
-            # Reset the locations of all objects.
-            reset_game()
+    # Call the function to reset the game if the player character 
+    # is in the same coordinate as either enemy.
+    if player_object_position == simple_enemy_object_position \
+        or player_object_position == smart_enemy_object_position:
+        # Print out an message informing the user that they lost.
+        print "Output: The enemy grabbed you! Your stuff was confiscated "
+        print "\tand you were returned to where you started. "
+        print "\tYou will have to try your luck again...\n"
+        # Reset the locations of all objects and state conditions.
+        reset_object_positions_and_state_conditions()
     # Continue if the player has not been caught yet.
     else:
         # Set x and y equal to the current player character object position.
@@ -1548,6 +1614,17 @@ def go(dx, dy):
         # Call the function to move the enemies.
         move_simple_enemy()
         move_smart_enemy()
+
+    # Call the function to reset the game if the player character 
+    # is in the same coordinate as either enemy.
+    if player_object_position == simple_enemy_object_position \
+        or player_object_position == smart_enemy_object_position:
+        # Print out an message informing the user that they lost.
+        print "Output: The enemy grabbed you! Your stuff was confiscated "
+        print "\tand you were returned to where you started. "
+        print "\tYou will have to try your luck again...\n"
+        # Reset the locations of all objects and state conditions.
+        reset_object_positions_and_state_conditions()
 
 # Function to move the player character object through 
 # the maze for the number of times they specify.
@@ -1907,198 +1984,198 @@ def player_next_to_object(x, y, a, b):
 # Function to move the simple enemy object in a random direction.
 def move_simple_enemy():    
     global simple_enemy_object_position
-    global enemy_grabbed_player
-    
-    # Determine if the player position matches the simple enemy position.
-    if player_object_position == simple_enemy_object_position:
-        enemy_grabbed_player = True
-    else:
-        enemy_grabbed_player = False
 
-    # Reset the game if the player has been caught.
-    if enemy_grabbed_player:
-        # Call the function to reset the game if the player character 
-        # is in the same coordinate as either enemy.
-        if player_object_position == simple_enemy_object_position \
-            or player_object_position == smart_enemy_object_position:
-            # Print out an message informing the user that they lost.
-            print "Output: The enemy grabbed you! Your stuff was confiscated "
-            print "\tand you were returned to where you started. "
-            print "\tYou will have to try your luck again...\n"
-            # Reset the locations of all objects and state conditions.
-            reset_object_positions_and_state_conditions()
-    # Continue if the player has not been caught yet.
-    else:
-        # Set x and y equal to the simple enemy object position.
-        x = simple_enemy_object_position[0]
-        y = simple_enemy_object_position[1]
+    # Call the function to reset the game if the player character 
+    # is in the same coordinate as either enemy.
+    if player_object_position == simple_enemy_object_position \
+        or player_object_position == smart_enemy_object_position:
+        # Print out an message informing the user that they lost.
+        print "Output: The enemy grabbed you! Your stuff was confiscated "
+        print "\tand you were returned to where you started. "
+        print "\tYou will have to try your luck again...\n"
+        # Reset the locations of all objects and state conditions.
+        reset_object_positions_and_state_conditions()
 
-        direction = random.randint(1, 4)
+    # Set x and y equal to the simple enemy object position.
+    x = simple_enemy_object_position[0]
+    y = simple_enemy_object_position[1]
 
-        # Set nx and ny equal to the new simple enemy object position.
-        if direction == 1:
-            # Move the simple enemy object position one coordinate North.
-            nx = x
-            ny = y - 1
-        elif direction == 2:
-            # Move the simple enemy object position one coordinate East.
-            nx = x + 1
-            ny = y
-        elif direction == 3:
-            # Move the simple enemy object position one coordinate South.
-            nx = x
-            ny = y + 1
-        elif direction == 4:
-            # Move the simple enemy object position one coordinate West.
-            nx = x - 1
-            ny = y
+    direction = random.randint(1, 4)
 
-        # Change the simple enemy object position if the new position 
-        # is in the game window and the cell is not pre-occupied.
-        if (nx > 0 and nx < len(grid) and ny > 0 and ny < len(grid) and \
-            grid[ny][nx]):
-                simple_enemy_object_position[0] = nx
-                simple_enemy_object_position[1] = ny
+    # Set nx and ny equal to the new simple enemy object position.
+    if direction == 1:
+        # Move the simple enemy object position one coordinate North.
+        nx = x
+        ny = y - 1
+    elif direction == 2:
+        # Move the simple enemy object position one coordinate East.
+        nx = x + 1
+        ny = y
+    elif direction == 3:
+        # Move the simple enemy object position one coordinate South.
+        nx = x
+        ny = y + 1
+    elif direction == 4:
+        # Move the simple enemy object position one coordinate West.
+        nx = x - 1
+        ny = y
+
+    # Change the simple enemy object position if the new position 
+    # is in the game window and the cell is not pre-occupied.
+    if (nx > 0 and nx < len(grid) and ny > 0 and ny < len(grid) and \
+        grid[ny][nx]):
+            simple_enemy_object_position[0] = nx
+            simple_enemy_object_position[1] = ny
+
+    # Call the function to reset the game if the player character 
+    # is in the same coordinate as either enemy.
+    if player_object_position == simple_enemy_object_position \
+        or player_object_position == smart_enemy_object_position:
+        # Print out an message informing the user that they lost.
+        print "Output: The enemy grabbed you! Your stuff was confiscated "
+        print "\tand you were returned to where you started. "
+        print "\tYou will have to try your luck again...\n"
+        # Reset the locations of all objects and state conditions.
+        reset_object_positions_and_state_conditions()
 
 # Function to move the smart enemy in a direction towards the player.
 def move_smart_enemy():
     global smart_enemy_object_position
-    global enemy_grabbed_player
+
+    # Call the function to reset the game if the player character 
+    # is in the same coordinate as either enemy.
+    if player_object_position == simple_enemy_object_position \
+        or player_object_position == smart_enemy_object_position:
+        # Print out an message informing the user that they lost.
+        print "Output: The enemy grabbed you! Your stuff was confiscated "
+        print "\tand you were returned to where you started. "
+        print "\tYou will have to try your luck again...\n"
+        # Reset the locations of all objects and state conditions.
+        reset_object_positions_and_state_conditions()
+    
+    # Create a test grid to use with the A* algorithm.
+    test_grid = GridWithWeights(15, 15)
+
+    # Traverse the grid to grab all of the wall locations.
+    for row in xrange(len(grid)):
+        for column in xrange(len(grid[0])):
+            if grid[column][row] == 0:
+                wall = (row, column)
+                # Add the wall locations to the graph's list of walls.
+                test_grid.walls.append(wall)
+
+    # The location of the smart enemy.
+    start = (smart_enemy_object_position[0], smart_enemy_object_position[1])
+    # The location of the player.
+    goal = (player_object_position[0], player_object_position[1])
+
+    # Get dictionaries mapping positions using the A* search algorithm.
+    came_from, cost_so_far = a_star_search(test_grid, start, goal)
+
+    # Loop through cost_so_far until we find the next position to go to.
+    for coordinates, cost in cost_so_far.iteritems():
+        if cost == 1:
+            nx, ny = coordinates
+            break
+
+    #print cost_so_far
         
-    # Determine if the player position matches the simple enemy position.
-    if player_object_position == smart_enemy_object_position:
-        enemy_grabbed_player = True
+    '''# The current location of the smart enemy.
+    start = (smart_enemy_object_position[0], smart_enemy_object_position[1])
+    # The current location of the player.
+    goal = (player_object_position[0], player_object_position[1])
+
+    # The DFS calling.
+    dict = {}
+    depth_first_search(start, goal, grid, dict)
+    goal_path_list = draw_hierarchy(dict, goal)
+
+    # The BFS calling.
+    dict1 = {}
+    breath_first_search(start, goal, grid, dict1)
+    goal_path_list1 = draw_hierarchy(dict1, goal)
+
+    if len(goal_path_list) == 1:
+        next_coordinates = goal_path_list[0]
     else:
-        enemy_grabbed_player = False
+        next_coordinates = goal_path_list[-2]'''
 
-    # Reset the game if the player has been caught.
-    if enemy_grabbed_player:
-        # Call the function to reset the game if the player character 
-        # is in the same coordinate as either enemy.
-        if player_object_position == simple_enemy_object_position \
-            or player_object_position == smart_enemy_object_position:
-            # Print out an message informing the user that they lost.
-            print "Output: The enemy grabbed you! Your stuff was confiscated "
-            print "\tand you were returned to where you started. "
-            print "\tYou will have to try your luck again...\n"
-            # Reset the locations of all objects and state conditions.
-            reset_object_positions_and_state_conditions()
-    # Continue if the player has not been caught yet.
-    else:
-        # Create a test grid to use with the A* algorithm.
-        test_grid = GridWithWeights(15, 15)
+    # Change the simple enemy object position if the new position 
+    # is in the game window and the cell is not pre-occupied.
+    if (nx > 0 and nx < len(grid) and ny > 0 and ny < len(grid) and \
+        grid[ny][nx]):
+            smart_enemy_object_position[0] = nx
+            smart_enemy_object_position[1] = ny
 
-        # Traverse the grid to grab all of the wall locations.
-        for row in xrange(len(grid)):
-            for column in xrange(len(grid[0])):
-                if grid[column][row] == 0:
-                    wall = (row, column)
-                    # Add the wall locations to the graph's list of walls.
-                    test_grid.walls.append(wall)
+    # Call the function to reset the game if the player character 
+    # is in the same coordinate as either enemy.
+    if player_object_position == simple_enemy_object_position \
+        or player_object_position == smart_enemy_object_position:
+        # Print out an message informing the user that they lost.
+        print "Output: The enemy grabbed you! Your stuff was confiscated "
+        print "\tand you were returned to where you started. "
+        print "\tYou will have to try your luck again...\n"
+        # Reset the locations of all objects and state conditions.
+        reset_object_positions_and_state_conditions()
 
-        # The location of the smart enemy.
-        start = (smart_enemy_object_position[0], smart_enemy_object_position[1])
-        # The location of the player.
-        goal = (player_object_position[0], player_object_position[1])
+    '''# Variable that store the enemy location.
+    smart_enemy_location = (smart_enemy_object_position[0], 
+                                smart_enemy_object_position[1])
+    # Variable that store the current location.
+    player_location = (player_object_position[0], 
+                                player_object_position[1])
 
-        # Get dictionaries mapping positions using the A* search algorithm.
-        came_from, cost_so_far = a_star_search(test_grid, start, goal)
+    # Call the a_star_search algorithm to get the next position to move to.
+    test_grid = GridWithWeights(15, 15) # Test grid.
 
-        # Loop through cost_so_far until we find the next position to go to.
-        for coordinates, cost in cost_so_far.iteritems():
-            if cost == 1:
-                nx, ny = coordinates
-                break
+    # Traverse the grid to grab all of the wall locations
+    for row in xrange(len(grid)):
+        for column in xrange(len(grid[0])):
+            if grid[column][row] == 0:
+                wall = (row, column)
+                # Add the wall locations to the graph's list of walls
+                test_grid.walls.append(wall)
 
-        #print cost_so_far
-        
-        '''# The current location of the smart enemy.
-        start = (smart_enemy_object_position[0], smart_enemy_object_position[1])
-        # The current location of the player.
-        goal = (player_object_position[0], player_object_position[1])
+    # The location of the smart enemy.
+    start = (smart_enemy_object_position[0], smart_enemy_object_position[1])
+    # The position of the player.
+    goal = (player_object_position[0], player_object_position[1])
 
-        # The DFS calling.
-        dict = {}
-        depth_first_search(start, goal, grid, dict)
-        goal_path_list = draw_hierarchy(dict, goal)
+    came_from, cost_so_far = a_star_search(test_grid, start, goal)
 
-        # The BFS calling.
-        dict1 = {}
-        breath_first_search(start, goal, grid, dict1)
-        goal_path_list1 = draw_hierarchy(dict1, goal)
+    # Execute search algorithm 1.
+    A1, cost_so_far = a_star_search(grid, smart_enemy_location, player_location)
 
-        if len(goal_path_list) == 1:
-            next_coordinates = goal_path_list[0]
-        else:
-            next_coordinates = goal_path_list[-2]'''
+    # Execute search algorithm 2.
+    A2, cost_so_far = a_star_search(grid, smart_enemy_location, player_location)
 
+    # Execute search algorithm 3.
+    A3, cost_so_far = a_star_search(grid, smart_enemy_location, player_location)
 
-
-        # Change the simple enemy object position if the new position 
-        # is in the game window and the cell is not pre-occupied.
-        if (nx > 0 and nx < len(grid) and ny > 0 and ny < len(grid) and \
-            grid[ny][nx]):
-                smart_enemy_object_position[0] = nx
-                smart_enemy_object_position[1] = ny
-
-        '''# Variable that store the enemy location.
-        smart_enemy_location = (smart_enemy_object_position[0], 
-                                  smart_enemy_object_position[1])
-        # Variable that store the current location.
-        player_location = (player_object_position[0], 
-                                   player_object_position[1])
-
-        # Call the a_star_search algorithm to get the next position to move to.
-        test_grid = GridWithWeights(15, 15) # Test grid.
-
-        # Traverse the grid to grab all of the wall locations
-        for row in xrange(len(grid)):
-            for column in xrange(len(grid[0])):
-                if grid[column][row] == 0:
-                    wall = (row, column)
-                    # Add the wall locations to the graph's list of walls
-                    test_grid.walls.append(wall)
-
-        # The location of the smart enemy.
-        start = (smart_enemy_object_position[0], smart_enemy_object_position[1])
-        # The position of the player.
-        goal = (player_object_position[0], player_object_position[1])
-
-        came_from, cost_so_far = a_star_search(test_grid, start, goal)
-
-        # Execute search algorithm 1.
-        A1, cost_so_far = a_star_search(grid, smart_enemy_location, player_location)
-
-        # Execute search algorithm 2.
-        A2, cost_so_far = a_star_search(grid, smart_enemy_location, player_location)
-
-        # Execute search algorithm 3.
-        A3, cost_so_far = a_star_search(grid, smart_enemy_location, player_location)
-
-        # Compare the 3 search algorithms for equality.
-        if A1 == A2:
-            if A2 == A3:
-                # All search algorithms match.
-                smart_enemy_object_position[0] = A1[0]
-                smart_enemy_object_position[1] = A1[1]
-            elif A1 != A3:
-                # A3 does not match.
-                smart_enemy_object_position[0] = A1[0]
-                smart_enemy_object_position[1] = A1[1]
-            else:
-                # Logic error, re-spawn enemy.
-                respawn_smart_enemy()
-        elif A1 == A3:
-            # A2 does not match.
+    # Compare the 3 search algorithms for equality.
+    if A1 == A2:
+        if A2 == A3:
+            # All search algorithms match.
             smart_enemy_object_position[0] = A1[0]
             smart_enemy_object_position[1] = A1[1]
-        elif A2 == A3:
-            # A1 does not match.
-            smart_enemy_object_position[0] = A2[0]
-            smart_enemy_object_position[1] = A2[1]
+        elif A1 != A3:
+            # A3 does not match.
+            smart_enemy_object_position[0] = A1[0]
+            smart_enemy_object_position[1] = A1[1]
         else:
-            # No two algorithms match, re-spawn enemy.
-            respawn_smart_enemy()'''
+            # Logic error, re-spawn enemy.
+            respawn_smart_enemy()
+    elif A1 == A3:
+        # A2 does not match.
+        smart_enemy_object_position[0] = A1[0]
+        smart_enemy_object_position[1] = A1[1]
+    elif A2 == A3:
+        # A1 does not match.
+        smart_enemy_object_position[0] = A2[0]
+        smart_enemy_object_position[1] = A2[1]
+    else:
+        # No two algorithms match, re-spawn enemy.
+        respawn_smart_enemy()'''
 
 # Function to reset the smart enemy object position.
 def respawn_smart_enemy():
