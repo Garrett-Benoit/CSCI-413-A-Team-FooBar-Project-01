@@ -111,7 +111,8 @@ class InputBox(Simple, SelectableText):
         self._event_select_text(event)
         self._event_modify_text(event)
         if event.type == KEYDOWN:
-            if event.key == K_RETURN:
+            # Added support for the Enter key on the Numpad.
+            if event.key == K_RETURN or event.key == K_KP_ENTER:
                 self.on_enter()
 
     def _focus_exit(self):

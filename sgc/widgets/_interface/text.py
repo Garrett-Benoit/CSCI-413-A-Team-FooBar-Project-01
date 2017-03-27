@@ -144,7 +144,7 @@ class SelectableText:
                 self._cursor_pos = len(self._text)
                 if self._select == self._cursor_pos:
                     self._select = None
-            elif event.mod & KMOD_CTRL:
+            '''elif event.mod & KMOD_CTRL:
                 if event.key == K_a:  # Select all
                     self._select = 0
                     self._cursor_pos = len(self._text)
@@ -155,7 +155,7 @@ class SelectableText:
                         pygame.scrap.put(SCRAP_TEXT, string)
                     except pygame.error:
                         warnings.warn("Please run 'pygame.scrap.init()'"
-                                      " to use the clipboard.", RuntimeWarning)
+                                      " to use the clipboard.", RuntimeWarning)'''
         elif event.type == KEYUP:
             if self._repeat_key and self._repeat_key.key == event.key:
                 self._repeat_key = None  # Stop repeat
@@ -185,9 +185,9 @@ class SelectableText:
             # Reset cursor blink when typing
             self._blink_time = 0
             self._blink = True
-            if event.key in (9,K_RETURN,K_ESCAPE):  # Keys to ignore
+            if event.key in (9,K_RETURN,K_ESCAPE,K_KP_ENTER):  # Keys to ignore
                 return
-            elif event.key == K_BACKSPACE:
+            if event.key == K_BACKSPACE:
                 if self._select is not None:
                     self._delete_selection()
                 elif self._cursor_pos > 0:
@@ -203,8 +203,8 @@ class SelectableText:
             elif event.unicode:
                 if event.mod & KMOD_CTRL:
                     if event.key == K_v:  # Paste
-                        text = pygame.scrap.get(SCRAP_TEXT)
-                        if text:
+                        text = None#pygame.scrap.get(SCRAP_TEXT)
+                        '''if text:
                             if self._select is not None:
                                 sel = self._select_fix()
                                 self._select = None
@@ -214,17 +214,17 @@ class SelectableText:
                             text = [unicode(char) for char in text]
                             self._text[sel[0]:sel[1]] = text
                             self._calc_chars()
-                            self._cursor_pos = sel[0] + len(text)
+                            self._cursor_pos = sel[0] + len(text)'''
                     elif event.key == K_x and self._select is not None:  # Cut
-                        select = self._select_fix()
-                        string = "".join(self._text[select[0]:select[1]])
+                        select = None#self._select_fix()
+                        '''string = "".join(self._text[select[0]:select[1]])
                         try:
                             pygame.scrap.put(SCRAP_TEXT, string)
                         except pygame.error:
                             warnings.warn("Please run 'pygame.scrap.init()'"
                                           " to use the clipboard",
                                           RuntimeWarning)
-                        self._delete_selection()
+                        self._delete_selection()'''
                 else:
                     # Delete selection
                     if self._select is not None:
