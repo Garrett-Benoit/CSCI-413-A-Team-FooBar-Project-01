@@ -221,6 +221,13 @@ def main():
     while not exit_game:
         # Call the function to handle the player choices at the title screen.
         show_title_screen()
+
+        # Reset the maze before continuing.
+        reset_maze()
+        # Clear the contents of the screen.
+        screen.fill((0, 0, 0))
+        # Update the console window to show changes.
+        pygame.display.update()
         
         # Open replay 1, the oldest replay.
         if show_replay_1 == True:
@@ -235,7 +242,8 @@ def main():
         elif start_new_game == True:
             open_new_game()
 
-        # Reset the state of player decisions.
+        # Reset the state of player 
+        # decisions and game conditions.
         player_grabbed_key = False
         player_used_key = False
         player_used_marker = False
@@ -257,12 +265,29 @@ def main():
 
 # Function to handle player choices on the title screen.
 def show_title_screen():
+    global grid
     global player_made_decision
     global start_new_game
     global show_replay_1
     global show_replay_2
     global show_replay_3
     global exit_game
+
+    grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
     # Set the caption for the console window.
     pygame.display.set_caption("Title Screen")
@@ -369,7 +394,22 @@ def show_title_screen():
                     clear()
 
         # Clear the contents of the screen.
-        screen.fill((0,0,0))
+        screen.fill((0, 0, 0))
+        # Call the function to draw the maze and the objects inside.
+        draw_screen(screen)
+        # Set the title of the game and the names of team members on the screen.
+        default_font_1 = pygame.font.SysFont("None", 45)
+        default_font_2 = pygame.font.SysFont("None", 25)
+        label_1 = default_font_1.render("Python-Text-Based-Maze-Game", 
+                                    1, (255, 255, 255))
+        label_2 = default_font_2.render("Taylor Venissat, Phuong Ho, Chance Johnson,", 
+                                    1, (255, 255, 255))
+        label_3 = default_font_2.render("Garrett Benoit, and Zachary Hermsen", 
+                                    1, (255, 255, 255))
+        # Draw the labels onto the screen.
+        screen.blit(label_1, (70, 120))
+        screen.blit(label_2, (110, 175))
+        screen.blit(label_3, (140, 200))
         # Update the InputText widget.
         sgc.update(1)
         # Update the console window to show changes.
@@ -979,7 +1019,7 @@ def open_replay(number):
                     print_input_error()
 
             # Clear the contents of the screen.
-            screen.fill((0,0,0))
+            screen.fill((0, 0, 0))
             # Get objects within the field of view and store them into a list.
             get_visible_object_list()
             # Call the function to draw the maze and the objects inside.
@@ -1016,6 +1056,9 @@ def open_replay(number):
         game_complete = True
     # Pause for 7 seconds before terminating the program.
     time.sleep(7)
+
+    # Print new lines for spacing.
+    print "\n\n"
 
     # Exit the current scope and back to the loop that controls the game state.
     return
@@ -1942,7 +1985,8 @@ def handle_input():
     global player_made_decision
     global game_complete
 
-    # Reset game conditions.
+    # Reset the state of player 
+    # decisions and game conditions.
     player_grabbed_key = False
     player_used_key = False
     player_used_marker = False
@@ -2160,7 +2204,7 @@ def handle_input():
                     return
 
             # Clear the contents of the screen.
-            screen.fill((0,0,0))
+            screen.fill((0, 0, 0))
             # Get objects within the field of view and store them into a list.
             get_visible_object_list()
             # Call the function to draw the maze and the objects inside.
