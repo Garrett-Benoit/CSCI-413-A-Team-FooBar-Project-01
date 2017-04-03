@@ -39,8 +39,6 @@ import ast
 log_filename = time.strftime("Log_%m-%d-%y_%H-%M-%S.txt")
 # Declare a log file variable for global use.
 log_file = None
-# Create a string equal to the current time for the replay file.
-replay_filename = time.strftime("Replay_%m-%d-%y_%H-%M-%S.txt")
 # Declare a replay file variable for global use.
 replay_file = None
 # Declare a chosen replay filename variable for global use.
@@ -103,6 +101,7 @@ show_replay_2 = False
 show_replay_3 = False
 start_new_game = False
 game_complete = False
+exit_game = False
 
 # A 15x15 Grid representing the game object positions.
 grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -134,7 +133,7 @@ visible_object_list = []
 pygame.init()
 
 # Set the caption for the console window.
-pygame.display.set_caption("Team-FooBar-Programming-Assignment-01")
+pygame.display.set_caption("")
 
 # Create a surface to draw on.
 screen = sgc.surface.Screen((600, 635))
@@ -164,6 +163,12 @@ def main():
     global chest_combination_2_object
     global chest_combination_3_object
     global maze_is_valid
+    global exit_game
+    global player_made_decision
+    global show_replay_1
+    global show_replay_2
+    global show_replay_3
+    global start_new_game
 
     # Create and define the door object.
     door_object = pygame.font.Font(None, object_size).render(
@@ -212,151 +217,293 @@ def main():
                                      chest_combination_3_object, False, 
                                      chest_combination_3_object_color)
     
-    # Call the function to handle the player choices at the title screen.
-    handle_title_screen_options()
+    # Loop that determines manages the game states.
+    while not exit_game:
+        # Call the function to handle the player choices at the title screen.
+        show_title_screen()
+        
+        # Open replay 1, the oldest replay.
+        if show_replay_1 == True:
+            open_replay(1)
+        # Open replay 2, the middle-aged replay.
+        elif show_replay_2 == True:
+            open_replay(2)
+        # Open replay 3, the youngest replay.
+        elif show_replay_3 == True:
+            open_replay(3)
+        # Start a new game.
+        elif start_new_game == True:
+            open_new_game()
 
-    # Open replay 1, the oldest replay.
-    if show_replay_1 == True:
-        '''try:
-            if os.stat(filename).st_size > 0:
-               print "All good"
-            else:
-               print "empty file"
-        except OSError:
-            print "No file"'''
+        # Reset the state of player decisions.
+        player_grabbed_key = False
+        player_used_key = False
+        player_used_marker = False
+        player_unlocked_chest = False
+        player_opened_chest = False
+        maze_is_valid = False
+        player_made_decision = False
+        show_replay_1 = False
+        show_replay_2 = False
+        show_replay_3 = False
+        start_new_game = False
+        game_complete = False
 
-        open_replay(1)
-    # Open replay 2, the middle-aged replay.
-    elif show_replay_2 == True:
-        open_replay(2)
-    # Open replay 3, the youngest replay.
-    elif show_replay_3 == True:
-        open_replay(3)
-    # Start a new game.
-    elif start_new_game == True:
-        # Variable used to keep track of the number of attempts.
-        current_number_of_attempts = 0
-        # Variable used to keep track of the number of switches.
-        number_of_switches = 0
-        # Variable used to keep track of the number iterations.
-        total_number_of_attempts = 0
-        # Keep generating a random maze until it is valid.
-        while not maze_is_valid:
-            #print current_number_of_attempts, number_of_switches, 
-            #total_number_of_attempts
 
-            # Generate the maze randomly using the Recursive Backtracker algorithm.
-            # If it fails four times, switch and use the Binary Tree algorithm.
-            if current_number_of_attempts < 4:
-                # Reset the maze.
-                reset_maze()
 
-                # Generate the maze using the Recursive Backtracker algorithm.
-                generate_maze_recursive_backtracker()
+################################################################################
+# Game States
+################################################################################
 
-                # Code to break the maze generation and test the number of switches.
-                '''for x in range(len(grid)):
-                    for y in range(len(grid)):
-                        if current_number_of_attempts < 4:
-                            grid[7][x] = 0
-                            grid[y][7] = 0'''
+# Function to handle player choices on the title screen.
+def show_title_screen():
+    global player_made_decision
+    global start_new_game
+    global show_replay_1
+    global show_replay_2
+    global show_replay_3
+    global exit_game
 
-                # Place the player, door, chest, and
-                # key objects randomly on the grid.
-                generate_random_object_positions()
+    # Set the caption for the console window.
+    pygame.display.set_caption("Title Screen")
 
-                # Test the validity of the maze.
-                if check_maze_for_validity_player_door() == 0:
-                    if check_maze_for_validity_player_key() == 0:
-                        if check_maze_for_validity_player_chest() == 0:
-                            # Place the chest combination objects along the 
-                            # optimal path and the enemies near the door.
-                            generate_optimal_object_positions()
+    # Print introduction message to the user.
+    print "\nTitle Screen: "
+    print "\nPlease choose one of the following options:"  
+    print "1. open new game"
+    print "2. open replay <1, 2, 3>"
+    print "3. exit"
 
-                            # Print to log file that the maze successfully
-                            # generated along with the number of times it 
-                            # took and the maze generation algorithm used.
-                            write_to_log_file(str(time.strftime("%H-%M-%S")) \
-                                              + ": Maze successfully generated " \
-                                              + "using the " \
-                                              + "Recursive Backtracker\n " \
-                                              + "\t\t\talgorithm after " \
-                                              + "switching " \
-                                              + str(number_of_switches) \
-                                              + " time(s) and " \
-                                              + str(total_number_of_attempts + 1) \
-                                              + " attempt(s)") 
+    # Continue running until the player chooses
+    # a valid option or closes the window.
+    while player_made_decision == False:
+        # Iterate through all of the events gathered from pygame.
+        for event in pygame.event.get():
+            sgc.event(event)
+            if event.type == GUI:
+                # Print user input string to the output console window. 
+                input_string = event.text.lower()
+                print_input(input_string)
 
-                            # Set the boolean to True and exit 
-                            # the loop. The maze is valid.
-                            maze_is_valid = True
-            # Generate the maze randomly using the Binary Tree algorithm.
-            # If it fails four times, switch and use the Recursive Backtracker 
-            # algorithm.
-            elif current_number_of_attempts < 8:
-                # Reset the maze.
-                reset_maze()
+                # Print error message if user input is empty.
+                if input_string == "":
+                    print "Output: Please enter a command."
+                # Get a decision from the user.
+                elif input_string == "open new game":
+                    start_new_game = True
+                    player_made_decision = True
+                elif input_string == "open replay 1":
+                    # Number of replay files.
+                    number_of_replay_files = 0
 
-                # Generate the maze using the Binary Tree algorithm.
-                generate_maze_binary_tree()
+                    # Get filenames and store into a temporary list.
+                    temp_filenames_list = []
+                    temp_filenames_list = os.listdir(os.getcwd())
 
-                # Code to break the maze generation and test the number of switches.
-                '''for x in range(len(grid)):
-                    for y in range(len(grid)):
-                        if current_number_of_attempts < 8:
-                            grid[7][x] = 0
-                            grid[y][7] = 0'''
+                    # Count the number of replay files in the temporary list.
+                    for temp_filename in temp_filenames_list:
+                        if temp_filename[:7] == "Replay_":
+                            number_of_replay_files = number_of_replay_files + 1
 
-                # Place the player, door, chest, and
-                # key objects randomly on the grid.
-                generate_random_object_positions()
+                    # If the replay file exists...
+                    if number_of_replay_files > 0:
+                        show_replay_1 = True
+                        player_made_decision = True
+                    # If the replay file does not exist...
+                    else:
+                        print "Output: Chosen replay file does not exist." \
+                                "\nHow about starting a new game?"
+                elif input_string == "open replay 2":
+                    # Number of replay files.
+                    number_of_replay_files = 0
 
-                # Test the validity of the maze.
-                if check_maze_for_validity_player_door() == 0:
-                    if check_maze_for_validity_player_key() == 0:
-                        if check_maze_for_validity_player_chest() == 0:
-                            # Place the chest combination objects along the 
-                            # optimal path and the enemies near the door.
-                            generate_optimal_object_positions()
+                    # Get filenames and store into a temporary list.
+                    temp_filenames_list = []
+                    temp_filenames_list = os.listdir(os.getcwd())
 
-                            # Print to log file that the maze successfully 
-                            # generated along with the number of times it 
-                            # took and the maze generation algorithm used.
-                            write_to_log_file(str(time.strftime("%H-%M-%S")) \
-                                              + ": Maze successfully generated " \
-                                              + "using the " \
-                                              + "Binary Tree\n " \
-                                              + "\t\t\talgorithm after " \
-                                              + "switching " \
-                                              + str(number_of_switches) \
-                                              + " time(s) and " \
-                                              + str(total_number_of_attempts + 1) \
-                                              + " attempt(s)") 
+                    # Count the number of replay files in the temporary list.
+                    for temp_filename in temp_filenames_list:
+                        if temp_filename[:7] == "Replay_":
+                            number_of_replay_files = number_of_replay_files + 1
 
-                            # Set the boolean to True and exit 
-                            # the loop. The maze is valid.
-                            maze_is_valid = True
-            # Increment current_number_of_attempts every attempt.
-            current_number_of_attempts = current_number_of_attempts + 1
-            # Increment total_number_of_attempts every attempt.
-            total_number_of_attempts = total_number_of_attempts + 1
+                    # If the replay file exists...
+                    if number_of_replay_files > 1:
+                        show_replay_2 = True
+                        player_made_decision = True
+                    # If the replay file does not exist...
+                    else:
+                        print "Output: Chosen replay file does not exist." \
+                                "\nHow about starting a new game?"
+                elif input_string == "open replay 3":
+                    # Number of replay files.
+                    number_of_replay_files = 0
 
-            if current_number_of_attempts >= 8:
-                # If the maze cannot be generated within 8 tries, set
-                # current_number_of_attempts equal to 0 and start again.
-                current_number_of_attempts = 0
+                    # Get filenames and store into a temporary list.
+                    temp_filenames_list = []
+                    temp_filenames_list = os.listdir(os.getcwd())
 
-            # Increment number_of_switches every 4 attempts.
-            if current_number_of_attempts % 4 == 0:
-                number_of_switches = number_of_switches + 1
+                    # Count the number of replay files in the temporary list.
+                    for temp_filename in temp_filenames_list:
+                        if temp_filename[:7] == "Replay_":
+                            number_of_replay_files = number_of_replay_files + 1
 
-        # Print out introduction message.
-        print_introduction_message()
+                    # If the replay file exists...
+                    if number_of_replay_files > 2:
+                        show_replay_3 = True
+                        player_made_decision = True
+                    # If the replay file does not exist...
+                    else:
+                        print "Output: Chosen replay file does not exist." \
+                                "\nHow about starting a new game?"
+                elif input_string == "exit":
+                    exit_game = True
+                    player_made_decision = True
+                else:
+                    # Not even close to a valid command or contains some 
+                    # form of misspelling or incorrect input 
+                    # (numbers, special characters, etc.).
+                    print "Please enter a valid command."
 
-        # Call the function to handle player input.
-        handle_input()
-    else:
-        print ""
+                # Clear the contents of the InputBox if it is clicked on.
+                if event.widget is input_box:
+                    clear()
+
+        # Clear the contents of the screen.
+        screen.fill((0,0,0))
+        # Update the InputText widget.
+        sgc.update(1)
+        # Update the console window to show changes.
+        pygame.display.update()
+
+# Function to start a new game.
+def open_new_game():
+    global maze_is_valid
+
+    # Set the caption for the console window.
+    pygame.display.set_caption("New Game")
+
+    # Variable used to keep track of the number of attempts.
+    current_number_of_attempts = 0
+    # Variable used to keep track of the number of switches.
+    number_of_switches = 0
+    # Variable used to keep track of the number iterations.
+    total_number_of_attempts = 0
+    # Keep generating a random maze until it is valid.
+    while not maze_is_valid:
+        # Generate the maze randomly using the Recursive
+        # Backtracker algorithm. If it fails four times,
+        # switch and use the Binary Tree algorithm.
+        if current_number_of_attempts < 4:
+            # Reset the maze.
+            reset_maze()
+
+            # Generate the maze using the 
+            # Recursive Backtracker algorithm.
+            generate_maze_recursive_backtracker()
+
+            # Code to break the maze generation 
+            # and test the number of switches.
+            '''for x in range(len(grid)):
+                for y in range(len(grid)):
+                    if current_number_of_attempts < 4:
+                        grid[7][x] = 0
+                        grid[y][7] = 0'''
+
+            # Place the player, door, chest, and
+            # key objects randomly on the grid.
+            generate_random_object_positions()
+
+            # Test the validity of the maze.
+            if check_maze_for_validity_player_door() == 0:
+                if check_maze_for_validity_player_key() == 0:
+                    if check_maze_for_validity_player_chest() == 0:
+                        # Place the chest combination objects along the 
+                        # optimal path and the enemies near the door.
+                        generate_optimal_object_positions()
+
+                        # Print to log file that the maze successfully
+                        # generated along with the number of times it 
+                        # took and the maze generation algorithm used.
+                        write_to_log_file(str(time.strftime("%H-%M-%S")) \
+                                            + ": Maze successfully generated " \
+                                            + "using the " \
+                                            + "Recursive Backtracker\n " \
+                                            + "\t\t\talgorithm after " \
+                                            + "switching " \
+                                            + str(number_of_switches) \
+                                            + " time(s) and " \
+                                            + str(total_number_of_attempts + 1) \
+                                            + " attempt(s)") 
+
+                        # Set the boolean to True and exit 
+                        # the loop. The maze is valid.
+                        maze_is_valid = True
+        # Generate the maze randomly using the Binary Tree algorithm.
+        # If it fails four times, switch and use the Recursive Backtracker 
+        # algorithm.
+        elif current_number_of_attempts < 8:
+            # Reset the maze.
+            reset_maze()
+
+            # Generate the maze using the Binary Tree algorithm.
+            generate_maze_binary_tree()
+
+            # Code to break the maze generation 
+            # and test the number of switches.
+            '''for x in range(len(grid)):
+                for y in range(len(grid)):
+                    if current_number_of_attempts < 8:
+                        grid[7][x] = 0
+                        grid[y][7] = 0'''
+
+            # Place the player, door, chest, and
+            # key objects randomly on the grid.
+            generate_random_object_positions()
+
+            # Test the validity of the maze.
+            if check_maze_for_validity_player_door() == 0:
+                if check_maze_for_validity_player_key() == 0:
+                    if check_maze_for_validity_player_chest() == 0:
+                        # Place the chest combination objects along the 
+                        # optimal path and the enemies near the door.
+                        generate_optimal_object_positions()
+
+                        # Print to log file that the maze successfully 
+                        # generated along with the number of times it 
+                        # took and the maze generation algorithm used.
+                        write_to_log_file(str(time.strftime("%H-%M-%S")) \
+                                            + ": Maze successfully generated " \
+                                            + "using the " \
+                                            + "Binary Tree\n " \
+                                            + "\t\t\talgorithm after " \
+                                            + "switching " \
+                                            + str(number_of_switches) \
+                                            + " time(s) and " \
+                                            + str(total_number_of_attempts + 1) \
+                                            + " attempt(s)") 
+
+                        # Set the boolean to True and exit 
+                        # the loop. The maze is valid.
+                        maze_is_valid = True
+        # Increment current_number_of_attempts every attempt.
+        current_number_of_attempts = current_number_of_attempts + 1
+        # Increment total_number_of_attempts every attempt.
+        total_number_of_attempts = total_number_of_attempts + 1
+
+        if current_number_of_attempts >= 8:
+            # If the maze cannot be generated within 8 tries, set
+            # current_number_of_attempts equal to 0 and start again.
+            current_number_of_attempts = 0
+
+        # Increment number_of_switches every 4 attempts.
+        if current_number_of_attempts % 4 == 0:
+            number_of_switches = number_of_switches + 1
+
+    # Print out introduction message.
+    print_introduction_message()
+
+    # Call the function to handle player input.
+    handle_input()
 
 
 
@@ -383,6 +530,7 @@ def print_introduction_message():
     print "3. open <chest, door>"
     print "4. use <key, marker, 123>"
     print "5. help"
+    print "6. quit (back to title screen)"
     print "\nTo see this message again, enter the help command. Good luck!"
 
 # Function to print out directions and a list of commands.
@@ -398,6 +546,7 @@ def help():
     print "3. open <chest, door>"
     print "4. use <key, marker, 123>"
     print "5. help"
+    print "6. quit (back to title screen)"
 
 # Function to get user input from the InputText.
 def print_input(input):
@@ -421,14 +570,12 @@ def clear():
 # File Input/Output
 ################################################################################
 
-# Function to manage the number of log files and replay files in the directory.
-def manage_input_output_files():
+# Function to manage the number of log files in the directory.
+def manage_log_files():
     # List to store all filenames in the current working directory.
     general_filenames_list = []
     # List to store the filenames for log files.
     log_filenames_list = []
-    # List to store the filenames for replay files.
-    replay_filenames_list = []
 
     # Get the list of all directory filenames.
     general_filenames_list = os.listdir(os.getcwd())
@@ -448,6 +595,16 @@ def manage_input_output_files():
             # Remove the log file from the hard drive.
             os.remove(log_filenames_list[i])
 
+# Function to manage the number of replay files in the directory.
+def manage_replay_files():
+    # List to store all filenames in the current working directory.
+    general_filenames_list = []
+    # List to store the filenames for replay files.
+    replay_filenames_list = []
+
+    # Get the list of all directory filenames.
+    general_filenames_list = os.listdir(os.getcwd())
+
     # Iterate through the general_filenames_list and store each
     # replay file's filename into the replay_filenames_list.
     for replay_filename in general_filenames_list:
@@ -463,15 +620,19 @@ def manage_input_output_files():
             # Remove the replay file from the hard drive.
             os.remove(replay_filenames_list[i])
 
-# Function to open the log and replay files.
-def open_input_output_files():
+# Function to open the log file.
+def open_log_file():
     global log_file
     global log_filename
-    global replay_file
-    global replay_filename
 
     # Open the log file in write mode.
     log_file = open(log_filename, "wb")
+
+# Function to open the replay file.
+def open_replay_file():
+    global replay_file
+    global replay_filename
+
     # Open the replay file in write mode.
     replay_file = open(replay_filename, "wb")
 
@@ -494,17 +655,17 @@ def open_chosen_replay_file(number):
         if replay_filename[:7] == "Replay_":
             replay_filenames_list.append(replay_filename)
 
-    if number == 1 and len(replay_filenames_list) >= 1:
+    if number == 1 and len(replay_filenames_list) > 0:
         # Set the chosen replay filename.
         chosen_replay_filename = replay_filenames_list[0]
         # Open the chosen replay file in write mode.
         chosen_replay_file = open(chosen_replay_filename, "rb")
-    elif number == 2 and len(replay_filenames_list) >= 2:
+    elif number == 2 and len(replay_filenames_list) > 1:
         # Set the chosen replay filename.
         chosen_replay_filename = replay_filenames_list[1]
         # Open the chosen replay file in write mode.
         chosen_replay_file = open(chosen_replay_filename, "rb")
-    elif number == 3 and len(replay_filenames_list) == 3:
+    elif number == 3 and len(replay_filenames_list) > 2:
         # Set the chosen replay filename.
         chosen_replay_filename = replay_filenames_list[2]
         # Open the chosen replay file in write mode.
@@ -528,18 +689,19 @@ def write_to_replay_file(string):
     # Update the changes to the replay file.
     replay_file.flush()
 
-# Function to close the opened log and replay file.
-def close_input_output_files():
+# Function to close the opened log file.
+def close_log_file():
     global log_file
-    global replay_file
 
     # Close the log file.
     log_file.close()
 
-    # Only close the file if it has been opened.
-    if start_new_game == True:
-        # Close the replay file.
-        replay_file.close()
+# Function to close the opened replay file.
+def close_replay_file():
+    global replay_file
+
+    # Close the replay file.
+    replay_file.close()
 
 # Function to close the chosen replay file.
 def close_chosen_replay_file():
@@ -569,8 +731,19 @@ def open_replay(number):
     global chest_combination_3_object_position
     global game_complete
 
+    # Declare the game incomplete.
+    game_complete = False
+
     # Open the chosen replay file.
     open_chosen_replay_file(number)
+
+    # Set the caption for the console window.
+    if number == 1:
+        pygame.display.set_caption("Replay 1: " + str(chosen_replay_filename))
+    elif number == 2:
+        pygame.display.set_caption("Replay 2: " + str(chosen_replay_filename))
+    elif number == 3:
+        pygame.display.set_caption("Replay 3: " + str(chosen_replay_filename))
 
     # Read the chosen replay file and store into a list.
     chosen_replay_file_list = chosen_replay_file.readlines()
@@ -659,7 +832,10 @@ def open_replay(number):
                         "\nTry entering actual text next time."
             # Print the objects and list of commands for the help command.
             elif input_string == "help":
-                help()
+                help()                    
+            # Go back to the title screen if the player chooses to.
+            elif input_string == "quit":
+                game_complete = True
             # Possible user input for the go <Direction> command.
             elif input_string == "go forward" or input_string == "go up" \
             or input_string == "go north":
@@ -838,18 +1014,11 @@ def open_replay(number):
 
             i = i + 1
         game_complete = True
-    '''except:
-        # Store the exception.
-        e = sys.exc_info()[0]
-        # Piece the exception message together for printing.
-        exception_message = (str(time.strftime("%H-%M-%S")) + ": Error: "
-                                + str(e) + " \n\t\t\tProblem lies within the " 
-                                + "replay system.")
-        # Print the exception to the log file.
-        write_to_log_file(exception_message)'''
-
     # Pause for 7 seconds before terminating the program.
     time.sleep(7)
+
+    # Exit the current scope and back to the loop that controls the game state.
+    return
 
 
 
@@ -1757,66 +1926,39 @@ def reset_object_positions_and_state_conditions():
 # Player Input
 ################################################################################
 
-# Function to handle player choices on the title screen.
-def handle_title_screen_options():
-    global player_made_decision
-    global start_new_game
-    global show_replay_1
-    global show_replay_2
-    global show_replay_3
-
-    # Print introduction message to the user.
-    print "\nTitle Screen: "
-    print "\nPlease choose one of the following options:"  
-    print "1. open new game"
-    print "2. open replay <1, 2, 3>"
-
-    # Continue running until the player chooses
-    # a valid option or closes the window.
-    while player_made_decision == False:
-        # Iterate through all of the events gathered from pygame.
-        for event in pygame.event.get():
-            sgc.event(event)
-            if event.type == GUI:
-                # Print user input string to the output console window. 
-                input_string = event.text.lower()
-                print_input(input_string)
-
-                # Print error message if user input is empty.
-                if input_string == "":
-                    print "Output: Please enter a command."
-                # Get a decision from the user.
-                elif input_string == "open new game":
-                    start_new_game = True
-                    player_made_decision = True
-                elif input_string == "open replay 1":
-                    show_replay_1 = True
-                    player_made_decision = True
-                elif input_string == "open replay 2":
-                    show_replay_2 = True
-                    player_made_decision = True
-                elif input_string == "open replay 3":
-                    show_replay_3 = True
-                    player_made_decision = True
-                else:
-                    # Not even close to a valid command or contains some 
-                    # form of misspelling or incorrect input 
-                    # (numbers, special characters, etc.).
-                    print "Please enter a valid command."
-
-                # Clear the contents of the InputBox if it is clicked on.
-                if event.widget is input_box:
-                    clear()
-
-        # Clear the contents of the screen.
-        screen.fill((0,0,0))
-        # Update the InputText widget.
-        sgc.update(1)
-        # Update the console window to show changes.
-        pygame.display.update()
-
 # Function to handle player character movement.
 def handle_input():
+    global replay_filename
+    global player_object
+    global chest_object_closed
+    global chest_object_opened
+    global key_object
+    global door_object
+    global simple_enemy_object
+    global smart_enemy_object
+    global chest_combination_1_object
+    global chest_combination_2_object
+    global chest_combination_3_object
+    global player_made_decision
+    global game_complete
+
+    # Reset game conditions.
+    player_grabbed_key = False
+    player_used_key = False
+    player_used_marker = False
+    player_unlocked_chest = False
+    player_opened_chest = False
+    game_complete = False
+
+    # Manage the number of replay files.
+    manage_replay_files()
+
+    # Create a string equal to the current time for the replay file.
+    replay_filename = time.strftime("Replay_%m-%d-%y_%H-%M-%S.txt")
+
+    # Open the replay file.
+    open_replay_file()
+
     # Store all necessary information into the replay file.
     write_to_replay_file(str(grid))
     write_to_replay_file(str(object_position_dictionary))
@@ -1844,6 +1986,9 @@ def handle_input():
                     # Print the objects and list of commands for the help command.
                     elif input_string == "help":
                         help()
+                    # Go back to the title screen if the player chooses to.
+                    elif input_string == "quit":
+                        game_complete = True
                     # Possible user input for the go <Direction> command.
                     elif input_string == "go forward" or input_string == "go up" \
                     or input_string == "go north":
@@ -2058,6 +2203,12 @@ def handle_input():
                                  + "attempts to crash the game and continuing.")
             # Print the exception to the log file.
             write_to_log_file(exception_message)
+
+    # Close the opened replay file.
+    close_replay_file()
+
+    # Exit the current scope and back to the loop that controls the game state.
+    return
 
 
 
@@ -2935,13 +3086,13 @@ def perform_search():
 ################################################################################
 # Executes the main function.
 if __name__ == "__main__":
-    # Manage the log and replay files.
-    manage_input_output_files()
-    # Open the log and replay files.
-    open_input_output_files()
+    # Manage the log files.
+    manage_log_files()
+    # Open the log file.
+    open_log_file()
     # Call function main.
     main()
-    # Close the log and replay files.
-    close_input_output_files()
+    # Close the log file.
+    close_log_file()
     # Exit the console window.
     pygame.quit()
