@@ -404,7 +404,7 @@ def show_title_screen():
                                     1, (255, 255, 255))
         label_2 = default_font_2.render("Taylor Venissat, Phuong Ho, Chance Johnson,", 
                                     1, (255, 255, 255))
-        label_3 = default_font_2.render("Garrett Benoit, and Zachary Hermsen", 
+        label_3 = default_font_2.render("Garrett Benoit, and Zackary Hermsen", 
                                     1, (255, 255, 255))
         # Draw the labels onto the screen.
         screen.blit(label_1, (70, 120))
