@@ -1,0 +1,8 @@
+["m:The Amazing Dungeon",
+    ["f:Start New Game", "new_game"],
+    ["m:Open Replay",
+        ["f:Open Replay 1", "$replay_1"],
+        ["f:Open Replay 2", "$replay_2"],
+        ["f:Open Replay 3", "$replay_3"]
+    ]
+]
