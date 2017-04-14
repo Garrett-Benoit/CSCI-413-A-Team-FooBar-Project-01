@@ -13,7 +13,6 @@
 # Tools:            Pygame (Library), Microsoft Visual Studios (IDE).
 
 
-
 ################################################################################
 # Imports
 ################################################################################
@@ -29,12 +28,77 @@ import time
 import heapq
 import ast
 
+#################################################################
+#Encryption
+#################################################################
+A_ORD=ord('a')
+Z_ORD=ord('z')
+CHOOSEN_ALGORITHM="1"
+def caesar_encrypt(text,key):
+    """
+    (str,int)->str
+    Params
+    ===============
+    text: String to encrypt
+    key: Shift to apply to each character
 
+    Encrypt by shifting characters to the right (add key)
+    Algorithm:
+    1. Calculate the ASCI character representation ord(x)
+    2. Create list to hold characters
+    3. for each character in ASCI list
+        1. IF in range [a-z], shift by key
+            a. if new character is greater than last character 'z', start back at A
+                and append to cipher list
+            b. else, just append character to cipher 
 
+    Return str Cipher text of encrypted text
+    """
+    clist=[ord(x) for x in text] #Convert to ASCI representation
+    cipher=list()
+    for x in clist:
+        if(x>=A_ORD and x<=Z_ORD):
+            new_char=x+key #Shift the character
+            if(new_char>Z_ORD): #Shift character is more than last character, cycle back to A
+                c=A_ORD+(new_char-Z_ORD-1) #Subtract 1 to avoid cases where z and a conflict
+                cipher.append(chr(c))
+            else:
+                cipher.append(chr(new_char))
+        else:
+            cipher.append(chr(x))
+    return ''.join(cipher)
+
+def caesar_decrypt(text,key):
+    """
+    (str,int)->str
+    params
+    ================
+    text: Text(string) to decrypt
+    key: The shift applied during encryption
+
+    Reverse the encryption process by shifting to the left (subtract key)
+
+    Return str plain text representation
+    """
+    cipher=[ord(x) for x in text]
+    cleat_text=list()
+    for x in cipher:
+        if(x>=A_ORD and x<=Z_ORD):
+            new_char=x-key
+            if(new_char<A_ORD):
+                print("C: %d"%(A_ORD-new_char))
+                c=Z_ORD-(A_ORD-new_char)+1 #Add 1 to adjust cycle again
+                cleat_text.append(chr(c))
+            else:
+                cleat_text.append(chr(new_char))
+        else:
+            cleat_text.append(chr(x))
+    return ''.join(cleat_text)
 ################################################################################
 # Initialization
 ################################################################################
-
+#Caesar crypto Key
+CAESAR_KEY=3
 # Create a string equal to the current time for the log file.
 log_filename = time.strftime("Log_%m-%d-%y_%H-%M-%S.txt")
 # Declare a log file variable for global use.
@@ -406,6 +470,7 @@ def show_title_screen():
                                     1, (255, 255, 255))
         label_3 = default_font_2.render("Garrett Benoit, and Zackary Hermsen", 
                                     1, (255, 255, 255))
+      
         # Draw the labels onto the screen.
         screen.blit(label_1, (70, 120))
         screen.blit(label_2, (110, 175))
@@ -723,9 +788,14 @@ def write_to_log_file(string):
 # Function to write to the replay file.
 def write_to_replay_file(string):
     global replay_file
-
+    global CAESAR_KEY
+    global CHOOSEN_ALGORITHM
     # Write the string to the replay file.
-    replay_file.write(string + "\n")
+    #Encrypt string before write
+    if(CHOOSEN_ALGORITHM=="1"):
+        replay_file.write(caesar_encrypt(string,CAESAR_KEY) + "\n")
+    else:
+        replay_file.write(string + "\n")
     # Update the changes to the replay file.
     replay_file.flush()
 
@@ -770,6 +840,7 @@ def open_replay(number):
     global chest_combination_2_object_position
     global chest_combination_3_object_position
     global game_complete
+    global CAESAR_KEY
 
     # Declare the game incomplete.
     game_complete = False
@@ -784,10 +855,14 @@ def open_replay(number):
         pygame.display.set_caption("Replay 2: " + str(chosen_replay_filename))
     elif number == 3:
         pygame.display.set_caption("Replay 3: " + str(chosen_replay_filename))
-
-    # Read the chosen replay file and store into a list.
-    chosen_replay_file_list = chosen_replay_file.readlines()
-
+       
+     # Read the chosen replay file and store into a list.
+    lines = chosen_replay_file.readlines()
+    if(lines[0].strip()=="1"): #Decrypt file
+        del lines[0] #Remove algorithm line
+        chosen_replay_file_list=[caesar_decrypt(x,CAESAR_KEY) for x in lines]
+    else:
+        chosen_replay_file_list=lines
     # Close the opened chosen replay file after reading is complete.
     close_chosen_replay_file()
 
@@ -833,7 +908,6 @@ def open_replay(number):
     chest_combination_3_object_position = \
     [object_position_dictionary['chest combination 3'][0],
     object_position_dictionary['chest combination 3'][1]]
-
     # Print out the introduction message.
     print_introduction_message()
 
@@ -1984,6 +2058,7 @@ def handle_input():
     global chest_combination_3_object
     global player_made_decision
     global game_complete
+    global CHOOSEN_ALGORITHM
 
     # Reset the state of player 
     # decisions and game conditions.
@@ -2004,6 +2079,7 @@ def handle_input():
     open_replay_file()
 
     # Store all necessary information into the replay file.
+    write_to_replay_file(CHOOSEN_ALGORITHM) #Store algorithm first
     write_to_replay_file(str(grid))
     write_to_replay_file(str(object_position_dictionary))
 
