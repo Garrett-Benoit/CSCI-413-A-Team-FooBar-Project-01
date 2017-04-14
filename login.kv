@@ -1,0 +1,52 @@
+#:include connected.kv
+
+<Login>:
+    BoxLayout
+        id: login_layout
+        orientation: 'vertical'
+        padding: [5, 5, 5, 5]
+        spacing: 50
+
+        Label:
+            text: 'Welcome'
+            font_size: 32
+
+        Label:
+            text: 'Please log in to play'
+            font_size: 20
+
+        BoxLayout:
+            orientation: 'vertical'
+
+            Label:
+                text: 'Username'
+                font_size: 18
+                halign: 'left'
+                text_size: root.width-20, 20
+
+            TextInput:
+                id: login
+                multiline: False
+                font_size: 28
+
+        BoxLayout:
+            orientation: 'vertical'
+            Label:
+                text: 'Password'
+                halign: 'left'
+                font_size: 18
+                text_size: root.width-20, 20
+
+            TextInput:
+                id: password
+                multiline: False
+                password: True
+                font_size: 28
+
+        Button:
+            text: "Let's Play!"
+            font_size: 24
+            background_color: 1, 0, 0, 1
+
+            on_press: root.do_login(login.text, password.text)
+
