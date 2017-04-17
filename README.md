@@ -21,33 +21,45 @@ Tools:            Pygame (Library), Microsoft Visual Studios (IDE).
 
 
 
+
 Build Instructions (Developer):
 
 1) Install Python 2.7.13 x32: https://www.python.org/
 
 2) Install Pygame: http://www.pygame.org/wiki/GettingStarted
+	Enter into a command window: pip install pygame
 
-3) Install SGC: https://launchpad.net/simplegc
+3) Install python-firebase: https://github.com/ozgur/python-firebase
+	Enter into a command window: pip install python-firebase
 
-4) Install cx_Freeze x32 for Python 2.7:
+4) Install SGC: https://launchpad.net/simplegc
+	(Everything that you need is already in the repository, don't bother trying to install)
+
+5) Install cx_Freeze x32 for Python 2.7:
 https://pypi.python.org/pypi?:action=display&name=cx_Freeze&version=5.0.1
 
-5) Open a command window in this directory or navigate to this directory
+6) Open a command window and navigate to CSCI-413-A-Team-FooBar-Project-01/Source/
 
-6) In the command window, enter (without the quotes), �python setup.py build�
+7) In the command window, enter: python Setup.py build
 
-You will need to add the python directory location to your PATH if you have a
+You may need to add the python directory location to your PATH if you have a
 problem running python in the command window. Here is a walkthrough for
 Windows 7:
 http://stackoverflow.com/questions/6318156/adding-python-path-on-windows-7
 
 
 
-Run Instructions (Player/Tester):
 
-1) Execute Main.exe in the directory build/exe.win32-2.7/
+Run Instructions If Supplied With An Executable (Player):
 
-	or
+1) Ensure that you have recieved the collection of files from one of the team members.
 
-2) Execute Main.py in the this directory (Must perform the first three steps
-	in the  build instructions!)
+2) Execute Main.exe in the directory CSCI-413-A-Team-FooBar-Project-01/Source/build/exe.win32-2.7/
+
+
+Run Instructions If Not Supplied With An Executable (Developer):
+
+1) Perform the first three steps in the build instructions! 
+	(p.s. I will laugh at you if your failure to run the build is the result of you not following the provided instructions.)
+
+2) Execute Main.py in CSCI-413-A-Team-FooBar-Project-01/Source/
