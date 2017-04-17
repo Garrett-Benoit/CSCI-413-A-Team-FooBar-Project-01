@@ -478,6 +478,7 @@ def show_login_signup_screen():
                         # Determine if the username exists on the server.
                         if (firebase.get('/users', temp_username)) == None:
 
+                            # If the password returns a valid input.
                             if password_check(temp_password):
 
                                 # Encrypt the entered password before storing.
@@ -542,6 +543,7 @@ def show_login_signup_screen():
         # Update the console window to show changes.
         pygame.display.update()
 
+# Function to check password for valid input
 def password_check(password_input):
     # Character counters
     lower_case_letters_count = 0
