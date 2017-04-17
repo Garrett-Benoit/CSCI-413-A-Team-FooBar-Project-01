@@ -43,7 +43,9 @@ from firebase import jsonutil
 firebase = firebase.FirebaseApplication(
     'https://team-foobar-maze-generator.firebaseio.com/', None)
 # Key used in encrypting the database information.
-key_database = 'abcdefghijklmnopqrstuvwxyz'
+key_database_lower = 'abcdefghijklmnopqrstuvwxyz'
+key_database_upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+key_database_digit = '0123456789'
 # Key value for the Caesar Cipher encryption algorithm.
 key_caesar_cipher = 3
 # Create a string equal to the current time for the log file.
@@ -598,7 +600,7 @@ def password_check(password_input):
 # Function to filter top 10 times and moves.
 def filter_top10(items):
     sorted_items = sorted(items, key = lambda x: items[x], reverse = True)
-    
+
     for k in sorted_items:
         print("{} : {}".format(k, items[k]))
 
@@ -1109,19 +1111,42 @@ def database_encrypt(n, plaintext):
     result = ''
 
     #
-    for l in plaintext.lower():
-        #
-        try:
+    for l in plaintext:
+        # If character is lower case
+        if l.islower():
+            try:
+                #
+                i = (key_database_lower.index(l) + n) % 26
+                #
+                result += key_database_lower[i]
             #
-            i = (key_database.index(l) + n) % 26
+            except ValueError:
+                #
+                result += l
+        # If character is upper case
+        elif l.isupper():
+            try:
+                #
+                i = (key_database_upper.index(l) + n) % 26
+                #
+                result += key_database_upper[i]
             #
-            result += key_database[i]
-        #
-        except ValueError:
+            except ValueError:
+                #
+                result += l
+        # If character is a digit
+        elif l.isdigit():
+            try:
+                #
+                i = (key_database_digit.index(l) + n) % 10
+                #
+                result += key_database_digit[i]
             #
-            result += l
+            except ValueError:
+                #
+                result += l
     #
-    return result.lower()
+    return result
 
 # Function to...
 def database_decrypt(n, ciphertext):
@@ -1130,16 +1155,39 @@ def database_decrypt(n, ciphertext):
 
     #
     for l in ciphertext:
-        #
-        try:
+        # If character is lower case
+        if l.islower():
+            try:
+                #
+                i = (key_database_lower.index(l) - n) % 26
+                #
+                result += key_database_lower[i]
             #
-            i = (key_database.index(l) - n) % 26
+            except ValueError:
+                #
+                result += l
+        # If character is upper case
+        elif l.isupper():
+            try:
+                #
+                i = (key_database_upper.index(l) - n) % 26
+                #
+                result += key_database_upper[i]
             #
-            result += key_database[i]
-        #
-        except ValueError:
+            except ValueError:
+                #
+                result += l
+        # If character is a digit
+        elif l.isdigit():
+            try:
+                #
+                i = (key_database_digit.index(l) - n) % 10
+                #
+                result += key_database_digit[i]
             #
-            result += l
+            except ValueError:
+                #
+                result += l
     #
     return result
 
