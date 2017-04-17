@@ -3,10 +3,10 @@
 ################################################################################
 # Date Started:     2 (February) / 11 (Saturday) / 2017 (Fall)
 # School:           McNeese State University
-# Class:            Computer Science 413-A - Software Engineering II 
+# Class:            Computer Science 413-A - Software Engineering II
 # Professor:        Dr. Kevin Cherry
 # Team:             FooBar
-# Members:          Taylor Venissat (Team Leader), Phuong Ho, Chance Johnson, 
+# Members:          Taylor Venissat (Team Leader), Phuong Ho, Chance Johnson,
 #                   Garrett Benoit, and Zackary Hermsen.
 # Assignment:       Team-Programming-Assignment-01
 # Language:         Python
@@ -102,8 +102,8 @@ player_used_key = False
 player_used_marker = False
 player_unlocked_chest = False
 player_opened_chest = False
-chest_combination = (chest_combination_1_object + 
-                     chest_combination_2_object + 
+chest_combination = (chest_combination_1_object +
+                     chest_combination_2_object +
                      chest_combination_3_object)
 maze_is_valid = False
 player_is_authenticated = False
@@ -151,7 +151,7 @@ pygame.display.set_caption("")
 screen = sgc.surface.Screen((600, 635))
 
 # Create and place an input box on the console window.
-input_box = sgc.InputBox((600, 35), label = "", 
+input_box = sgc.InputBox((600, 35), label = "",
                          default = "Input here, output console...")
 input_box.config(pos = (0, 599))
 input_box.add(order = 0)
@@ -189,15 +189,15 @@ def main():
     # Create and define the door object.
     door_object = pygame.font.Font(None, object_size).render(
                                      door_object, False, door_object_color)
-                
+
     # Create and define the closed chest object.
     chest_object_closed = pygame.font.Font(None, object_size).render(
-                                        chest_object_closed, False, 
+                                        chest_object_closed, False,
                                         chest_object_color)
-       
+
     # Create and define the opened chest object.
     chest_object_opened = pygame.font.Font(None, object_size).render(
-                                    chest_object_opened, False, 
+                                    chest_object_opened, False,
                                     chest_object_color)
 
     # Create and define the key object.
@@ -210,29 +210,29 @@ def main():
 
     # Create and define the simple enemy object.
     simple_enemy_object = pygame.font.Font(None, object_size).render(
-                                     simple_enemy_object, False, 
+                                     simple_enemy_object, False,
                                      simple_enemy_object_color)
 
     # Create and define the smart enemy object.
     smart_enemy_object = pygame.font.Font(None, object_size).render(
-                                     smart_enemy_object, False, 
+                                     smart_enemy_object, False,
                                      smart_enemy_object_color)
 
     # Create and define the chest_combination_1 object.
     chest_combination_1_object = pygame.font.Font(None, object_size).render(
-                                     chest_combination_1_object, False, 
+                                     chest_combination_1_object, False,
                                      chest_combination_1_object_color)
-    
+
     # Create and define the chest_combination_2 object.
     chest_combination_2_object = pygame.font.Font(None, object_size).render(
-                                     chest_combination_2_object, False, 
+                                     chest_combination_2_object, False,
                                      chest_combination_2_object_color)
-    
+
     # Create and define the chest_combination_3 object.
     chest_combination_3_object = pygame.font.Font(None, object_size).render(
-                                     chest_combination_3_object, False, 
+                                     chest_combination_3_object, False,
                                      chest_combination_3_object_color)
-    
+
     # Call the function to handle the login/signup of the player.
     show_login_signup_screen()
 
@@ -247,7 +247,7 @@ def main():
         screen.fill((0, 0, 0))
         # Update the console window to show changes.
         pygame.display.update()
-        
+
         # Open replay 1, the oldest replay.
         if show_replay_1 == True:
             open_replay(1)
@@ -261,7 +261,7 @@ def main():
         elif start_new_game == True:
             open_new_game()
 
-        # Reset the state of player 
+        # Reset the state of player
         # decisions and game conditions.
         marked_tile_list = []
         player_grabbed_key = False
@@ -316,7 +316,7 @@ def show_login_signup_screen():
     print "2. signup"
     print "3. exit"
 
-    i = 0 # Variable used as a counter for the following loop. 
+    i = 0 # Variable used as a counter for the following loop.
     login_attempt = False # Variable used to determine if the user chose to login.
     signup_attempt = False # Variable used to determine if the user chose to signup.
     temp_username = "" # Variable used to store the username entered by the user.
@@ -330,8 +330,8 @@ def show_login_signup_screen():
         for event in pygame.event.get():
             sgc.event(event)
             if event.type == GUI:
-                # Print user input string to the output console window. 
-                input_string = event.text.lower()
+                # Print user input string to the output console window.
+                input_string = event.text
                 print_input(input_string)
 
                 if i == 0:
@@ -350,8 +350,8 @@ def show_login_signup_screen():
                         # Print error message if user input is empty.
                         print "Output: Please enter a command."
                     else:
-                        # Not even close to a valid command or contains some 
-                        # form of misspelling or incorrect input 
+                        # Not even close to a valid command or contains some
+                        # form of misspelling or incorrect input
                         # (numbers, special characters, etc.).
                         print "Output: Please enter a valid command."
                 elif i == 1:
@@ -368,16 +368,16 @@ def show_login_signup_screen():
                     # Store the entered password.
                     temp_password = input_string
 
-                if login_attempt == True:             
+                if login_attempt == True:
                     if i == 0:
-                        # Print a message informing the 
+                        # Print a message informing the
                         # user to input their username.
                         print "Output: Please enter your username: "
 
                         # Increment the value of i.
                         i = i + 1
                     elif i == 1:
-                        # Print a message informing the 
+                        # Print a message informing the
                         # user to input their password.
                         print "Output: Please enter your password: "
 
@@ -397,7 +397,7 @@ def show_login_signup_screen():
                             if temp_password == decrypted_password:
                                 # The player has been successfully authenticated.
                                 player_is_authenticated = True
-                                # Print out a message informing the user that 
+                                # Print out a message informing the user that
                                 # they have been successfully logged in.
                                 print "Output: Authentication successful.\n" \
                                     + "\tYou have been successfully logged in."
@@ -431,8 +431,8 @@ def show_login_signup_screen():
                             print "Output: Authentication Error." \
                                     + " Incorrect username."
 
-                        # Reset values and variables used in the 
-                        # loop and print out an authentication 
+                        # Reset values and variables used in the
+                        # loop and print out an authentication
                         # message if the player is not authenticated.
                         if player_is_authenticated == False:
                             # Reset the values of variables used in the loop.
@@ -454,21 +454,21 @@ def show_login_signup_screen():
                             print "3. exit"
                 elif signup_attempt == True:
                     if i == 0:
-                        # Print a message informing the 
+                        # Print a message informing the
                         # user to input a username.
                         print "Output: Please enter a username: "
 
                         # Increment the value of i.
                         i = i + 1
                     elif i == 1:
-                        # Print a message informing the 
+                        # Print a message informing the
                         # user to input an email address.
                         print "Output: Please enter an email address: "
 
                         # Increment the value of i.
                         i = i + 1
                     elif i == 2:
-                        # Print a message informing the 
+                        # Print a message informing the
                         # user to input a password.
                         print "Output: Please enter a password: "
 
@@ -477,35 +477,38 @@ def show_login_signup_screen():
                     elif i == 3:
                         # Determine if the username exists on the server.
                         if (firebase.get('/users', temp_username)) == None:
-                            # Encrypt the entered password before storing.
-                            encrypted_password = database_encrypt(
-                                5, temp_password)
 
-                            # Create the account if it does not already exist.
-                            if firebase.put('/users/', temp_username,
-                                            {'email': temp_email, 
-                                             'password': encrypted_password}):
-                                # The player has been successfully authenticated. 
-                                player_is_authenticated = True
-                                # Print out a message informing the user
-                                # that they have successfully signed up.
-                                print "Output: Authentication successful.\n" \
-                                    + "\tYou have successfully signed up."
+                            if password_check(temp_password):
 
-                                # Print new lines for spacing.
-                                print "\n\n"
-                            # The account already exists.
-                            else:
-                                print "Output: Authentication Error." \
-                                        + " Existing account detected."
+                                # Encrypt the entered password before storing.
+                                encrypted_password = database_encrypt(
+                                    5, temp_password)
+
+                                # Create the account if it does not already exist.
+                                if firebase.put('/users/', temp_username,
+                                                {'email': temp_email,
+                                                 'password': encrypted_password}):
+                                    # The player has been successfully authenticated.
+                                    player_is_authenticated = True
+                                    # Print out a message informing the user
+                                    # that they have successfully signed up.
+                                    print "Output: Authentication successful.\n" \
+                                        + "\tYou have successfully signed up."
+
+                                    # Print new lines for spacing.
+                                    print "\n\n"
+                                # The account already exists.
+                                else:
+                                    print "Output: Authentication Error." \
+                                            + " Existing account detected."
 
                         # The username already exists.
                         else:
                             print "Output: Authentication Error." \
                                     + " Existing username detected."
 
-                        # Reset values and variables used in the 
-                        # loop and print out an authentication 
+                        # Reset values and variables used in the
+                        # loop and print out an authentication
                         # message if the player is not authenticated.
                         if player_is_authenticated == False:
                             # Reset the values of variables used in the loop.
@@ -538,6 +541,57 @@ def show_login_signup_screen():
         sgc.update(1)
         # Update the console window to show changes.
         pygame.display.update()
+
+def password_check(password_input):
+    # Character counters
+    lower_case_letters_count = 0
+    upper_case_letters_count = 0
+    numbers_count = 0
+
+    # Check if password is 8 characters in length
+    if len(password_input) < 8:
+        print "Password must be at least 8 characters long."
+    else:
+        # Password validity variables
+        valid_upper = False
+        valid_lower = False
+        valid_digit = False
+
+        # Loop through each character and check for validity.
+        for character in password_input:
+            if character.isdigit():
+                numbers_count += 1
+            elif character.islower():
+                lower_case_letters_count += 1
+                print lower_case_letters_count
+            elif character.isupper():
+                upper_case_letters_count += 1
+
+        # Check for lower case count
+        if lower_case_letters_count > 0:
+            valid_lower = True
+        else:
+            print "No lower case letters in password"
+
+        # Check for upper case count
+        if upper_case_letters_count > 0:
+            valid_upper = True
+        else:
+            print "No upper case letters in password"
+
+        # Check for digit count
+        if numbers_count > 0:
+            valid_digit = True
+        else:
+            print "No numbers in password"
+
+        # If all counts are valid
+        if valid_upper & valid_lower & valid_digit:
+            print "Good password"
+            print "Lower case count: " + str(lower_case_letters_count)
+            print "Upper case count: " + str(upper_case_letters_count)
+            print "Number count: " + str(numbers_count)
+            return True
 
 # Function to handle player choices on the title screen.
 def show_title_screen():
@@ -582,7 +636,7 @@ def show_title_screen():
         for event in pygame.event.get():
             sgc.event(event)
             if event.type == GUI:
-                # Print user input string to the output console window. 
+                # Print user input string to the output console window.
                 input_string = event.text.lower()
                 print_input(input_string)
 
@@ -660,8 +714,8 @@ def show_title_screen():
                     exit_game = True
                     player_made_decision = True
                 else:
-                    # Not even close to a valid command or contains some 
-                    # form of misspelling or incorrect input 
+                    # Not even close to a valid command or contains some
+                    # form of misspelling or incorrect input
                     # (numbers, special characters, etc.).
                     print "Output: Please enter a valid command."
 
@@ -676,13 +730,13 @@ def show_title_screen():
         # Set the title of the game and the names of team members on the screen.
         default_font_1 = pygame.font.SysFont("None", 45)
         default_font_2 = pygame.font.SysFont("None", 25)
-        label_1 = default_font_1.render("Python-Text-Based-Maze-Game", 
+        label_1 = default_font_1.render("Python-Text-Based-Maze-Game",
                                     1, (255, 255, 255))
-        label_2 = default_font_2.render("Taylor Venissat, Phuong Ho, Chance Johnson,", 
+        label_2 = default_font_2.render("Taylor Venissat, Phuong Ho, Chance Johnson,",
                                     1, (255, 255, 255))
-        label_3 = default_font_2.render("Garrett Benoit, and Zackary Hermsen", 
+        label_3 = default_font_2.render("Garrett Benoit, and Zackary Hermsen",
                                     1, (255, 255, 255))
-      
+
         # Draw the labels onto the screen.
         screen.blit(label_1, (70, 120))
         screen.blit(label_2, (110, 175))
@@ -714,11 +768,11 @@ def open_new_game():
             # Reset the maze.
             reset_maze()
 
-            # Generate the maze using the 
+            # Generate the maze using the
             # Recursive Backtracker algorithm.
             generate_maze_recursive_backtracker()
 
-            # Code to break the maze generation 
+            # Code to break the maze generation
             # and test the number of switches.
             '''for x in range(len(grid)):
                 for y in range(len(grid)):
@@ -734,12 +788,12 @@ def open_new_game():
             if check_maze_for_validity_player_door() == 0:
                 if check_maze_for_validity_player_key() == 0:
                     if check_maze_for_validity_player_chest() == 0:
-                        # Place the chest combination objects along the 
+                        # Place the chest combination objects along the
                         # optimal path and the enemies near the door.
                         generate_optimal_object_positions()
 
                         # Print to log file that the maze successfully
-                        # generated along with the number of times it 
+                        # generated along with the number of times it
                         # took and the maze generation algorithm used.
                         write_to_log_file(str(time.strftime("%H-%M-%S")) \
                                             + ": Maze successfully generated " \
@@ -750,13 +804,13 @@ def open_new_game():
                                             + str(number_of_switches) \
                                             + " time(s) and " \
                                             + str(total_number_of_attempts + 1) \
-                                            + " attempt(s)") 
+                                            + " attempt(s)")
 
-                        # Set the boolean to True and exit 
+                        # Set the boolean to True and exit
                         # the loop. The maze is valid.
                         maze_is_valid = True
         # Generate the maze randomly using the Binary Tree algorithm.
-        # If it fails four times, switch and use the Recursive Backtracker 
+        # If it fails four times, switch and use the Recursive Backtracker
         # algorithm.
         elif current_number_of_attempts < 8:
             # Reset the maze.
@@ -765,7 +819,7 @@ def open_new_game():
             # Generate the maze using the Binary Tree algorithm.
             generate_maze_binary_tree()
 
-            # Code to break the maze generation 
+            # Code to break the maze generation
             # and test the number of switches.
             '''for x in range(len(grid)):
                 for y in range(len(grid)):
@@ -781,12 +835,12 @@ def open_new_game():
             if check_maze_for_validity_player_door() == 0:
                 if check_maze_for_validity_player_key() == 0:
                     if check_maze_for_validity_player_chest() == 0:
-                        # Place the chest combination objects along the 
+                        # Place the chest combination objects along the
                         # optimal path and the enemies near the door.
                         generate_optimal_object_positions()
 
-                        # Print to log file that the maze successfully 
-                        # generated along with the number of times it 
+                        # Print to log file that the maze successfully
+                        # generated along with the number of times it
                         # took and the maze generation algorithm used.
                         write_to_log_file(str(time.strftime("%H-%M-%S")) \
                                             + ": Maze successfully generated " \
@@ -797,9 +851,9 @@ def open_new_game():
                                             + str(number_of_switches) \
                                             + " time(s) and " \
                                             + str(total_number_of_attempts + 1) \
-                                            + " attempt(s)") 
+                                            + " attempt(s)")
 
-                        # Set the boolean to True and exit 
+                        # Set the boolean to True and exit
                         # the loop. The maze is valid.
                         maze_is_valid = True
         # Increment current_number_of_attempts every attempt.
@@ -840,7 +894,7 @@ def print_introduction_message():
     print "to capture you. If they catch you, they will drag you back to "
     print "where you started and confiscate all of your items. "
     print "The following is a list of available commands. "
-    print "\nCommand List: "    
+    print "\nCommand List: "
     print "1. go <forward, up, north, right, east, back, down, " \
     "south, left, west> <number>"
     print "2. grab <key>"
@@ -875,7 +929,7 @@ def print_go_error():
 
 # Function to print error message for invalid input.
 def print_input_error():
-    print "Output: Invalid input. Command not recognized..." 
+    print "Output: Invalid input. Command not recognized..."
 
 # Function to clear user input from the InputText.
 def clear():
@@ -957,7 +1011,7 @@ def open_replay_file():
 def open_chosen_replay_file(number):
     global chosen_replay_file
     global chosen_replay_filename
-    
+
     # List to store all filenames in the current working directory.
     general_filenames_list = []
     # List to store the filenames for replay files.
@@ -1042,40 +1096,40 @@ def close_chosen_replay_file():
 
 # Function to...
 def database_encrypt(n, plaintext):
-    # 
+    #
     result = ''
 
-    # 
+    #
     for l in plaintext.lower():
-        # 
+        #
         try:
-            # 
+            #
             i = (key_database.index(l) + n) % 26
-            # 
+            #
             result += key_database[i]
-        # 
+        #
         except ValueError:
-            # 
+            #
             result += l
-    # 
+    #
     return result.lower()
 
 # Function to...
 def database_decrypt(n, ciphertext):
-    # 
+    #
     result = ''
 
-    # 
+    #
     for l in ciphertext:
-        # 
+        #
         try:
-            # 
+            #
             i = (key_database.index(l) - n) % 26
-            # 
+            #
             result += key_database[i]
-        # 
+        #
         except ValueError:
-            # 
+            #
             result += l
     #
     return result
@@ -1083,47 +1137,47 @@ def database_decrypt(n, ciphertext):
 
 
 # Give more descriptive names for all variables, keep to the formatting you see
-# in this file, and add descriptive comments! 
+# in this file, and add descriptive comments!
 # The following code is in a poor state., clean it up!
 
 
 
-# 
+#
 a_ordinal = ord('a')
-# 
+#
 z_ordinal = ord('z')
-# 
+#
 chosen_encryption_algorithm = "1"
 
 # Function to...
 def caesar_cipher_encrypt(text, key):
     # Convert to ASCI representation.
     clist = [ord(x) for x in text]
-    # 
+    #
     cipher = list()
-    
-    # 
+
+    #
     for x in clist:
-        # 
+        #
         if (x >= a_ordinal and x <= z_ordinal):
             # Shift the character.
             new_char = x + key
-            
+
             # Shift character is more than last character, cycle back to A.
             if (new_char > z_ordinal):
                 # Subtract 1 to avoid cases where z and a conflict.
-                c = a_ordinal + (new_char - z_ordinal - 1) 
-                
-                # 
+                c = a_ordinal + (new_char - z_ordinal - 1)
+
+                #
                 cipher.append(chr(c))
-            
-            # 
+
+            #
             else:
-                # 
+                #
                 cipher.append(chr(new_char))
-        # 
+        #
         else:
-            # 
+            #
             cipher.append(chr(x))
     # Return...
     return ''.join(cipher)
@@ -1133,34 +1187,34 @@ def caesar_cipher_decrypt(text, key):
     # Why is this variable named differently than clist in the above function?
     # Do they provide different functionality?
     cipher = [ord(x) for x in text]
-    
+
     # What the hell is a cleat?
     cleat_text = list()
 
-    # 
+    #
     for x in cipher:
         #
         if(x >= a_ordinal and x <= z_ordinal):
-            # 
+            #
             new_char = x - key
-            
-            # 
+
+            #
             if(new_char < a_ordinal):
-                # 
+                #
                 print("C: %d" % (a_ordinal - new_char))
 
                 # Add 1 to adjust cycle again.
-                c = z_ordinal - (a_ordinal - new_char) + 1 
-                
-                # 
+                c = z_ordinal - (a_ordinal - new_char) + 1
+
+                #
                 cleat_text.append(chr(c))
             else:
-                # 
+                #
                 cleat_text.append(chr(new_char))
         else:
-            # 
+            #
             cleat_text.append(chr(x))
-    # 
+    #
     return ''.join(cleat_text)
 
 
@@ -1195,48 +1249,48 @@ def open_replay(number):
         pygame.display.set_caption("Replay 2: " + str(chosen_replay_filename[7:-4]))
     elif number == 3:
         pygame.display.set_caption("Replay 3: " + str(chosen_replay_filename[7:-4]))
-       
+
     # Read each line of the encrypted chosen replay file and store into a list.
     encrypted_lines_list = chosen_replay_file.readlines()
 
     # Remove the first line from the chosen replay file and store it.
     encryption_algorithm_key = encrypted_lines_list[0].strip()
 
-    # Decrypt the file if it was encrypted 
+    # Decrypt the file if it was encrypted
     # using an encryption algorithm.
     if (encryption_algorithm_key == ("1" or "2" or "3")):
-        # If the file was encrypted using the Caesar Cipher 
-        # encryption algorithm, then decrypt the file using 
+        # If the file was encrypted using the Caesar Cipher
+        # encryption algorithm, then decrypt the file using
         # the Caesar Cipher decryption algorithm.
         if encryption_algorithm_key == "1":
-            # Remove the first line which contains the 
+            # Remove the first line which contains the
             # value representing the chosen algorithm.
             del encrypted_lines_list[0]
 
             # Decrypt the remaining lines and store into a list.
-            chosen_replay_file_list = [caesar_cipher_decrypt(x, key_caesar_cipher) 
+            chosen_replay_file_list = [caesar_cipher_decrypt(x, key_caesar_cipher)
                                        for x in encrypted_lines_list]
-        # If the file was encrypted using the <insert algorithm name here> 
-        # encryption algorithm, then decrypt the file using 
+        # If the file was encrypted using the <insert algorithm name here>
+        # encryption algorithm, then decrypt the file using
         # the <insert algorithm name here> decryption algorithm.
         elif encryption_algorithm_key == "2":
-            # Remove the first line which contains the 
+            # Remove the first line which contains the
             # value representing the chosen algorithm.
             del encrypted_lines_list[0]
 
             # Decrypt the remaining lines and store into a list.
-            #chosen_replay_file_list = [algorithm_name_decrypt(x, key_algorithm_name) 
+            #chosen_replay_file_list = [algorithm_name_decrypt(x, key_algorithm_name)
                                        #for x in encrypted_lines_list]
-        # If the file was encrypted using the <insert algorithm name here> 
-        # encryption algorithm, then decrypt the file using 
+        # If the file was encrypted using the <insert algorithm name here>
+        # encryption algorithm, then decrypt the file using
         # the <insert algorithm name here> decryption algorithm.
         elif encryption_algorithm_key == "3":
-            # Remove the first line which contains the 
+            # Remove the first line which contains the
             # value representing the chosen algorithm.
             del encrypted_lines_list[0]
 
             # Decrypt the remaining lines and store into a list.
-            #chosen_replay_file_list = [algorithm_name_decrypt(x, key_algorithm_name) 
+            #chosen_replay_file_list = [algorithm_name_decrypt(x, key_algorithm_name)
                                        #for x in encrypted_lines_list]
 
         # Close the opened chosen replay file after reading is complete.
@@ -1247,7 +1301,7 @@ def open_replay(number):
         # Remove the grid from the chosen replay file list.
         del chosen_replay_file_list[0]
 
-        # Set the object positions equal to the same 
+        # Set the object positions equal to the same
         # object positions in the chosen replay file.
         object_position_dictionary = ast.literal_eval(chosen_replay_file_list[0])
         # Remove the object position dictionary from the chosen replay file list.
@@ -1327,7 +1381,7 @@ def open_replay(number):
                             "\nTry entering actual text next time."
                 # Print the objects and list of commands for the help command.
                 elif input_string == "help":
-                    help()                    
+                    help()
                 # Go back to the title screen if the player chooses to.
                 elif input_string == "quit":
                     game_complete = True
@@ -1453,7 +1507,7 @@ def open_replay(number):
                         if input_substring_list[0] == "go" and \
                             input_substring_list[1].isalpha() and \
                             input_substring_list[2].isdigit():
-                            go_length(input_substring_list[1], 
+                            go_length(input_substring_list[1],
                                         input_substring_list[2])
                         else:
                             print_input_error()
@@ -1467,8 +1521,8 @@ def open_replay(number):
                                 print_input_error()
                         else:
                             print_input_error()
-                    # Not even close to a valid command or contains some 
-                    # form of misspelling or incorrect input 
+                    # Not even close to a valid command or contains some
+                    # form of misspelling or incorrect input
                     # (numbers, special characters, etc.).
                     else:
                         print_input_error()
@@ -1498,7 +1552,7 @@ def open_replay(number):
                 if player_used_marker == True:
                     for z in range(len(marked_tile_list)):
                         # Fill in the marked tiles with the color red.
-                        screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[z], 
+                        screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[z],
                                                                 screen))
                 ################################################################
 
@@ -1519,7 +1573,7 @@ def open_replay(number):
         # Print new lines for spacing.
         print "\n\n"
 
-        # Exit the current scope and back to the 
+        # Exit the current scope and back to the
         # loop that controls the game state.
         return
 
@@ -1528,11 +1582,11 @@ def open_replay(number):
     else:
         # Print new lines for spacing.
         print "\n\n"
-        
+
         # Piece the exception message together for printing.
         exception_message = (str(time.strftime("%H-%M-%S")) + ": Error: "
-                                + "Incorrect encryption algorithm key" 
-                                + " \n\t\t\tIgnoring your feeble " 
+                                + "Incorrect encryption algorithm key"
+                                + " \n\t\t\tIgnoring your feeble "
                                 + "attempts to crash the game and continuing.")
         # Print the exception to the log file.
         write_to_log_file(exception_message)
@@ -1553,17 +1607,17 @@ def generate_maze_recursive_backtracker():
     destination_x = [0, 1, 0, -1]
     destination_y = [-1, 0, 1, 0]
 
-    # Stack that stores coordinates in the maze. 
+    # Stack that stores coordinates in the maze.
     # Starts at a random set of coordinates.
-    coordinates_stack = [(random.randint(1, maze_width - 1), 
+    coordinates_stack = [(random.randint(1, maze_width - 1),
               random.randint(1, maze_height - 1))]
 
     # Loop until every set of coordinates have been visited.
     while len(coordinates_stack) > 0:
-        # Set the current coordinates equal to the 
+        # Set the current coordinates equal to the
         # coordinates at the top of the stack.
         (current_x, current_y) = coordinates_stack[-1]
-        
+
         # Destroy the wall at this coordinates.
         grid[current_y][current_x] = 1
 
@@ -1597,7 +1651,7 @@ def generate_maze_recursive_backtracker():
                             and temporary_y > 0 and temporary_y < maze_height:
 
                             # Determine if there is a neighbor here.
-                            if grid[temporary_y][temporary_x] == 1: 
+                            if grid[temporary_y][temporary_x] == 1:
                                 # No neighbor exists at this coordinates.
                                 counter += 1
                     # The new coordinates has only one
@@ -1619,9 +1673,9 @@ def generate_maze_recursive_backtracker():
             # Push the current coordinates to the stack.
             coordinates_stack.append((current_x, current_y))
 
-        # 0 neighbors available, dead end. Pop the previous 
+        # 0 neighbors available, dead end. Pop the previous
         # coordinates from the stack and attempt to continue.
-        else: 
+        else:
             # Pop the top coordinates off the stack.
             coordinates_stack.pop()
 
@@ -1630,7 +1684,7 @@ def generate_maze_binary_tree():
     # Size of the maze.
     maze_width = len(grid) - 1
     maze_height = len(grid) - 1
-    
+
     y = 1
     # Iterate through each row of the maze.
     while y < maze_height + 1:
@@ -1646,10 +1700,10 @@ def generate_maze_binary_tree():
 
                 # Carve out the current position.
                 grid[y][x] = 1
-                
+
                 # Carve out the position above.
                 grid[y - 1][x] = 1
-                                
+
             # Carve passage West.
             elif direction == 0:
                 # Carve out the current position.
@@ -1680,7 +1734,7 @@ def generate_maze_binary_tree():
     for x in range(len(grid)):
         # Block first row.
         grid[0][x] = 0
-    
+
     for y in range(len(grid)):
         # Block last column.
         grid[len(grid) - 1][y] = 0
@@ -1710,10 +1764,10 @@ def reset_maze():
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
-# Function to test the maze for validity by checking 
+# Function to test the maze for validity by checking
 # the path from the player to the door object.
 def check_maze_for_validity_player_door():
-    # Create a test grid, which will be used in the A* algorithm 
+    # Create a test grid, which will be used in the A* algorithm
     # to test the maze to ensure that the player can reach the door.
     test_grid = GridWithWeights(len(grid), len(grid))
 
@@ -1732,10 +1786,10 @@ def check_maze_for_validity_player_door():
     # Get dictionaries mapping positions using the A* search algorithm.
     came_from, cost_so_far = a_star_search(test_grid, start, goal)
 
-    # Check all possible coordinates to see if the door object 
+    # Check all possible coordinates to see if the door object
     # is in the optimal path. If it is, then the maze is valid.
     for coordinates in came_from.iteritems():
-        if ((coordinates[0][0], coordinates[0][1]) == 
+        if ((coordinates[0][0], coordinates[0][1]) ==
             (door_object_position[0], door_object_position[1])):
             # Return 0, the maze is valid.
             return 0
@@ -1743,10 +1797,10 @@ def check_maze_for_validity_player_door():
     # Return 1, the maze is invalid.
     return 1
 
-# Function to test the maze for validity by checking 
+# Function to test the maze for validity by checking
 # the path from the player to the key object.
 def check_maze_for_validity_player_key():
-    # Create a test grid, which will be used in the A* algorithm 
+    # Create a test grid, which will be used in the A* algorithm
     # to test the maze to ensure that the player can reach the key.
     test_grid = GridWithWeights(len(grid), len(grid))
 
@@ -1765,10 +1819,10 @@ def check_maze_for_validity_player_key():
     # Get dictionaries mapping positions using the A* search algorithm.
     came_from, cost_so_far = a_star_search(test_grid, start, goal)
 
-    # Check all possible coordinates to see if the key object 
+    # Check all possible coordinates to see if the key object
     # is in the optimal path. If it is, then the maze is valid.
     for coordinates in came_from.iteritems():
-        if ((coordinates[0][0], coordinates[0][1]) == 
+        if ((coordinates[0][0], coordinates[0][1]) ==
             (key_object_position[0], key_object_position[1])):
             # Return 0, the maze is valid.
             return 0
@@ -1776,10 +1830,10 @@ def check_maze_for_validity_player_key():
     # Return 1, the maze is invalid.
     return 1
 
-# Function to test the maze for validity by checking 
+# Function to test the maze for validity by checking
 # the path from the player to the chest object.
 def check_maze_for_validity_player_chest():
-    # Create a test grid, which will be used in the A* algorithm 
+    # Create a test grid, which will be used in the A* algorithm
     # to test the maze to ensure that the player can reach the chest.
     test_grid = GridWithWeights(len(grid), len(grid))
 
@@ -1798,10 +1852,10 @@ def check_maze_for_validity_player_chest():
     # Get dictionaries mapping positions using the A* search algorithm.
     came_from, cost_so_far = a_star_search(test_grid, start, goal)
 
-    # Check all possible coordinates to see if the chest object 
+    # Check all possible coordinates to see if the chest object
     # is in the optimal path. If it is, then the maze is valid.
     for coordinates in came_from.iteritems():
-        if ((coordinates[0][0], coordinates[0][1]) == 
+        if ((coordinates[0][0], coordinates[0][1]) ==
             (chest_object_position[0], chest_object_position[1])):
             # Return 0, the maze is valid.
             return 0
@@ -1819,7 +1873,7 @@ def draw_screen(screen):
                         get_cell_rect((row, column), screen))
     ############################################################################
 
-    
+
 
     ############################################################################
     ######### Comment out this code to disable the field of view system.########
@@ -1833,7 +1887,7 @@ def draw_screen(screen):
             if grid[visible_object_list[i][1]][visible_object_list[i][0]] == 0:
                 # Fill the wall object with the color white.
                 screen.fill((255, 255, 255), \
-                    get_cell_rect((visible_object_list[i][0], 
+                    get_cell_rect((visible_object_list[i][0],
                                    visible_object_list[i][1]), screen))
 
     # Call the function to draw the door object if visible.
@@ -1849,32 +1903,32 @@ def draw_screen(screen):
         else:
             # Call the function to draw the opened chest object if visible.
             draw_opened_chest_object(chest_object_opened, screen)
-            
+
     # Call the function to draw the key object if visible.
     if is_object_visible(key_object_position[0], key_object_position[1]):
         if not player_grabbed_key:
             draw_key_object(key_object, screen)
 
     # Call the function to draw the simple enemy object if visible.
-    if is_object_visible(simple_enemy_object_position[0], 
+    if is_object_visible(simple_enemy_object_position[0],
     simple_enemy_object_position[1]):
         draw_simple_enemy_object(simple_enemy_object, screen)
 
     # Call the function to draw the smart enemy object if visible.
-    if is_object_visible(smart_enemy_object_position[0], 
+    if is_object_visible(smart_enemy_object_position[0],
     smart_enemy_object_position[1]):
         draw_smart_enemy_object(smart_enemy_object, screen)
-            
+
     # Call the function to draw the chest_combination_1 object if visible.
     if is_object_visible(chest_combination_1_object_position[0], \
         chest_combination_1_object_position[1]):
         draw_chest_combination_1_object(chest_combination_1_object, screen)
-        
+
     # Call the function to draw the chest_combination_2 object if visible.
     if is_object_visible(chest_combination_2_object_position[0], \
         chest_combination_2_object_position[1]):
         draw_chest_combination_2_object(chest_combination_2_object, screen)
-        
+
     # Call the function to draw the chest_combination_3 object if visible.
     if is_object_visible(chest_combination_3_object_position[0], \
         chest_combination_3_object_position[1]):
@@ -1930,8 +1984,8 @@ def get_visible_object_list():
         visible_object_list.append((x, y + 1))
     if x + 1 >= 0 and x + 1 < len(grid) and y + 1 >= 0 and y + 1 < len(grid):
         visible_object_list.append((x + 1, y + 1))
-        
-    # Tiles that are within 2 squares from the player character object. 
+
+    # Tiles that are within 2 squares from the player character object.
     if x - 1 >= 0 and x + 1 < len(grid) and y - 2 >= 0 and y - 2 < len(grid):
         if grid[y - 1][x] == 1:
             visible_object_list.append((x - 1, y - 2))
@@ -1957,7 +2011,7 @@ def get_visible_object_list():
 def get_cell_rect(coordinates, screen):
     # Set row, column equal to the passed parameters.
     row, column = coordinates
-    # Set the width of the cell to the width of the 
+    # Set the width of the cell to the width of the
     # screen divided by the length of the grid.
     cell_width = screen.get_width() / len(grid)
     # Calculate the adjusted width.
@@ -2002,7 +2056,7 @@ def draw_key_object(key_object, screen):
     rect.center = get_cell_rect(key_object_position, screen).center
     # Draw the key object image.
     screen.blit(key_object, rect)
-    
+
 # Function to draw the player character object to the console window.
 def draw_player_object(player_object, screen):
     # Return the size and offset of the player object.
@@ -2075,7 +2129,7 @@ def generate_random_object_positions():
 
     # Variable representing the number of objects on the grid.
     number_of_objects = 0
-    
+
     while number_of_objects != 1:
         # Generate a random x and y coordinate for the object position.
         randomx = random.randint(1, len(grid) - 1)
@@ -2084,7 +2138,7 @@ def generate_random_object_positions():
         if not position_is_wall(randomx, randomy) and \
             not position_is_object(randomx, randomy):
             # Set the player object position equal to the random x and y values.
-            player_object_position[0] = randomx 
+            player_object_position[0] = randomx
             player_object_position[1] = randomy
 
             # Add the player object position to the dictionary.
@@ -2101,9 +2155,9 @@ def generate_random_object_positions():
         if not position_is_wall(randomx, randomy) and \
             not position_is_object(randomx, randomy):
             # Set the chest object position equal to the random x and y values.
-            chest_object_position[0] = randomx 
+            chest_object_position[0] = randomx
             chest_object_position[1] = randomy
-            
+
             # Add the chest object position to the dictionary.
             object_position_dictionary['chest'] = randomx, randomy
 
@@ -2118,7 +2172,7 @@ def generate_random_object_positions():
         if not position_is_wall(randomx, randomy) and \
             not position_is_object(randomx, randomy):
             # Set the key object position equal to the random x and y values.
-            key_object_position[0] = randomx 
+            key_object_position[0] = randomx
             key_object_position[1] = randomy
 
             # Add the key object position to the dictionary.
@@ -2135,7 +2189,7 @@ def generate_random_object_positions():
         if not position_is_wall(randomx, randomy) and \
             not position_is_object(randomx, randomy):
             # Set the door object position equal to the random x and y values.
-            door_object_position[0] = randomx 
+            door_object_position[0] = randomx
             door_object_position[1] = randomy
 
             # Add the door object position to the dictionary.
@@ -2151,9 +2205,9 @@ def generate_random_object_positions():
 
         if not position_is_wall(randomx, randomy) and \
             not position_is_object(randomx, randomy):
-            # Set the simple enemy object position 
+            # Set the simple enemy object position
             # equal to the random x and y values.
-            simple_enemy_object_position[0] = randomx 
+            simple_enemy_object_position[0] = randomx
             simple_enemy_object_position[1] = randomy
 
             # Add the simple enemy object position to the dictionary.
@@ -2169,9 +2223,9 @@ def generate_random_object_positions():
 
         if not position_is_wall(randomx, randomy) and \
             not position_is_object(randomx, randomy):
-            # Set the smart enemy object position 
+            # Set the smart enemy object position
             # equal to the random x and y values.
-            smart_enemy_object_position[0] = randomx 
+            smart_enemy_object_position[0] = randomx
             smart_enemy_object_position[1] = randomy
 
             # Add the smart enemy object position to the dictionary.
@@ -2189,7 +2243,7 @@ def generate_optimal_object_positions():
     # Variable representing the number of objects on the grid.
     number_of_objects = 0
 
-    # Create a test grid, which will be used in the A* algorithm 
+    # Create a test grid, which will be used in the A* algorithm
     # to generate a list for the rest of the object placement.
     test_grid = GridWithWeights(len(grid), len(grid))
 
@@ -2245,16 +2299,16 @@ def generate_optimal_object_positions():
 
         # Get a random position in neighbor_wall_coordinates_list.
         temp = random.randint(0, len(neighbor_wall_coordinates_list) - 1)
-        
+
         # Set randomx, and randomy to the randomly picked coordinates.
         randomx = neighbor_wall_coordinates_list[temp][0]
         randomy = neighbor_wall_coordinates_list[temp][1]
 
         if position_is_wall(randomx, randomy) and \
             not position_is_object(randomx, randomy):
-            # Set the chest_combination_1 object position 
+            # Set the chest_combination_1 object position
             # equal to the random x and y values.
-            chest_combination_1_object_position[0] = randomx 
+            chest_combination_1_object_position[0] = randomx
             chest_combination_1_object_position[1] = randomy
 
             # Add the chest_combination_1 object position to the dictionary.
@@ -2263,7 +2317,7 @@ def generate_optimal_object_positions():
             # Increment the number of placed objects.
             number_of_objects += 1
 
-    while number_of_objects != 2:    
+    while number_of_objects != 2:
         # Generate a random x and y coordinate for the object position.
         temp = random.randint(0, len(optimal_path_coordinates_list) - 1)
         x = optimal_path_coordinates_list[temp][0]
@@ -2292,16 +2346,16 @@ def generate_optimal_object_positions():
 
         # Get a random position in neighbor_wall_coordinates_list.
         temp = random.randint(0, len(neighbor_wall_coordinates_list) - 1)
-        
+
         # Set randomx, and randomy to the randomly picked coordinates.
         randomx = neighbor_wall_coordinates_list[temp][0]
         randomy = neighbor_wall_coordinates_list[temp][1]
 
         if position_is_wall(randomx, randomy) and \
             not position_is_object(randomx, randomy):
-            # Set the chest_combination_2 object position 
+            # Set the chest_combination_2 object position
             # equal to the random x and y values.
-            chest_combination_2_object_position[0] = randomx 
+            chest_combination_2_object_position[0] = randomx
             chest_combination_2_object_position[1] = randomy
 
             # Add the chest_combination_2 object position to the dictionary.
@@ -2310,7 +2364,7 @@ def generate_optimal_object_positions():
             # Increment the number of placed objects.
             number_of_objects += 1
 
-    while number_of_objects != 3:    
+    while number_of_objects != 3:
         # Generate a random x and y coordinate for the object position.
         temp = random.randint(0, len(optimal_path_coordinates_list) - 1)
         x = optimal_path_coordinates_list[temp][0]
@@ -2339,7 +2393,7 @@ def generate_optimal_object_positions():
 
         # Get a random position in neighbor_wall_coordinates_list.
         temp = random.randint(0, len(neighbor_wall_coordinates_list) - 1)
-        
+
         # Set randomx, and randomy to the randomly picked coordinates.
         randomx = neighbor_wall_coordinates_list[temp][0]
         randomy = neighbor_wall_coordinates_list[temp][1]
@@ -2348,7 +2402,7 @@ def generate_optimal_object_positions():
             not position_is_object(randomx, randomy):
             # Set the chest_combination_3 object position
             # equal to the random x and y values.
-            chest_combination_3_object_position[0] = randomx 
+            chest_combination_3_object_position[0] = randomx
             chest_combination_3_object_position[1] = randomy
 
             # Add the chest_combination_3 object position to the dictionary.
@@ -2391,7 +2445,7 @@ def position_is_object(x, y):
     elif x == chest_combination_3_object_position[0] and \
         y == chest_combination_3_object_position[1]:
         return True
- 
+
     return False
 
 # Function to determine if the coordinate is blocked by a wall.
@@ -2399,19 +2453,19 @@ def position_is_wall(x, y):
     # Return True for the wall object.
     if grid[y][x] == 0:
         return True
- 
+
     return False
 
-# Function that resets the position of the player 
+# Function that resets the position of the player
 # and confiscates all gathered items.
 def reset_object_positions_and_state_conditions():
-    # Global variables used to store objective states. 
+    # Global variables used to store objective states.
     global player_grabbed_key
     global player_used_key
     global player_used_marker
     global player_unlocked_chest
     global player_opened_chest
-    # Global variables used to store object positions.  
+    # Global variables used to store object positions.
     global player_object_position
     global key_object_position
     global simple_enemy_object_position
@@ -2424,8 +2478,8 @@ def reset_object_positions_and_state_conditions():
     player_unlocked_chest = False
     player_opened_chest = False
 
-    # Reset all object positions. 
-    player_object_position = [object_position_dictionary['player'][0], 
+    # Reset all object positions.
+    player_object_position = [object_position_dictionary['player'][0],
     object_position_dictionary['player'][1]]
 
     key_object_position = [object_position_dictionary['key'][0],
@@ -2488,7 +2542,7 @@ def handle_input():
             for event in pygame.event.get():
                 sgc.event(event)
                 if event.type == GUI:
-                    # Print user input string to the output console window. 
+                    # Print user input string to the output console window.
                     input_string = event.text.lower()
                     print_input(input_string)
 
@@ -2627,7 +2681,7 @@ def handle_input():
                             if input_substring_list[0] == "go" and \
                                 input_substring_list[1].isalpha() and \
                                 input_substring_list[2].isdigit():
-                                go_length(input_substring_list[1], 
+                                go_length(input_substring_list[1],
                                           input_substring_list[2])
                             else:
                                 print_input_error()
@@ -2641,8 +2695,8 @@ def handle_input():
                                     print_input_error()
                             else:
                                 print_input_error()
-                        # Not even close to a valid command or contains some 
-                        # form of misspelling or incorrect input 
+                        # Not even close to a valid command or contains some
+                        # form of misspelling or incorrect input
                         # (numbers, special characters, etc.).
                         else:
                             print_input_error()
@@ -2655,19 +2709,19 @@ def handle_input():
                 if event.type == KEYDOWN:
                     # Store the key press event.
                     key = event.key
-                    # Move the player character object up if the up arrow key was 
+                    # Move the player character object up if the up arrow key was
                     # pressed and if there are no objects blocking the path.
                     if key == K_UP:
                         go(0, -1)
-                    # Move the player character object right if the right arrow key 
+                    # Move the player character object right if the right arrow key
                     # was pressed and if there are no objects blocking the path.
                     elif key == K_RIGHT:
                         go(1, 0)
-                    # Move the player character object down if the down arrow key 
+                    # Move the player character object down if the down arrow key
                     # was pressed and if there are no objects blocking the path.
                     elif key == K_DOWN:
                         go(0, 1)
-                    # Move the player character object left if the left arrow key 
+                    # Move the player character object left if the left arrow key
                     # was pressed and if there are no objects blocking the path.
                     elif key == K_LEFT:
                         go(-1, 0)
@@ -2700,7 +2754,7 @@ def handle_input():
             if player_used_marker == True:
                 for z in range(len(marked_tile_list)):
                     # Fill in the marked tiles with the color red.
-                    screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[z], 
+                    screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[z],
                                                             screen))
             ####################################################################
 
@@ -2708,14 +2762,14 @@ def handle_input():
             sgc.update(1)
             # Update the console window to show changes.
             pygame.display.update()
-        # End the catch block and print the exception 
+        # End the catch block and print the exception
         # (if one occurred) to the log file and continue.
         except:
             # Store the exception.
             e = sys.exc_info()[0]
             # Piece the exception message together for printing.
             exception_message = (str(time.strftime("%H-%M-%S")) + ": Error: "
-                                 + str(e) + " \n\t\t\tIgnoring your feeble " 
+                                 + str(e) + " \n\t\t\tIgnoring your feeble "
                                  + "attempts to crash the game and continuing.")
             # Print the exception to the log file.
             write_to_log_file(exception_message)
@@ -2734,7 +2788,7 @@ def handle_input():
 
 # Function to move the player character object through the maze.
 def go(dx, dy):
-    # Call the function to reset the game if the player character 
+    # Call the function to reset the game if the player character
     # is in the same coordinate as either enemy.
     if player_object_position == simple_enemy_object_position \
         or player_object_position == smart_enemy_object_position:
@@ -2754,7 +2808,7 @@ def go(dx, dy):
         nx = x + dx
         ny = y + dy
 
-        # Change the player character object position if the new position 
+        # Change the player character object position if the new position
         # is in the game window and the cell is not pre-occupied.
         if (nx > 0 and nx < len(grid) and ny > 0 and ny < len(grid) and \
             grid[ny][nx]):
@@ -2768,7 +2822,7 @@ def go(dx, dy):
         move_simple_enemy()
         move_smart_enemy()
 
-    # Call the function to reset the game if the player character 
+    # Call the function to reset the game if the player character
     # is in the same coordinate as either enemy.
     if player_object_position == simple_enemy_object_position \
         or player_object_position == smart_enemy_object_position:
@@ -2779,7 +2833,7 @@ def go(dx, dy):
         # Reset the locations of all objects and state conditions.
         reset_object_positions_and_state_conditions()
 
-# Function to move the player character object through 
+# Function to move the player character object through
 # the maze for the number of times they specify.
 def go_length(direction, length):
     # Check if the second substring is equal to "forward".
@@ -2788,7 +2842,7 @@ def go_length(direction, length):
         i = 0
         while i < int(length):
             # Break out of the loop if the destination coordinates are occupied.
-            if position_is_wall(player_object_position[0], 
+            if position_is_wall(player_object_position[0],
                                    player_object_position[1] - 1):
                 # Print out an error for the invalid move.
                 print_go_error()
@@ -2803,7 +2857,7 @@ def go_length(direction, length):
         i = 0
         while i < int(length):
             # Break out of the loop if the destination coordinates are occupied.
-            if position_is_wall(player_object_position[0] + 1, 
+            if position_is_wall(player_object_position[0] + 1,
                                     player_object_position[1]):
                 # Print out an error for the invalid move.
                 print_go_error()
@@ -2818,7 +2872,7 @@ def go_length(direction, length):
         i = 0
         while i < int(length):
             # Break out of the loop if the destination coordinates are occupied.
-            if position_is_wall(player_object_position[0], 
+            if position_is_wall(player_object_position[0],
                                     player_object_position[1] + 1):
                 # Print out an error for the invalid move.
                 print_go_error()
@@ -2833,7 +2887,7 @@ def go_length(direction, length):
         i = 0
         while i < int(length):
             # Break out of the loop if the destination coordinates are occupied.
-            if position_is_wall(player_object_position[0] - 1, 
+            if position_is_wall(player_object_position[0] - 1,
                                     player_object_position[1]):
                 # Print out an error for the invalid move.
                 print_go_error()
@@ -2851,7 +2905,7 @@ def use_marker():
     global marked_tile_list
     global player_used_marker
 
-    # Change the value of player_used_marker to True. It is used in the 
+    # Change the value of player_used_marker to True. It is used in the
     # draw_screen function to determine when to start drawing the marker.
     player_used_marker = True
 
@@ -2920,7 +2974,7 @@ def grab_key():
     move_smart_enemy()
 
 # Function to unlock the chest.
-def unlock_chest(user_input_combination):    
+def unlock_chest(user_input_combination):
     # Needed to change their properties.
     global player_unlocked_chest
 
@@ -2934,7 +2988,7 @@ def unlock_chest(user_input_combination):
 
     if player_next_to_object(x, y, a, b):
         if player_unlocked_chest:
-            # Inform the player that they have 
+            # Inform the player that they have
             # already unlocked the chest.
             print "Output: You have already unlocked the chest, " \
                   "no need to be redundant."
@@ -2973,7 +3027,7 @@ def open_chest():
 
     if player_next_to_object(x, y, a, b):
         if player_opened_chest:
-            # Inform the player that they have 
+            # Inform the player that they have
             # already opened the chest.
             print "Output: You have already opened the chest, " \
                   "no need to be redundant."
@@ -3014,7 +3068,7 @@ def use_key():
 
     if player_next_to_object(x, y, a, b):
         if player_used_key:
-            # Inform the player that they have already 
+            # Inform the player that they have already
             # used the key to unlock the door.
             print "You have already unlocked the door, maybe now it will open."
         elif player_grabbed_key:
@@ -3061,27 +3115,27 @@ def open_door():
             # Set game_complete equal to True.
             game_complete = True
         elif player_used_key and not player_opened_chest:
-            # Inform the player that they need to open the 
+            # Inform the player that they need to open the
             # chest before they can open the door.
             print "Output: You haven't opened the chest. " \
                   "\nMaybe you should open it first."
         elif player_grabbed_key and player_opened_chest:
-            # Inform the player that they need to use the 
+            # Inform the player that they need to use the
             # key before they can open the door.
             print "Output: A key can sometimes be " \
                   "used to open doors."
         elif player_grabbed_key and not player_opened_chest:
-            # Inform the player that they need to use the 
+            # Inform the player that they need to use the
             # key before they can open the door.
             print "Output: There's a chest somewhere around here. " \
                   "\nMaybe it will be worth your while to open it first."
         elif not player_grabbed_key and player_opened_chest:
-            # Inform the player that they need to use the 
+            # Inform the player that they need to use the
             # key before they can open the door.
             print "Output: Congrats, you found the door. " \
                   "\nMaybe you should use the key."
         else:
-            # Inform the player that they need to find 
+            # Inform the player that they need to find
             # the key and chest before they can open the door.
             print "Output: There's a key and a chest somewhere around here..." \
                   "\nMaybe you could go find them and then come back."
@@ -3094,7 +3148,7 @@ def open_door():
     move_simple_enemy()
     move_smart_enemy()
 
-# Function that returns true if the player character 
+# Function that returns true if the player character
 # object is located next to another object.
 def player_next_to_object(x, y, a, b):
     # Check the location that the player character object currently is.
@@ -3124,21 +3178,21 @@ def player_next_to_object(x, y, a, b):
     # Check the location below and to the right of the player character object.
     elif x + 1 == a and y + 1 == b:
         return True
-    
+
     # Return False if the player is not located directly next to an object.
     return False
 
- 
+
 
 ################################################################################
 # Enemies
 ################################################################################
 
 # Function to move the simple enemy object in a random direction.
-def move_simple_enemy():    
+def move_simple_enemy():
     global simple_enemy_object_position
 
-    # Call the function to reset the game if the player character 
+    # Call the function to reset the game if the player character
     # is in the same coordinate as either enemy.
     if player_object_position == simple_enemy_object_position \
         or player_object_position == smart_enemy_object_position:
@@ -3173,14 +3227,14 @@ def move_simple_enemy():
         nx = x - 1
         ny = y
 
-    # Change the simple enemy object position if the new position 
+    # Change the simple enemy object position if the new position
     # is in the game window and the cell is not pre-occupied.
     if (nx > 0 and nx < len(grid) and ny > 0 and ny < len(grid) and \
         grid[ny][nx]):
             simple_enemy_object_position[0] = nx
             simple_enemy_object_position[1] = ny
 
-    # Call the function to reset the game if the player character 
+    # Call the function to reset the game if the player character
     # is in the same coordinate as either enemy.
     if player_object_position == simple_enemy_object_position \
         or player_object_position == smart_enemy_object_position:
@@ -3195,7 +3249,7 @@ def move_simple_enemy():
 def move_smart_enemy():
     global smart_enemy_object_position
 
-    # Call the function to reset the game if the player character 
+    # Call the function to reset the game if the player character
     # is in the same coordinate as either enemy.
     if player_object_position == simple_enemy_object_position \
         or player_object_position == smart_enemy_object_position:
@@ -3205,7 +3259,7 @@ def move_smart_enemy():
         print "\tYou will have to try your luck again...\n"
         # Reset the locations of all objects and state conditions.
         reset_object_positions_and_state_conditions()
-    
+
     # Create a test grid to use with the A* algorithm.
     test_grid = GridWithWeights(15, 15)
 
@@ -3232,7 +3286,7 @@ def move_smart_enemy():
             break
 
     #print cost_so_far
-        
+
     '''# The current location of the smart enemy.
     start = (smart_enemy_object_position[0], smart_enemy_object_position[1])
     # The current location of the player.
@@ -3253,14 +3307,14 @@ def move_smart_enemy():
     else:
         next_coordinates = goal_path_list[-2]'''
 
-    # Change the simple enemy object position if the new position 
+    # Change the simple enemy object position if the new position
     # is in the game window and the cell is not pre-occupied.
     if (nx > 0 and nx < len(grid) and ny > 0 and ny < len(grid) and \
         grid[ny][nx]):
             smart_enemy_object_position[0] = nx
             smart_enemy_object_position[1] = ny
 
-    # Call the function to reset the game if the player character 
+    # Call the function to reset the game if the player character
     # is in the same coordinate as either enemy.
     if player_object_position == simple_enemy_object_position \
         or player_object_position == smart_enemy_object_position:
@@ -3272,10 +3326,10 @@ def move_smart_enemy():
         reset_object_positions_and_state_conditions()
 
     '''# Variable that store the enemy location.
-    smart_enemy_location = (smart_enemy_object_position[0], 
+    smart_enemy_location = (smart_enemy_object_position[0],
                                 smart_enemy_object_position[1])
     # Variable that store the current location.
-    player_location = (player_object_position[0], 
+    player_location = (player_object_position[0],
                                 player_object_position[1])
 
     # Call the a_star_search algorithm to get the next position to move to.
@@ -3390,11 +3444,11 @@ class PriorityQueue:
     # Function to...
     def empty(self):
         return len(self.elements) == 0
-    
+
     # Function to...
     def put(self, item, priority):
         heapq.heappush(self.elements, (priority, item))
-    
+
     # Function to...
     def get(self):
         return heapq.heappop(self.elements)[1]
@@ -3406,7 +3460,7 @@ def heuristic(a, b):
     return abs(x1 - x2) + abs(y1 - y2)
 
 # Function that implements the A* algorithm.
-# Parameters: 
+# Parameters:
 #   1) graph - the graph we will search.
 #   2) start - the starting location (character location at start).
 #   3) goal - the ending location (door location at start).
@@ -3440,7 +3494,7 @@ def a_star_search(graph, start, goal):
             if next not in cost_so_far or new_cost < cost_so_far[next]:
                 # The cost of the next element is the current cost.
                 cost_so_far[next] = new_cost
-                # Set the priority equal to the sum of the new cost and 
+                # Set the priority equal to the sum of the new cost and
                 # the heuristic of the goal and next locations.
                 priority = new_cost + heuristic(goal, next)
                 # Put the next element in the queue.
