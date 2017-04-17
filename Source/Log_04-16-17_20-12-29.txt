@@ -1,0 +1,2 @@
+20-12-56: Maze successfully generated using the Recursive Backtracker
+ 			algorithm after switching 0 time(s) and 1 attempt(s)
