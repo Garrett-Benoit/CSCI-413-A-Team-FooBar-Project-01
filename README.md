@@ -26,13 +26,13 @@ Build Instructions (Developer):
 1) Install Python 2.7.13 x32: https://www.python.org/
 
 2) Install Pygame: http://www.pygame.org/wiki/GettingStarted
-	Enter into a command window: pip install pygame
+	<br /> Enter into a command window: pip install pygame
 
 3) Install python-firebase: https://github.com/ozgur/python-firebase
-	Enter into a command window: pip install python-firebase
+	<br /> Enter into a command window: pip install python-firebase
 
 4) Install SGC: https://launchpad.net/simplegc
-	(Everything that you need is already in the repository, don't bother trying to install)
+	<br /> (Everything that you need is already in the repository, don't bother trying to install)
 
 5) Install cx_Freeze x32 for Python 2.7:
 https://pypi.python.org/pypi?:action=display&name=cx_Freeze&version=5.0.1
@@ -59,6 +59,7 @@ Run Instructions If Supplied With An Executable (Player):
 Run Instructions If Not Supplied With An Executable (Developer):
 
 1) Perform the first three steps in the build instructions! 
-	(p.s. I will laugh at you if your failure to run the build is the result of you not following the provided instructions.)
+	<br /> p.s. I will laugh at you if your failure to run the build 
+	is the result of you not following the provided instructions.
 
 2) Execute Main.py in CSCI-413-A-Team-FooBar-Project-01/Source/
