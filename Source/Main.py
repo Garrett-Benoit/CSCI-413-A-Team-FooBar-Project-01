@@ -409,7 +409,7 @@ def show_login_signup_screen():
                                 leaderboard_moves = firebase.get(
                                     '/leaderboard/top10_moves', None)
                                 # Print out the top moves from the leader board.
-                                print leaderboard_moves
+                                filter_top10(leaderboard_moves)
 
                                 # Print out the top 10 times of the leaderboard.
                                 print "\nTop 10 Times of the Leaderboard: "
@@ -418,7 +418,7 @@ def show_login_signup_screen():
                                 leaderboard_times = firebase.get(
                                     '/leaderboard/top10_times', None)
                                 # Print out the top times from the leader board.
-                                print leaderboard_times
+                                filter_top10(leaderboard_times)
 
                                 # Print new lines for spacing.
                                 print "\n\n"
@@ -594,6 +594,13 @@ def password_check(password_input):
             print "Upper case count: " + str(upper_case_letters_count)
             print "Number count: " + str(numbers_count)
             return True
+
+# Function to filter top 10 times and moves.
+def filter_top10(items):
+    sorted_items = sorted(items, key = lambda x: items[x], reverse = True)
+    
+    for k in sorted_items:
+        print("{} : {}".format(k, items[k]))
 
 # Function to handle player choices on the title screen.
 def show_title_screen():
