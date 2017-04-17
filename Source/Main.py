@@ -47,7 +47,7 @@ key_database_lower = 'abcdefghijklmnopqrstuvwxyz'
 key_database_upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 key_database_digit = '0123456789'
 # Key value for the Caesar Cipher encryption algorithm.
-key_caesar_cipher = 3
+key_caesar_cipher = 5
 # Create a string equal to the current time for the log file.
 log_filename = time.strftime("Log_%m-%d-%y_%H-%M-%S.txt")
 # Declare a log file variable for global use.
@@ -108,6 +108,7 @@ chest_combination = (chest_combination_1_object +
                      chest_combination_2_object +
                      chest_combination_3_object)
 maze_is_valid = False
+player_username = ""
 player_is_authenticated = False
 player_made_decision = False
 show_replay_1 = False
@@ -289,6 +290,7 @@ def main():
 # Function to handle player choices on the login screen.
 def show_login_signup_screen():
     global grid
+    global player_username
     global player_is_authenticated
     global exit_game
 
@@ -393,12 +395,17 @@ def show_login_signup_screen():
                         if result != None:
                             # Get the password from the server and decrypt it.
                             decrypted_password = database_decrypt(
-                                5, result['password'])
+                                key_caesar_cipher, result['password'])
 
                             # Determine if the passwords match.
                             if temp_password == decrypted_password:
                                 # The player has been successfully authenticated.
                                 player_is_authenticated = True
+
+                                # Set player_username to logged in user
+                                player_username = temp_username
+                                tempfunction()
+
                                 # Print out a message informing the user that
                                 # they have been successfully logged in.
                                 print "Output: Authentication successful.\n" \
@@ -485,7 +492,7 @@ def show_login_signup_screen():
 
                                 # Encrypt the entered password before storing.
                                 encrypted_password = database_encrypt(
-                                    5, temp_password)
+                                    key_caesar_cipher, temp_password)
 
                                 # Create the account if it does not already exist.
                                 if firebase.put('/users/', temp_username,
@@ -493,6 +500,11 @@ def show_login_signup_screen():
                                                  'password': encrypted_password}):
                                     # The player has been successfully authenticated.
                                     player_is_authenticated = True
+
+                                    # Set player_username to logged in user
+                                    player_username = temp_username
+                                    tempfunction()
+
                                     # Print out a message informing the user
                                     # that they have successfully signed up.
                                     print "Output: Authentication successful.\n" \
@@ -603,6 +615,29 @@ def filter_top10(items):
 
     for k in sorted_items:
         print("{} : {}".format(k, items[k]))
+
+#########################TEMP FUNCTION##########################
+def tempfunction():
+    open_chosen_replay_file(1)
+    replay1_name = str(chosen_replay_filename[:-4])
+    replay1 = chosen_replay_file.read()
+    close_chosen_replay_file()
+
+    open_chosen_replay_file(2)
+    replay2_name = str(chosen_replay_filename[:-4])
+    replay2 = chosen_replay_file.read()
+    close_chosen_replay_file()
+
+    open_chosen_replay_file(3)
+    replay3_name = str(chosen_replay_filename[:-4])
+    replay3 = chosen_replay_file.read()
+    close_chosen_replay_file()
+
+    firebase.put('/replays/', player_username,
+                    {replay1_name: replay1,
+                     replay2_name: replay2,
+                     replay3_name: replay3})
+#########################TEMP FUNCTION##########################
 
 # Function to handle player choices on the title screen.
 def show_title_screen():
