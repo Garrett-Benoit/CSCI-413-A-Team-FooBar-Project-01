@@ -19,8 +19,7 @@ Language:         Python
 
 Tools:            Pygame (Library), Microsoft Visual Studios (IDE).
 
-
-
+<br />
 
 Build Instructions (Developer):
 
@@ -47,8 +46,7 @@ problem running python in the command window. Here is a walkthrough for
 Windows 7:
 http://stackoverflow.com/questions/6318156/adding-python-path-on-windows-7
 
-
-
+<br />
 
 Run Instructions If Supplied With An Executable (Player):
 
@@ -56,6 +54,7 @@ Run Instructions If Supplied With An Executable (Player):
 
 2) Execute Main.exe in the directory CSCI-413-A-Team-FooBar-Project-01/Source/build/exe.win32-2.7/
 
+<br />
 
 Run Instructions If Not Supplied With An Executable (Developer):
 
