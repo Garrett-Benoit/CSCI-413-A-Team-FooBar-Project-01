@@ -405,7 +405,8 @@ def show_login_signup_screen():
 
                                 # Set player_username to logged in user
                                 player_username = temp_username
-                                tempfunction()
+                                save_replays()
+                                #tempfunction()
 
                                 # Print out a message informing the user that
                                 # they have been successfully logged in.
@@ -504,7 +505,8 @@ def show_login_signup_screen():
 
                                     # Set player_username to logged in user
                                     player_username = temp_username
-                                    tempfunction()
+                                    save_replays()
+                                    #tempfunction()
 
                                     # Print out a message informing the user
                                     # that they have successfully signed up.
@@ -617,28 +619,77 @@ def filter_top10(items):
     for k in sorted_items:
         print("{} : {}".format(k, items[k]))
 
-#########################TEMP FUNCTION##########################
-def tempfunction():
+# Function to get the 3 most recent replays and save them
+# both locally in game files and remotely on Firebase.
+def save_replays():
+    # Variable for timestamp comparison.
+    timestamps = []
+
+    # Fetch replay 1 from the local game files.
     open_chosen_replay_file(1)
     replay1_name = str(chosen_replay_filename[:-4])
     replay1 = chosen_replay_file.read()
     close_chosen_replay_file()
 
+    # Fetch replay 2 from the local game files.
     open_chosen_replay_file(2)
     replay2_name = str(chosen_replay_filename[:-4])
     replay2 = chosen_replay_file.read()
     close_chosen_replay_file()
 
+    # Fetch replay 3 from the local game files.
     open_chosen_replay_file(3)
     replay3_name = str(chosen_replay_filename[:-4])
     replay3 = chosen_replay_file.read()
     close_chosen_replay_file()
 
-    firebase.put('/replays/', player_username,
-                    {replay1_name: replay1,
-                     replay2_name: replay2,
-                     replay3_name: replay3})
-#########################TEMP FUNCTION##########################
+    # Store three local replay file names into an array.
+    local_replays = [replay1_name, replay2_name, replay3_name]
+
+    # Fetch replays from Firebase.
+    firebase_replays = firebase.get('/replays/' + player_username, None)
+
+    # Combine all 6 replays into one array.
+    for key, value in firebase_replays.iteritems() :
+        local_replays.append(key)
+
+    # Iterate through all 6 replays and parse the timestamp out.
+    for index, item in enumerate(local_replays):
+        if isinstance(local_replays[index], str):
+            timestamps.append(int(filter(str.isdigit, local_replays[index])))
+        elif isinstance(local_replays[index], unicode):
+            timestamps.append(int(filter(unicode.isdigit, local_replays[index])))
+
+    # Sort the timestamps in order.
+    sorted_items = sorted(timestamps, reverse = True)
+    sorted_replays = sorted(local_replays, reverse = True)
+
+    # Iterate through the timestamps and remove duplicates.
+    for index, item in enumerate(sorted_items):
+        if (index + 1) < len(sorted_items):
+            if sorted_items[index] == sorted_items[index + 1]:
+                sorted_items.pop(index + 1)
+                sorted_replays.pop(index + 1)
+
+    ######Test Loop For Printing Results######
+    print "Three most recent game saves:"
+    for index, item in enumerate(sorted_items):
+        if index < 3:
+            print sorted_replays[index]
+
+    if len(sorted_replays) == 1:
+        firebase.put('/replays/', player_username,
+                        {sorted_replays[0]: replay1})
+    elif len(sorted_replays) == 2:
+        firebase.put('/replays/', player_username,
+                        {sorted_replays[0]: replay1,
+                         sorted_replays[1]: replay2})
+    elif len(sorted_replays) == 3:
+        firebase.put('/replays/', player_username,
+                        {sorted_replays[0]: replay1,
+                         sorted_replays[1]: replay2,
+                         sorted_replays[2]: replay3})
+    ######Test Loop For Printing Results######
 
 # Function to handle player choices on the title screen.
 def show_title_screen():
@@ -1427,7 +1478,7 @@ class AES(object):
             word[0] = word[0] ^ self.get_rcon_value(iteration)
             return word
 
-        
+
     def expand_key(self, key, size, expanded_key_size):
         # Rijndael's key expansion
 
@@ -1473,7 +1524,7 @@ class AES(object):
         # Create a round key.
         # Creates a round key from the given expanded key and the
         # position within the expanded key.
-        
+
         round_key = [0] * 16
         for i in range(4):
             for j in range(4):
@@ -1608,13 +1659,13 @@ class AES(object):
     # encrypts a 128 bit input block against the given key of size specified
     def encrypt(self, iput, key, size):
         output = [0] * 16
-        
+
         # the number of rounds
         nbr_rounds = 0
-        
+
         # the 128 bit block to encode
         block = [0] * 16
-        
+
         # set the number of rounds
         if size == self.key_size["SIZE_128"]:
             nbr_rounds = 10
@@ -1658,13 +1709,13 @@ class AES(object):
     # decrypts a 128 bit input block against the given key of size specified
     def decrypt(self, iput, key, size):
         output = [0] * 16
-        
+
         # the number of rounds
         nbr_rounds = 0
-        
+
         # the 128 bit block to decode
         block = [0] * 16
-        
+
         # set the number of rounds
         if size == self.key_size["SIZE_128"]:
             nbr_rounds = 10
@@ -1690,13 +1741,13 @@ class AES(object):
             # iterate over the rows
             for j in range(4):
                 block[(i + (j * 4))] = iput[(i * 4) + j]
-                
+
         # expand the key into an 176, 208, 240 bytes key
         expanded_key = self.expand_key(key, size, expanded_key_size)
-        
+
         # decrypt the block using the expanded_key
         block = self.aes_inv_main(block, expanded_key, nbr_rounds)
-        
+
         # unmap the block again into the output
         for k in range(4):
             # iterate over the rows
@@ -1974,7 +2025,7 @@ def decrypt_data(key, data, mode=AESModeOfOperation.modeOfOperation["CBC"]):
 
     # `data` should have the initialization vector (iv) prepended as a string of
     # ordinal values.
-    
+
 
     key = map(ord, key)
     keysize = len(key)
@@ -1994,7 +2045,7 @@ def decrypt_data(key, data, mode=AESModeOfOperation.modeOfOperation["CBC"]):
 def generate_random_key(keysize):
     # Generates a key from random data of length `keysize`.
     # The returned key is a string of bytes.
-    
+
     if keysize not in (16, 24, 32):
         emsg = 'Invalid keysize, %s. Should be one of (16, 24, 32).'
         raise ValueError, emsg % keysize
