@@ -37,6 +37,43 @@ from firebase.firebase import FirebaseApplication, FirebaseAuthentication
 from firebase import jsonutil
 
 ################################################################################
+# Set up the sound system
+################################################################################
+
+# Iinitialize the mixer
+pygame.mixer.init(44100, -16, 2, 2048)
+
+# Load sounds and set volumes
+background_sound = pygame.mixer.Sound("background_sound.mp3")
+background_sound.set_volume(0.3)
+go_sound = pygame.mixer.Sound("go_sound.mp3")
+go_sound.set_volume(1)
+# go_sound = pygame.mixer.Sound(os.path.join('data', 'Sounds/go_sound.mp3'))  # load sound
+pain_sound = pygame.mixer.Sound("pain_sound.mp3")
+pain_sound.set_volume(1)
+die_sound = pygame.mixer.Sound("die_sound.mp3")
+die_sound.set_volume(1)
+win_sound = pygame.mixer.Sound("win_sound.mp3")
+win_sound.set_volume(1)
+game_over_sound = pygame.mixer.Sound("game_over_sound.mp3")
+game_over_sound.set_volume(1)
+grab_key_sound = pygame.mixer.Sound("grab_key_sound.mp3")
+grab_key_sound.set_volume(1)
+open_chest_sound = pygame.mixer.Sound("open_chest_sound.mp3")
+open_chest_sound.set_volume(1)
+open_door_sound = pygame.mixer.Sound("open_door_sound.mp3")
+open_door_sound.set_volume(1)
+treasure_sound = pygame.mixer.Sound("treasure_sound.mp3")
+treasure_sound.set_volume(1)
+unlock_door_sound = pygame.mixer.Sound("unlock_door_sound.mp3")
+unlock_door_sound.set_volume(1)
+use_combo_sound = pygame.mixer.Sound("use_combo_sound.mp3")
+use_combo_sound.set_volume(1)
+use_marker_sound = pygame.mixer.Sound("use_marker_sound.mp3")
+use_marker_sound.set_volume(1)
+
+
+################################################################################
 # Initialization
 ################################################################################
 
@@ -245,6 +282,9 @@ def main():
     while not exit_game:
         # Call the function to handle the player choices at the title screen.
         show_title_screen()
+
+        # Cue the background music that will indefinitely loop
+        background_sound.play(-1)
 
         # Reset the maze before continuing.
         reset_maze()
@@ -4007,6 +4047,8 @@ def go(dx, dy):
         print "Output: The enemy grabbed you! Your stuff was confiscated "
         print "\tand you were returned to where you started. "
         print "\tYou will have to try your luck again...\n"
+        # Play the die sound
+        die_sound.play()
         # Reset the locations of all objects and state conditions.
         reset_object_positions_and_state_conditions()
     # Continue if the player has not been caught yet.
@@ -4025,9 +4067,13 @@ def go(dx, dy):
                     grid[ny][nx]):
             player_object_position[0] = nx
             player_object_position[1] = ny
+            # Play the sound for going
+            go_sound.play()
         else:
             # Print out an error for the invalid move.
             print_go_error()
+            # Play the pain sound for running into wall
+            pain_sound.play()
 
         # Call the function to move the enemies.
         move_simple_enemy()
@@ -4127,6 +4173,8 @@ def use_marker():
     # Change the value of player_used_marker to True. It is used in the
     # draw_screen function to determine when to start drawing the marker.
     player_used_marker = True
+    # Play the sound for using the marker
+    use_marker_sound.play()
 
     # Set x and y equal to the current player character object position.
     x = player_object_position[0]
@@ -4186,6 +4234,8 @@ def grab_key():
         key_object_position[1] = 0
         # Set player_grabbed_key equal to True.
         player_grabbed_key = True
+        # Play the sound for grabbing the key
+        grab_key_sound.play()
     else:
         # Inform the player that the key is not within their reach.
         print "Output: The key is not within reach..." \
@@ -4225,6 +4275,9 @@ def unlock_chest(user_input_combination):
                       "\nNow maybe it can be opened..."
                 # Set player_unlocked_chest equal to True.
                 player_unlocked_chest = True
+                # Play the sound for using the combo
+                # to eventually open the chest
+                use_combo_sound.play()
             else:
                 # Inform the player that the combination is incorrect.
                 print "Output: incorrect combination..."
@@ -4268,6 +4321,10 @@ def open_chest():
 
                 # Set player_grabbed_chest equal to True.
                 player_opened_chest = True
+                # Play the sound for opening the chest
+                open_chest_sound.play()
+                # Play the treasure sound
+                treasure_sound.play()
             else:
                 # Inform the player that the combination is incorrect.
                 print "Output: You must enter the correct combination to " \
@@ -4309,6 +4366,8 @@ def use_key():
                   "\nThe key wasn't so useless after all!"
             # Set player_used_key equal to True.
             player_used_key = True
+            # Play the sound for unlocking the door (using the key)
+            unlock_door_sound.play()
         else:
             # Inform the player that they need the key to unlocked the door.
             print "Output: This door is locked. " \
@@ -4345,8 +4404,12 @@ def open_door():
         if player_used_key and player_opened_chest:
             # Inform the player that they have opened the door.
             print "Output: You have opened the door!"
+            # Play sound for opening the door
+            open_door_sound.play()
             # Congratulate the player on completing the game.
             print "\n\nCongratulations! You have escaped!\n\n"
+            # Play the congratulatory game over sound
+            game_over_sound.play()
             # Set game_complete equal to True.
             game_complete = True
         elif player_used_key and not player_opened_chest:
