@@ -460,9 +460,6 @@ def show_login_signup_screen():
                                 print "Output: Authentication successful.\n" \
                                       + "\tYou have been successfully logged in."
 
-                                # Print out the top 10 moves of the leaderboard.
-                                print "\nTop 10 Moves of the Leaderboard: "
-
                                 # Print out the top moves from the leader board.
                                 update_top10(0)
 
@@ -654,6 +651,9 @@ def password_check(password_input):
 
 
 def update_top10(new_move_value):
+    # Print out the top 10 moves of the leaderboard.
+    print "\nTop 10 Moves Leaderboard: "
+
     # Get the top moves from the leader board.
     leaderboard_moves = firebase.get('/leaderboard', None)
 
@@ -689,8 +689,6 @@ def save_replays():
                 local_replay_values.append(replay1)
 
         close_chosen_replay_file()
-    else:
-        print "No replay 1"
 
     # Fetch replay 2 from the local game files.
     open_chosen_replay_file(2)
@@ -704,8 +702,6 @@ def save_replays():
                 local_replay_values.append(replay2)
 
         close_chosen_replay_file()
-    else:
-        print "No replay 2"
 
     # Fetch replay 3 from the local game files.
     open_chosen_replay_file(3)
@@ -719,8 +715,6 @@ def save_replays():
                 local_replay_values.append(replay3)
 
         close_chosen_replay_file()
-    else:
-        print "No replay 3"
 
     # Fetch replays from Firebase.
     firebase_replays = firebase.get('/replays/' + player_username, None)
@@ -730,8 +724,6 @@ def save_replays():
         for key, value in firebase_replays.iteritems():
             local_replays.append(key)
             local_replay_values.append(value)
-    else:
-        print "No firebase replays"
 
     # Iterate through all 6 replays and parse the timestamp out.
     for index, item in enumerate(local_replays):
@@ -753,11 +745,9 @@ def save_replays():
                 sorted_replays.pop(index + 1)
                 sorted_replay_values.pop(index + 1)
 
-    ######Test Loop For Printing Results######
-    print "Three most recent game saves:"
-    for index, timestamp in enumerate(sorted_timestamps):
+    '''for index, timestamp in enumerate(sorted_timestamps):
         if index < 3:
-            print sorted_replays[index]
+            print sorted_replays[index]'''
 
     if len(sorted_replays) == 1:
         firebase.put('/replays/', player_username,
