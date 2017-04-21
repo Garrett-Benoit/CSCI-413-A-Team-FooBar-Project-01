@@ -678,34 +678,63 @@ def save_replays():
 
     # Variable for timestamp comparison.
     timestamps = []
+    local_replays = []
+    local_replay_values = []
 
     # Fetch replay 1 from the local game files.
     open_chosen_replay_file(1)
-    replay1_name = str(chosen_replay_filename[:-4])
-    replay1 = chosen_replay_file.read()
-    close_chosen_replay_file()
+    if chosen_replay_file != None:
+        if not chosen_replay_file.closed:
+            replay1_name = str(chosen_replay_filename[:-4])
+            replay1 = chosen_replay_file.read()
+            if (replay1_name != None) and (replay1 != None):
+                local_replays.append(replay1_name)
+                local_replay_values.append(replay1)
+
+        close_chosen_replay_file()
+    else:
+        print "No replay 1"
 
     # Fetch replay 2 from the local game files.
     open_chosen_replay_file(2)
-    replay2_name = str(chosen_replay_filename[:-4])
-    replay2 = chosen_replay_file.read()
-    close_chosen_replay_file()
+    if chosen_replay_file != None:
+        if not chosen_replay_file.closed:
+            replay2_name = str(chosen_replay_filename[:-4])
+            replay2 = chosen_replay_file.read()
+
+            if (replay2_name != None) and (replay2 != None):
+                local_replays.append(replay2_name)
+                local_replay_values.append(replay2)
+
+        close_chosen_replay_file()
+    else:
+        print "No replay 2"
 
     # Fetch replay 3 from the local game files.
     open_chosen_replay_file(3)
-    replay3_name = str(chosen_replay_filename[:-4])
-    replay3 = chosen_replay_file.read()
-    close_chosen_replay_file()
+    if chosen_replay_file != None:
+        if not chosen_replay_file.closed:
+            replay3_name = str(chosen_replay_filename[:-4])
+            replay3 = chosen_replay_file.read()
 
-    # Store three local replay file names into an array.
-    local_replays = [replay1_name, replay2_name, replay3_name]
+            if (replay3_name != None) and (replay3 != None):
+                local_replays.append(replay3_name)
+                local_replay_values.append(replay3)
+
+        close_chosen_replay_file()
+    else:
+        print "No replay 3"
 
     # Fetch replays from Firebase.
     firebase_replays = firebase.get('/replays/' + player_username, None)
 
-    # Combine all 6 replays into one array.
-    for key, value in firebase_replays.iteritems():
-        local_replays.append(key)
+    # Combine local and remote replays into one array.
+    if firebase_replays != None:
+        for key, value in firebase_replays.iteritems():
+            local_replays.append(key)
+            local_replay_values.append(value)
+    else:
+        print "No firebase replays"
 
     # Iterate through all 6 replays and parse the timestamp out.
     for index, item in enumerate(local_replays):
@@ -714,35 +743,37 @@ def save_replays():
         elif isinstance(local_replays[index], unicode):
             timestamps.append(int(filter(unicode.isdigit, local_replays[index])))
 
-    # Sort the timestamps in order.
-    sorted_items = sorted(timestamps, reverse=True)
-    sorted_replays = sorted(local_replays, reverse=True)
+    # Sort the replays in order.
+    sorted_timestamps = sorted(timestamps, reverse = True)
+    sorted_replays = sorted(local_replays, reverse = True)
+    sorted_replay_values = sorted(local_replay_values, reverse = True)
 
     # Iterate through the timestamps and remove duplicates.
-    for index, item in enumerate(sorted_items):
-        if (index + 1) < len(sorted_items):
-            if sorted_items[index] == sorted_items[index + 1]:
-                sorted_items.pop(index + 1)
+    for index, item in enumerate(sorted_timestamps):
+        if (index + 1) < len(sorted_timestamps):
+            if sorted_timestamps[index] == sorted_timestamps[index + 1]:
+                sorted_timestamps.pop(index + 1)
                 sorted_replays.pop(index + 1)
+                sorted_replay_values.pop(index + 1)
 
     ######Test Loop For Printing Results######
     print "Three most recent game saves:"
-    for index, item in enumerate(sorted_items):
+    for index, timestamp in enumerate(sorted_timestamps):
         if index < 3:
             print sorted_replays[index]
 
     if len(sorted_replays) == 1:
         firebase.put('/replays/', player_username,
-                     {sorted_replays[0]: replay1})
+                     {sorted_replays[0]: sorted_replay_values[0]})
     elif len(sorted_replays) == 2:
         firebase.put('/replays/', player_username,
-                     {sorted_replays[0]: replay1,
-                      sorted_replays[1]: replay2})
+                     {sorted_replays[0]: sorted_replay_values[0],
+                      sorted_replays[1]: sorted_replay_values[1]})
     elif len(sorted_replays) == 3:
         firebase.put('/replays/', player_username,
-                     {sorted_replays[0]: replay1,
-                      sorted_replays[1]: replay2,
-                      sorted_replays[2]: replay3})
+                     {sorted_replays[0]: sorted_replay_values[0],
+                      sorted_replays[1]: sorted_replay_values[1],
+                      sorted_replays[2]: sorted_replay_values[2]})
         ######Test Loop For Printing Results######
 
 
