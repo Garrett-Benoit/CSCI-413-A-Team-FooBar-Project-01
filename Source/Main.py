@@ -378,7 +378,12 @@ def show_login_signup_screen():
             if event.type == GUI:
                 # Print user input string to the output console window.
                 input_string = event.text
-                print_input(input_string)
+                if login_attempt and i == 2:
+                    print_input("********")
+                elif signup_attempt and i == 3:
+                    print_input("********")
+                else:
+                    print_input(input_string)
 
                 if i == 0:
                     if input_string == "login":
