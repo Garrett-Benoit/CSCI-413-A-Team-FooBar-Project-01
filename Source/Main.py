@@ -48,7 +48,6 @@ background_sound = pygame.mixer.Sound("background_sound.mp3")
 background_sound.set_volume(0.3)
 go_sound = pygame.mixer.Sound("go_sound.mp3")
 go_sound.set_volume(1)
-# go_sound = pygame.mixer.Sound(os.path.join('data', 'Sounds/go_sound.mp3'))  # load sound
 pain_sound = pygame.mixer.Sound("pain_sound.mp3")
 pain_sound.set_volume(1)
 die_sound = pygame.mixer.Sound("die_sound.mp3")
