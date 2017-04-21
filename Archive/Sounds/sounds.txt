@@ -10,3 +10,4 @@ unlock_door_sound.mp3
 use_combo_sound.mp3
 use_marker_sound.mp3
 win_sound.mp3
+background_sound.mp3
