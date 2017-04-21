@@ -148,6 +148,7 @@ maze_is_valid = False
 player_username = ""
 player_is_authenticated = False
 player_made_decision = False
+player_game_moves = 0
 show_replay_1 = False
 show_replay_2 = False
 show_replay_3 = False
@@ -462,20 +463,8 @@ def show_login_signup_screen():
                                 # Print out the top 10 moves of the leaderboard.
                                 print "\nTop 10 Moves of the Leaderboard: "
 
-                                # Get the top moves from the leader board.
-                                leaderboard_moves = firebase.get(
-                                    '/leaderboard/top10_moves', None)
                                 # Print out the top moves from the leader board.
-                                filter_top10(leaderboard_moves)
-
-                                # Print out the top 10 times of the leaderboard.
-                                print "\nTop 10 Times of the Leaderboard: "
-
-                                # Get the top times from the leader board.
-                                leaderboard_times = firebase.get(
-                                    '/leaderboard/top10_times', None)
-                                # Print out the top times from the leader board.
-                                filter_top10(leaderboard_times)
+                                update_top10(0)
 
                                 # Print new lines for spacing.
                                 print "\n\n"
@@ -664,16 +653,19 @@ def password_check(password_input):
             return True
 
 
-def filter_top10(items):
-    """
-    Function to filter top 10 times and moves.
-    :param items: items to filter
-    """
-    sorted_items = sorted(items, key=lambda x: items[x], reverse=True)
+def update_top10(new_move_value):
+    # Get the top moves from the leader board.
+    leaderboard_moves = firebase.get('/leaderboard', None)
 
-    for k in sorted_items:
-        print("{} : {}".format(k, items[k]))
+    if new_move_value != 0:
+        leaderboard_moves[player_username] = new_move_value
 
+    sorted_items = sorted(leaderboard_moves, key=lambda x: leaderboard_moves[x])
+
+    for index, value in enumerate(sorted_items):
+        if index < 10:
+            print ("#") + str(index + 1) , ("{} : {}".format(value, leaderboard_moves[value]))
+            firebase.put('/leaderboard', value, leaderboard_moves[value])
 
 def save_replays():
     """
@@ -3798,6 +3790,10 @@ def handle_input():
     global player_used_marker
     global game_complete
     global chosen_encryption_algorithm
+    global player_game_moves
+
+    # Reset player's moves to zero.
+    player_game_moves = 0
 
     # Manage the number of replay files.
     manage_replay_files()
@@ -4060,6 +4056,9 @@ def handle_input():
     # Close the opened replay file.
     close_replay_file()
 
+    # Update the users replays remotely.
+    save_replays()
+
     # Exit the current scope and back to the loop that controls the game state.
     return
 
@@ -4069,6 +4068,7 @@ def handle_input():
 ################################################################################
 
 def go(dx, dy):
+    global player_game_moves
     """
     Function to move the player character object through the maze.
     :param dx: player x coordinate
@@ -4104,6 +4104,8 @@ def go(dx, dy):
             player_object_position[1] = ny
             # Play the sound for going
             go_sound.play()
+            # Increment player moves.
+            player_game_moves = player_game_moves + 1
         else:
             # Print out an error for the invalid move.
             print_go_error()
@@ -4426,6 +4428,7 @@ def open_door():
     global door_object_position
     global player_opened_chest
     global game_complete
+    global player_game_moves
 
     # Set x and y equal to the current player character object position.
     x = player_object_position[0]
@@ -4442,9 +4445,13 @@ def open_door():
             # Play sound for opening the door
             open_door_sound.play()
             # Congratulate the player on completing the game.
-            print "\n\nCongratulations! You have escaped!\n\n"
+            print "\n\nCongratulations! You have escaped!"
             # Play the congratulatory game over sound
             game_over_sound.play()
+            # Call function to update top 10 moves if needed.
+            print "Number of moves made: ", player_game_moves
+            print "\n\n"
+            update_top10(player_game_moves)
             # Set game_complete equal to True.
             game_complete = True
         elif player_used_key and not player_opened_chest:
