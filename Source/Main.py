@@ -24,6 +24,7 @@ import math
 import pydoc
 import inspect
 import pygame
+import pygame.mixer
 from pygame.locals import *
 import sgc
 from sgc.locals import *
@@ -41,34 +42,32 @@ from firebase import jsonutil
 ################################################################################
 
 # Iinitialize the mixer
-pygame.mixer.init(44100, -16, 2, 2048)
+pygame.mixer.init()
 
 # Load sounds and set volumes
-background_sound = pygame.mixer.Sound("background_sound.mp3")
-background_sound.set_volume(0.3)
-go_sound = pygame.mixer.Sound("go_sound.mp3")
-go_sound.set_volume(1)
-pain_sound = pygame.mixer.Sound("pain_sound.mp3")
-pain_sound.set_volume(1)
-die_sound = pygame.mixer.Sound("die_sound.mp3")
+background_sound = pygame.mixer.Sound("Sounds/background_sound.wav")
+background_sound.set_volume(0.2)
+go_sound = pygame.mixer.Sound("Sounds/go_sound.wav")
+go_sound.set_volume(0.3)
+pain_sound = pygame.mixer.Sound("Sounds/pain_sound.wav")
+pain_sound.set_volume(0.5)
+die_sound = pygame.mixer.Sound("Sounds/die_sound.wav")
 die_sound.set_volume(1)
-win_sound = pygame.mixer.Sound("win_sound.mp3")
-win_sound.set_volume(1)
-game_over_sound = pygame.mixer.Sound("game_over_sound.mp3")
+game_over_sound = pygame.mixer.Sound("Sounds/game_over_sound.wav")
 game_over_sound.set_volume(1)
-grab_key_sound = pygame.mixer.Sound("grab_key_sound.mp3")
-grab_key_sound.set_volume(1)
-open_chest_sound = pygame.mixer.Sound("open_chest_sound.mp3")
-open_chest_sound.set_volume(1)
-open_door_sound = pygame.mixer.Sound("open_door_sound.mp3")
-open_door_sound.set_volume(1)
-treasure_sound = pygame.mixer.Sound("treasure_sound.mp3")
-treasure_sound.set_volume(1)
-unlock_door_sound = pygame.mixer.Sound("unlock_door_sound.mp3")
+grab_key_sound = pygame.mixer.Sound("Sounds/grab_key_sound.wav")
+grab_key_sound.set_volume(0.8)
+open_chest_sound = pygame.mixer.Sound("Sounds/open_chest_sound.wav")
+open_chest_sound.set_volume(0.8)
+open_door_sound = pygame.mixer.Sound("Sounds/open_door_sound.wav")
+open_door_sound.set_volume(0.8)
+treasure_sound = pygame.mixer.Sound("Sounds/treasure_sound.wav")
+treasure_sound.set_volume(0.8)
+unlock_door_sound = pygame.mixer.Sound("Sounds/unlock_door_sound.wav")
 unlock_door_sound.set_volume(1)
-use_combo_sound = pygame.mixer.Sound("use_combo_sound.mp3")
+use_combo_sound = pygame.mixer.Sound("Sounds/use_combo_sound.wav")
 use_combo_sound.set_volume(1)
-use_marker_sound = pygame.mixer.Sound("use_marker_sound.mp3")
+use_marker_sound = pygame.mixer.Sound("Sounds/use_marker_sound.wav")
 use_marker_sound.set_volume(1)
 
 
@@ -185,6 +184,7 @@ visible_object_list = []
 # Initialize the pygame console window.
 pygame.init()
 
+
 # Set the caption for the console window.
 pygame.display.set_caption("")
 
@@ -276,7 +276,7 @@ def main():
         chest_combination_3_object_color)
 
     # Call the function to handle the login/signup of the player.
-    show_login_signup_screen()
+    # show_login_signup_screen()
 
     # Loop that determines manages the game states.
     while not exit_game:
@@ -4436,6 +4436,8 @@ def open_door():
             open_door_sound.play()
             # Congratulate the player on completing the game.
             print "\n\nCongratulations! You have escaped!"
+            # Stop the background music
+            background_sound.stop()
             # Play the congratulatory game over sound
             game_over_sound.play()
             # Call function to update top 10 moves if needed.
