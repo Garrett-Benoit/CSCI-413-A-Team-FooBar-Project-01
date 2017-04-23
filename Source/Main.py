@@ -44,13 +44,13 @@ from firebase import jsonutil
 # Initialization
 ################################################################################
 #Directory locations
-USER_PLAYER_DIR="assets\\(@) - User Player\\RUN (32X32)"
-CHEST_DIR="assets\\(C) - Chest"
-KEY_DIR="assets\\(K) - Key"
-SMART_ENEMY_DIR="assets\\(S) - Smart Enemy\\WALK (32X27)"
-DUMB_ENEMY_DIR="assets\\(E) -Dumb Enemy\\WALK (32X27)"
-DOOR_DIR="assets\\(D) - Door"
-TILES_DIR="assets\\Tiles Platform\\Platform (32X32)"
+USER_PLAYER_DIR="assets"
+CHEST_DIR="assets"
+KEY_DIR="assets"
+SMART_ENEMY_DIR="assets"
+DUMB_ENEMY_DIR="assets"
+DOOR_DIR="assets"
+TILES_DIR="assets"
 
 INTRODUCTION=[
     "\n\n\nIntroduction:",
@@ -265,18 +265,18 @@ def main():
     
     # Create and define the door object.
     door_object =pygame.image.load(os.path.join(DOOR_DIR,
-        "Closed Door\\CloseDoor(32X51).png"))
+        "CloseDoor(32X51).png"))
 
     # Create and define the closed chest object.
     chest_object_closed = pygame.image.load(os.path.join(
         CHEST_DIR,
-        "Close Chest img\\CloseChest(32X23).png"
+        "CloseChest(32X23).png"
         ))
 
     # Create and define the opened chest object.
     chest_object_opened =pygame.image.load(os.path.join(
         CHEST_DIR,
-        "Open Chest img\\OpenChest(32X25).png"
+        "OpenChest(32X25).png"
         ))
 
     # Create and define the key object.
@@ -320,11 +320,11 @@ def main():
     #Load cell colors
     groud_cell=pygame.image.load(os.path.join(
         TILES_DIR,
-        "ground (32X32)\\ground05.png"
+        "ground05.png"
         )).convert()
     rocky_cell=pygame.image.load(os.path.join(
         TILES_DIR,
-        "rocky (32X32)\\rocky03.png"
+        "rocky03.png"
         )).convert()
     cell_colors=rocky_cell,groud_cell
 
