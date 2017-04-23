@@ -240,6 +240,8 @@ use_combo_sound = pygame.mixer.Sound("Sounds/use_combo_sound.wav")
 use_combo_sound.set_volume(1)
 use_marker_sound = pygame.mixer.Sound("Sounds/use_marker_sound.wav")
 use_marker_sound.set_volume(1)
+enemy_respawn_sound = pygame.mixer.Sound("Sounds/enemy_respawn_sound.wav")
+enemy_respawn_sound.set_volume(1)
 
 
 
@@ -351,6 +353,8 @@ def main():
         # Call the function to handle the player choices at the title screen.
         show_title_screen()
 
+        # Stop any background music that may be playing
+        background_sound.stop()
         # Cue the background music that will indefinitely loop.
         background_sound.play(-1)
 
@@ -4363,6 +4367,9 @@ def reset_object_positions_and_state_conditions():
     global key_object_position
     global simple_enemy_object_position
     global smart_enemy_object_position
+    
+    # Play the lovely sound of death
+    die_sound.play()
 
     # Reset all objective states.
     player_grabbed_key = False
@@ -4752,8 +4759,6 @@ def go(dx, dy):
         print "\tand you were returned to where you started. "
         print "\tYou will have to try your luck again...\n"
 
-        # Play the die sound.
-        die_sound.play()
         # Reset the locations of all objects and state conditions.
         reset_object_positions_and_state_conditions()
     # Continue if the player has not been caught yet.
@@ -5411,6 +5416,9 @@ def respawn_smart_enemy():
 
     # Global variable declarations.
     global smart_enemy_object_position
+    
+    # Play the enemy respawn sound
+    enemy_respawn_sound.play()
 
     # Reset the smart enemy object's position.
     smart_enemy_object_position = [objects_starting_positions['smart enemy'][0],
