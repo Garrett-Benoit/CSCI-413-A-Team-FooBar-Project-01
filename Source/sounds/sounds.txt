@@ -10,3 +10,4 @@ unlock_door_sound.wav
 use_combo_sound.wav
 use_marker_sound.wav
 background_sound.wav
+enemy_respawn_sound.wav

@@ -1,0 +1,15 @@
+1
+[[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1, 1, 0, 0], [0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0], [0, 1, 1, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 0], [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0], [0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0], [0, 1, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 1, 0], [0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 0], [0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 1, 0], [0, 1, 0, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 0], [0, 1, 1, 1, 0, 1, 1, 0, 1, 0, 1, 1, 0, 1, 0], [0, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 0], [0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0], [0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+{'hmjxy htrgnsfynts 1': (7, 10), 'hmjxy htrgnsfynts 3': (0, 9), 'hmjxy htrgnsfynts 2': (2, 11), 'ittw': (13, 10), 'uqfdjw': (1, 13), 'hmjxy': (2, 6), 'pjd': (8, 13), 'xrfwy jsjrd': (12, 5), 'xnruqj jsjrd': (9, 11)}
+lt wnlmy
+{'hmjxy htrgnsfynts 1': (7, 10), 'hmjxy htrgnsfynts 3': (0, 9), 'hmjxy htrgnsfynts 2': (2, 11), 'ittw': (13, 10), 'uqfdjw': (2, 13), 'hmjxy': (2, 6), 'pjd': (8, 13), 'xrfwy jsjrd': (11, 5), 'xnruqj jsjrd': (9, 12)}
+{'uqfdjw_tujsji_hmjxy': Ffqxj, 'uqfdjw_lwfggji_pjd': Ffqxj, 'uqfdjw_zxji_rfwpjw': Ffqxj, 'jsjrd_lwfggji_uqfdjw': Ffqxj}
+lt itbs
+{'hmjxy htrgnsfynts 1': (7, 10), 'hmjxy htrgnsfynts 3': (0, 9), 'hmjxy htrgnsfynts 2': (2, 11), 'ittw': (13, 10), 'uqfdjw': (2, 13), 'hmjxy': (2, 6), 'pjd': (8, 13), 'xrfwy jsjrd': (12, 5), 'xnruqj jsjrd': (9, 11)}
+{'uqfdjw_tujsji_hmjxy': Ffqxj, 'uqfdjw_lwfggji_pjd': Ffqxj, 'uqfdjw_zxji_rfwpjw': Ffqxj, 'jsjrd_lwfggji_uqfdjw': Ffqxj}
+lwfg pjd
+{'hmjxy htrgnsfynts 1': (7, 10), 'hmjxy htrgnsfynts 3': (0, 9), 'hmjxy htrgnsfynts 2': (2, 11), 'ittw': (13, 10), 'uqfdjw': (7, 13), 'hmjxy': (2, 6), 'pjd': (0, 0), 'xrfwy jsjrd': (12, 5), 'xnruqj jsjrd': (9, 11)}
+{'uqfdjw_tujsji_hmjxy': Ffqxj, 'uqfdjw_lwfggji_pjd': Twzj, 'uqfdjw_zxji_rfwpjw': Ffqxj, 'jsjrd_lwfggji_uqfdjw': Ffqxj}
+vzny
+{'hmjxy htrgnsfynts 1': (7, 10), 'hmjxy htrgnsfynts 3': (0, 9), 'hmjxy htrgnsfynts 2': (2, 11), 'ittw': (13, 10), 'uqfdjw': (3, 13), 'hmjxy': (2, 6), 'pjd': (8, 13), 'xrfwy jsjrd': (12, 5), 'xnruqj jsjrd': (8, 11)}
+{'uqfdjw_tujsji_hmjxy': Ffqxj, 'uqfdjw_lwfggji_pjd': Ffqxj, 'uqfdjw_zxji_rfwpjw': Ffqxj, 'jsjrd_lwfggji_uqfdjw': Ffqxj}

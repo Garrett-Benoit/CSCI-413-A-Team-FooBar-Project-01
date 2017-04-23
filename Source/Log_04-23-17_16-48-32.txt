@@ -1,0 +1,4 @@
+16-49-46: Maze successfully generated using the Recursive Backtracker
+ 			algorithm after switching 0 time(s) and 1 attempt(s)
+16-49-59: Maze successfully generated using the Recursive Backtracker
+ 			algorithm after switching 0 time(s) and 1 attempt(s)
