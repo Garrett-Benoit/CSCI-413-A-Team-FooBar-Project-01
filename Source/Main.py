@@ -336,7 +336,7 @@ def main():
     #Load cell colors
     groud_cell=pygame.image.load(os.path.join(
         TILES_DIR,
-        "ground05.png"
+        "DarkGroundTile(32X32).png"
         )).convert()
     rocky_cell=pygame.image.load(os.path.join(
         TILES_DIR,
