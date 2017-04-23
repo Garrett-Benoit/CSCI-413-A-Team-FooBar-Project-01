@@ -53,19 +53,24 @@ DOOR_DIR="assets"
 TILES_DIR="assets"
 
 INTRODUCTION=[
-    "\n\n\nIntroduction:",
-    "\nWelcome to Python-Text-Based-Maze-Game!",
-    "(catchy name, huh?)",
-    "\nYour goal is to escape this maze. In order",
-    "to do so, you must:",
-    "1) Grab the key (used to unlock the door)",
-    "2) Open the chest",
-    "3) Open the door",
-    "\nWhile you are attempting to escape, two ",
-    "enemies will be trying to capture you. If ",
-    "they catch you, they will drag you back to ",
-    "where you started and confiscate all of your ",
-    "items."
+    "Introduction:",
+    "   Welcome to Python-Text-Based-Maze-Game!(catchy name, huh?)",
+    "Your goal is to escape this maze. In order to do so, you must:",
+    "       1) Grab the key (used to unlock the door)",
+    "       2) Open the chest",
+    "       3) Open the door",
+    "While you are attempting to escape, two enemies will be trying ",
+    "to capture you. If they catch you, they will drag you back to ",
+    "where you started and confiscate all of your items.",
+    "Command List: ",
+    "   1. go <forward, up, north, right, east, back, down south,",
+    "       left, west> <number>",
+    "   2. grab <key>",
+    "   3. open <chest, door>",
+    "   4. use <key, marker, 123>",
+    "   5. help (bring up a help prompt)",
+    "   6. quit (back to title screen)",
+    "To see this message again, enter the help command. Good luck!"
 ]
 
 # Get the address to the firebase server which stores information for each user.
@@ -184,6 +189,17 @@ visible_object_list = []
 
 # Initialize the pygame console window.
 pygame.init()
+
+#Story line
+#Story rendered here
+story_text=pygame.font.SysFont(None,20)
+story_line=[]
+for line in INTRODUCTION:
+    story_line.append(story_text.render(
+                line,0,
+                (249, 4, 188), #Text color
+                (219, 234, 159)), #Text background)
+    )
 
 # Set the caption for the console window.
 pygame.display.set_caption("")
@@ -808,16 +824,12 @@ def show_title_screen():
         screen.blit(label_1, (70, 120))
 
         #Add story line to start screen
-        rect = pygame.Surface((400,320), pygame.SRCALPHA, 32)
+        rect = pygame.Surface((430,320), pygame.SRCALPHA, 32)
         rect.fill((23, 100, 255, 50))
-        screen.blit(rect, (90,150))
-        for idx,line in enumerate(INTRODUCTION):
-            screen.blit(default_font_2.render(
-                line.strip(),
-                0,
-                (249, 4, 188), #Text color
-                (219, 234, 159)), #Text background
-            (105,155+idx*24) #Starting point
+        screen.blit(rect, (90,215))
+        for idx,line in enumerate(story_line):
+            screen.blit(line,
+            (95,220+idx*16) #Starting point
             )
      
         # Update the InputText widget.
