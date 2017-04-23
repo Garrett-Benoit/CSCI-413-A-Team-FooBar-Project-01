@@ -1,0 +1,12 @@
+die_sound.wav
+game_over_sound.wav
+go_sound.wav
+grab_key_sound.wav
+open_chest_sound.wav
+open_door_sound.wav
+pain_sound.wav
+treasure_sound.wav
+unlock_door_sound.wav
+use_combo_sound.wav
+use_marker_sound.wav
+background_sound.wav

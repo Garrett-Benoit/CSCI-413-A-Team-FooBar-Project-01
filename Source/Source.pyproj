@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{db3b520c-5c92-4037-8dd5-6027f7489c5a}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>Main.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId />
+    <InterpreterVersion />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+    <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Main.py" />
+    <Compile Include="Setup.py" />
+    <Compile Include="sgc\locals.py" />
+    <Compile Include="sgc\surface.py" />
+    <Compile Include="sgc\widgets\base_widget.py" />
+    <Compile Include="sgc\widgets\boxes.py" />
+    <Compile Include="sgc\widgets\button.py" />
+    <Compile Include="sgc\widgets\combo.py" />
+    <Compile Include="sgc\widgets\composite\dialogs.py" />
+    <Compile Include="sgc\widgets\composite\__init__.py" />
+    <Compile Include="sgc\widgets\container.py" />
+    <Compile Include="sgc\widgets\dialog.py" />
+    <Compile Include="sgc\widgets\fps_counter.py" />
+    <Compile Include="sgc\widgets\input_box.py" />
+    <Compile Include="sgc\widgets\label.py" />
+    <Compile Include="sgc\widgets\menu.py" />
+    <Compile Include="sgc\widgets\radio_button.py" />
+    <Compile Include="sgc\widgets\scale.py" />
+    <Compile Include="sgc\widgets\scroll_box.py" />
+    <Compile Include="sgc\widgets\settings.py" />
+    <Compile Include="sgc\widgets\switch.py" />
+    <Compile Include="sgc\widgets\_interface\text.py" />
+    <Compile Include="sgc\widgets\_interface\__init__.py" />
+    <Compile Include="sgc\widgets\_locals.py" />
+    <Compile Include="sgc\widgets\__init__.py" />
+    <Compile Include="sgc\__init__.py" />
+    <Compile Include="Tests.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="sgc" />
+    <Folder Include="sgc\widgets" />
+    <Folder Include="sgc\widgets\composite" />
+    <Folder Include="sgc\widgets\_interface" />
+  </ItemGroup>
+  <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
+</Project>
