@@ -294,13 +294,13 @@ def main():
     # Create and define the simple enemy object.
     simple_enemy_object =pygame.image.load(os.path.join(
         DUMB_ENEMY_DIR,
-        "WALK_000.png"
+        "DUMBENEMY.png"
         ))
 
     # Create and define the smart enemy object.
     smart_enemy_object = pygame.image.load(os.path.join(
         SMART_ENEMY_DIR,
-        "WALK_000.png"
+        "SMARTENEMY.png"
         ))
 
     # Create and define the chest_combination_1 object.
