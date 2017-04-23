@@ -197,8 +197,7 @@ story_line=[]
 for line in INTRODUCTION:
     story_line.append(story_text.render(
                 line,0,
-                (249, 4, 188), #Text color
-                (219, 234, 159)), #Text background)
+                (255, 255, 255)) #Text color
     )
 
 # Set the caption for the console window.
