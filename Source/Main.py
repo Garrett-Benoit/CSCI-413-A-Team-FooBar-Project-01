@@ -43,6 +43,30 @@ from firebase import jsonutil
 ################################################################################
 # Initialization
 ################################################################################
+#Directory locations
+USER_PLAYER_DIR="assets\\(@) - User Player\\RUN (32X32)"
+CHEST_DIR="assets\\(C) - Chest"
+KEY_DIR="assets\\(K) - Key"
+SMART_ENEMY_DIR="assets\\(S) - Smart Enemy\\WALK (32X27)"
+DUMB_ENEMY_DIR="assets\\(E) -Dumb Enemy\\WALK (32X27)"
+DOOR_DIR="assets\\(D) - Door"
+TILES_DIR="assets\\Tiles Platform\\Platform (32X32)"
+
+INTRODUCTION=[
+    "\n\n\nIntroduction:",
+    "\nWelcome to Python-Text-Based-Maze-Game!",
+    "(catchy name, huh?)",
+    "\nYour goal is to escape this maze. In order",
+    "to do so, you must:",
+    "1) Grab the key (used to unlock the door)",
+    "2) Open the chest",
+    "3) Open the door",
+    "\nWhile you are attempting to escape, two ",
+    "enemies will be trying to capture you. If ",
+    "they catch you, they will drag you back to ",
+    "where you started and confiscate all of your ",
+    "items."
+]
 
 # Get the address to the firebase server which stores information for each user.
 firebase = firebase.FirebaseApplication(
@@ -88,19 +112,20 @@ smart_enemy_object_position = [0, 0]  # Position of the smart enemy.
 # Symbol representing the first chest combination.
 chest_combination_1_object = str(random.randint(0, 9))
 # Color of the chest_combination_1_object.
-chest_combination_1_object_color = (0, 0, 0)
+#Change color of combination numbers
+chest_combination_1_object_color = (255, 0, 0)
 # Position of the chest_combination_1_object.
 chest_combination_1_object_position = [0, 0]
 # Symbol representing the second chest combination.
 chest_combination_2_object = str(random.randint(0, 9))
 # Color of the chest_combination_2_object.
-chest_combination_2_object_color = (0, 0, 0)
+chest_combination_2_object_color = (255, 0, 0)
 # Position of the chest_combination_2_object.
 chest_combination_2_object_position = [0, 0]
 # Symbol representing the third chest combination.
 chest_combination_3_object = str(random.randint(0, 9))
 # Color of the chest_combination_3_object.
-chest_combination_3_object_color = (0, 0, 0)
+chest_combination_3_object_color = (255, 0, 0)
 # Position of the chest_combination_3_object.
 chest_combination_3_object_position = [0, 0]
 object_size = 35  # Size of all objects drawn to the console window.
@@ -235,53 +260,73 @@ def main():
     global show_replay_2
     global show_replay_3
     global start_new_game
+    global cell_colors
 
+    
     # Create and define the door object.
-    door_object = pygame.font.Font(None, object_size).render(
-        door_object, False, door_object_color)
+    door_object =pygame.image.load(os.path.join(DOOR_DIR,
+        "Closed Door\\CloseDoor(32X51).png"))
 
     # Create and define the closed chest object.
-    chest_object_closed = pygame.font.Font(None, object_size).render(
-        chest_object_closed, False,
-        chest_object_color)
+    chest_object_closed = pygame.image.load(os.path.join(
+        CHEST_DIR,
+        "Close Chest img\\CloseChest(32X23).png"
+        ))
 
     # Create and define the opened chest object.
-    chest_object_opened = pygame.font.Font(None, object_size).render(
-        chest_object_opened, False,
-        chest_object_color)
+    chest_object_opened =pygame.image.load(os.path.join(
+        CHEST_DIR,
+        "Open Chest img\\OpenChest(32X25).png"
+        ))
 
     # Create and define the key object.
-    key_object = pygame.font.Font(None, object_size).render(
-        key_object, False, key_object_color)
+    key_object = pygame.image.load(os.path.join(
+        KEY_DIR,
+        "Key(32x32).png"
+        ))
 
     # Create and define the player object.
-    player_object = pygame.font.Font(None, object_size).render(
-        player_object, False, player_object_color)
+    player_object = pygame.image.load(os.path.join(
+        USER_PLAYER_DIR,
+        "Run__000.png"
+        ))
 
     # Create and define the simple enemy object.
-    simple_enemy_object = pygame.font.Font(None, object_size).render(
-        simple_enemy_object, False,
-        simple_enemy_object_color)
+    simple_enemy_object =pygame.image.load(os.path.join(
+        DUMB_ENEMY_DIR,
+        "WALK_000.png"
+        ))
 
     # Create and define the smart enemy object.
-    smart_enemy_object = pygame.font.Font(None, object_size).render(
-        smart_enemy_object, False,
-        smart_enemy_object_color)
+    smart_enemy_object = pygame.image.load(os.path.join(
+        SMART_ENEMY_DIR,
+        "WALK_000.png"
+        ))
 
     # Create and define the chest_combination_1 object.
     chest_combination_1_object = pygame.font.Font(None, object_size).render(
-        chest_combination_1_object, False,
-        chest_combination_1_object_color)
+                                     chest_combination_1_object, False,
+                                     chest_combination_1_object_color)
 
     # Create and define the chest_combination_2 object.
     chest_combination_2_object = pygame.font.Font(None, object_size).render(
-        chest_combination_2_object, False,
-        chest_combination_2_object_color)
+                                     chest_combination_2_object, False,
+                                     chest_combination_2_object_color)
 
     # Create and define the chest_combination_3 object.
     chest_combination_3_object = pygame.font.Font(None, object_size).render(
-        chest_combination_3_object, False,
-        chest_combination_3_object_color)
+                                     chest_combination_3_object, False,
+                                     chest_combination_3_object_color)
+    #Load cell colors
+    groud_cell=pygame.image.load(os.path.join(
+        TILES_DIR,
+        "ground (32X32)\\ground05.png"
+        )).convert()
+    rocky_cell=pygame.image.load(os.path.join(
+        TILES_DIR,
+        "rocky (32X32)\\rocky03.png"
+        )).convert()
+    cell_colors=rocky_cell,groud_cell
 
     # Call the function to handle the login/signup of the player.
     show_login_signup_screen()
@@ -758,15 +803,23 @@ def show_title_screen():
         default_font_2 = pygame.font.SysFont("None", 25)
         label_1 = default_font_1.render("Python-Text-Based-Maze-Game",
                                         1, (255, 255, 255))
-        label_2 = default_font_2.render("Taylor Venissat, Phuong Ho, Chance Johnson,",
-                                        1, (255, 255, 255))
-        label_3 = default_font_2.render("Garrett Benoit, and Zackary Hermsen",
-                                        1, (255, 255, 255))
 
         # Draw the labels onto the screen.
         screen.blit(label_1, (70, 120))
-        screen.blit(label_2, (110, 175))
-        screen.blit(label_3, (140, 200))
+
+        #Add story line to start screen
+        rect = pygame.Surface((400,320), pygame.SRCALPHA, 32)
+        rect.fill((23, 100, 255, 50))
+        screen.blit(rect, (90,150))
+        for idx,line in enumerate(INTRODUCTION):
+            screen.blit(default_font_2.render(
+                line.strip(),
+                0,
+                (249, 4, 188), #Text color
+                (219, 234, 159)), #Text background
+            (105,155+idx*24) #Starting point
+            )
+     
         # Update the InputText widget.
         sgc.update(1)
         # Update the console window to show changes.
@@ -3597,6 +3650,7 @@ def check_maze_for_validity_player_chest():
     # Return 1, the maze is invalid.
     return 1
 
+# Function to draw the screen.
 def draw_screen(screen):
     """
     Function to draw the screen.
@@ -3607,11 +3661,9 @@ def draw_screen(screen):
     ######### Comment out this code to enable the field of view system.#########
     for row in xrange(len(grid)):
         for column in xrange(len(grid[0])):
-            screen.fill(cell_colors[grid[column][row]],
-                        get_cell_rect((row, column), screen))
+            rec=get_cell_rect((row, column), screen)
+            screen.blit(cell_colors[grid[column][row]],rec)
     ############################################################################
-
-
 
     ############################################################################
     ######### Comment out this code to disable the field of view system.########
