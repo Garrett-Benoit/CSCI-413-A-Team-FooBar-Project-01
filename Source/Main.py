@@ -1,7 +1,7 @@
-"""
 ################################################################################
 # Header
 ################################################################################
+
 # Date Started:     2 (February) / 11 (Saturday) / 2017 (Fall)
 # School:           McNeese State University
 # Class:            Computer Science 413-A - Software Engineering II
@@ -12,7 +12,8 @@
 # Assignment:       Team-Programming-Assignment-01
 # Language:         Python
 # Tools:            Pygame (Library), Microsoft Visual Studios (IDE).
-"""
+
+
 
 ################################################################################
 # Imports
@@ -37,38 +38,6 @@ import firebase
 from firebase.firebase import FirebaseApplication, FirebaseAuthentication
 from firebase import jsonutil
 
-################################################################################
-# Set up the sound system
-################################################################################
-
-# Iinitialize the mixer
-pygame.mixer.init()
-
-# Load sounds and set volumes
-background_sound = pygame.mixer.Sound("Sounds/background_sound.wav")
-background_sound.set_volume(0.2)
-go_sound = pygame.mixer.Sound("Sounds/go_sound.wav")
-go_sound.set_volume(0.3)
-pain_sound = pygame.mixer.Sound("Sounds/pain_sound.wav")
-pain_sound.set_volume(0.5)
-die_sound = pygame.mixer.Sound("Sounds/die_sound.wav")
-die_sound.set_volume(1)
-game_over_sound = pygame.mixer.Sound("Sounds/game_over_sound.wav")
-game_over_sound.set_volume(1)
-grab_key_sound = pygame.mixer.Sound("Sounds/grab_key_sound.wav")
-grab_key_sound.set_volume(0.8)
-open_chest_sound = pygame.mixer.Sound("Sounds/open_chest_sound.wav")
-open_chest_sound.set_volume(0.8)
-open_door_sound = pygame.mixer.Sound("Sounds/open_door_sound.wav")
-open_door_sound.set_volume(0.8)
-treasure_sound = pygame.mixer.Sound("Sounds/treasure_sound.wav")
-treasure_sound.set_volume(0.8)
-unlock_door_sound = pygame.mixer.Sound("Sounds/unlock_door_sound.wav")
-unlock_door_sound.set_volume(1)
-use_combo_sound = pygame.mixer.Sound("Sounds/use_combo_sound.wav")
-use_combo_sound.set_volume(1)
-use_marker_sound = pygame.mixer.Sound("Sounds/use_marker_sound.wav")
-use_marker_sound.set_volume(1)
 
 
 ################################################################################
@@ -140,6 +109,7 @@ player_used_key = False
 player_used_marker = False
 player_unlocked_chest = False
 player_opened_chest = False
+enemy_grabbed_player = False
 chest_combination = (chest_combination_1_object +
                      chest_combination_2_object +
                      chest_combination_3_object)
@@ -172,8 +142,14 @@ grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
-# Dictionary that holds object positions.
-object_position_dictionary = {}
+# Dictionary that holds the starting positions of the objects.
+objects_starting_positions = {}
+
+# Dictionary that holds the current positions of the objects.
+objects_current_positions = {}
+
+# Dictionary that holds the current states of the game.
+current_game_states = {}
 
 # List to hold the marked tile coordinates.
 marked_tile_list = []
@@ -184,7 +160,6 @@ visible_object_list = []
 # Initialize the pygame console window.
 pygame.init()
 
-
 # Set the caption for the console window.
 pygame.display.set_caption("")
 
@@ -192,10 +167,40 @@ pygame.display.set_caption("")
 screen = sgc.surface.Screen((600, 635))
 
 # Create and place an input box on the console window.
-input_box = sgc.InputBox((600, 35), label="",
-                         default="Input here, output console...")
-input_box.config(pos=(0, 599))
-input_box.add(order=0)
+input_box = sgc.InputBox((600, 35), label = "",
+                         default = "Input here, output console...")
+input_box.config(pos = (0, 599))
+input_box.add(order = 0)
+
+# Initialize the pygame sound mixer.
+pygame.mixer.init()
+
+# Load sounds and set their volumes.
+background_sound = pygame.mixer.Sound("Sounds/background_sound.wav")
+background_sound.set_volume(0.2)
+go_sound = pygame.mixer.Sound("Sounds/go_sound.wav")
+go_sound.set_volume(0.3)
+pain_sound = pygame.mixer.Sound("Sounds/pain_sound.wav")
+pain_sound.set_volume(0.5)
+die_sound = pygame.mixer.Sound("Sounds/die_sound.wav")
+die_sound.set_volume(1)
+game_over_sound = pygame.mixer.Sound("Sounds/game_over_sound.wav")
+game_over_sound.set_volume(1)
+grab_key_sound = pygame.mixer.Sound("Sounds/grab_key_sound.wav")
+grab_key_sound.set_volume(0.8)
+open_chest_sound = pygame.mixer.Sound("Sounds/open_chest_sound.wav")
+open_chest_sound.set_volume(0.8)
+open_door_sound = pygame.mixer.Sound("Sounds/open_door_sound.wav")
+open_door_sound.set_volume(0.8)
+treasure_sound = pygame.mixer.Sound("Sounds/treasure_sound.wav")
+treasure_sound.set_volume(0.8)
+unlock_door_sound = pygame.mixer.Sound("Sounds/unlock_door_sound.wav")
+unlock_door_sound.set_volume(1)
+use_combo_sound = pygame.mixer.Sound("Sounds/use_combo_sound.wav")
+use_combo_sound.set_volume(1)
+use_marker_sound = pygame.mixer.Sound("Sounds/use_marker_sound.wav")
+use_marker_sound.set_volume(1)
+
 
 
 ################################################################################
@@ -204,8 +209,11 @@ input_box.add(order=0)
 
 def main():
     """
-    Main function.
+    Function to initialize all necessary variables 
+    and control the main logic of the application.
     """
+    
+    # Global variable declarations.
     global player_object
     global chest_object_closed
     global chest_object_opened
@@ -276,14 +284,14 @@ def main():
         chest_combination_3_object_color)
 
     # Call the function to handle the login/signup of the player.
-    # show_login_signup_screen()
+    show_login_signup_screen()
 
     # Loop that determines manages the game states.
     while not exit_game:
         # Call the function to handle the player choices at the title screen.
         show_title_screen()
 
-        # Cue the background music that will indefinitely loop
+        # Cue the background music that will indefinitely loop.
         background_sound.play(-1)
 
         # Reset the maze before continuing.
@@ -309,11 +317,14 @@ def main():
         # Reset the state of player
         # decisions and game conditions.
         marked_tile_list = []
+        objects_current_positions = {}
+        current_game_states = {}
         player_grabbed_key = False
         player_used_key = False
         player_used_marker = False
         player_unlocked_chest = False
         player_opened_chest = False
+        enemy_grabbed_player = False
         maze_is_valid = False
         player_is_authenticated = False
         player_made_decision = False
@@ -324,14 +335,17 @@ def main():
         game_complete = False
 
 
+
 ################################################################################
 # Game States
 ################################################################################
 
 def show_login_signup_screen():
     """
-    Function to handle player choices on the login screen.
+    Function to display the screen to allow for the user to login and signup.
     """
+
+    # Global variable declarations.
     global grid
     global player_username
     global player_is_authenticated
@@ -379,6 +393,9 @@ def show_login_signup_screen():
             if event.type == GUI:
                 # Print user input string to the output console window.
                 input_string = event.text
+
+                # Print out asterisks instead of printing 
+                # out the actual entered passwords.
                 if login_attempt and i == 2:
                     print_input("********")
                 elif signup_attempt and i == 3:
@@ -388,10 +405,12 @@ def show_login_signup_screen():
 
                 if i == 0:
                     if input_string == "login":
-                        # .
+                        # Set login_attempt equal to true if
+                        # the player attempts to log in.
                         login_attempt = True
                     elif input_string == "signup":
-                        # .
+                        # Set signup_attempt equal to true if the 
+                        # player attempts to make an account.
                         signup_attempt = True
                     elif input_string == "exit":
                         # Exit the game if user chooses to.
@@ -450,10 +469,11 @@ def show_login_signup_screen():
                                 # The player has been successfully authenticated.
                                 player_is_authenticated = True
 
-                                # Set player_username to logged in user
+                                # Set player_username to logged in user.
                                 player_username = temp_username
+                                # Function to get the 3 most recent replays and 
+                                # save them both locally and remotely.
                                 save_replays()
-                                # tempfunction()
 
                                 # Print out a message informing the user that
                                 # they have been successfully logged in.
@@ -535,10 +555,11 @@ def show_login_signup_screen():
                                     # The player has been successfully authenticated.
                                     player_is_authenticated = True
 
-                                    # Set player_username to logged in user
+                                    # Set player_username to logged in user.
                                     player_username = temp_username
+                                    # Function to get the 3 most recent replays and 
+                                    # save them both locally and remotely.
                                     save_replays()
-                                    # tempfunction()
 
                                     # Print out a message informing the user
                                     # that they have successfully signed up.
@@ -592,182 +613,13 @@ def show_login_signup_screen():
         # Update the console window to show changes.
         pygame.display.update()
 
-
-def password_check(password_input):
-    # Character counters
-    """
-    Function to check password for valid input
-    :param password_input: input password to check validity of
-    :return: help strings for invalid password or valid for good password
-    """
-    lower_case_letters_count = 0
-    upper_case_letters_count = 0
-    numbers_count = 0
-
-    # Check if password is 8 characters in length
-    if len(password_input) < 8:
-        print "Password must be at least 8 characters long."
-    else:
-        # Password validity variables
-        valid_upper = False
-        valid_lower = False
-        valid_digit = False
-
-        # Loop through each character and check for validity.
-        for character in password_input:
-            if character.isdigit():
-                numbers_count += 1
-            elif character.islower():
-                lower_case_letters_count += 1
-                print lower_case_letters_count
-            elif character.isupper():
-                upper_case_letters_count += 1
-
-        # Check for lower case count
-        if lower_case_letters_count > 0:
-            valid_lower = True
-        else:
-            print "No lower case letters in password"
-
-        # Check for upper case count
-        if upper_case_letters_count > 0:
-            valid_upper = True
-        else:
-            print "No upper case letters in password"
-
-        # Check for digit count
-        if numbers_count > 0:
-            valid_digit = True
-        else:
-            print "No numbers in password"
-
-        # If all counts are valid
-        if valid_upper & valid_lower & valid_digit:
-            print "Good password"
-            print "Lower case count: " + str(lower_case_letters_count)
-            print "Upper case count: " + str(upper_case_letters_count)
-            print "Number count: " + str(numbers_count)
-            return True
-
-
-def update_top10(new_move_value):
-    # Print out the top 10 moves of the leaderboard.
-    print "\nTop 10 Moves Leaderboard: "
-
-    # Get the top moves from the leader board.
-    leaderboard_moves = firebase.get('/leaderboard', None)
-
-    if new_move_value != 0:
-        leaderboard_moves[player_username] = new_move_value
-
-    sorted_items = sorted(leaderboard_moves, key=lambda x: leaderboard_moves[x])
-
-    for index, value in enumerate(sorted_items):
-        if index < 10:
-            print ("#") + str(index + 1) , ("{} : {}".format(value, leaderboard_moves[value]))
-            firebase.put('/leaderboard', value, leaderboard_moves[value])
-
-def save_replays():
-    """
-    Function to get the 3 most recent replays and save them
-    both locally in game files and remotely on Firebase.
-    """
-
-    # Variable for timestamp comparison.
-    timestamps = []
-    local_replays = []
-    local_replay_values = []
-
-    # Fetch replay 1 from the local game files.
-    open_chosen_replay_file(1)
-    if chosen_replay_file != None:
-        if not chosen_replay_file.closed:
-            replay1_name = str(chosen_replay_filename[:-4])
-            replay1 = chosen_replay_file.read()
-            if (replay1_name != None) and (replay1 != None):
-                local_replays.append(replay1_name)
-                local_replay_values.append(replay1)
-
-        close_chosen_replay_file()
-
-    # Fetch replay 2 from the local game files.
-    open_chosen_replay_file(2)
-    if chosen_replay_file != None:
-        if not chosen_replay_file.closed:
-            replay2_name = str(chosen_replay_filename[:-4])
-            replay2 = chosen_replay_file.read()
-
-            if (replay2_name != None) and (replay2 != None):
-                local_replays.append(replay2_name)
-                local_replay_values.append(replay2)
-
-        close_chosen_replay_file()
-
-    # Fetch replay 3 from the local game files.
-    open_chosen_replay_file(3)
-    if chosen_replay_file != None:
-        if not chosen_replay_file.closed:
-            replay3_name = str(chosen_replay_filename[:-4])
-            replay3 = chosen_replay_file.read()
-
-            if (replay3_name != None) and (replay3 != None):
-                local_replays.append(replay3_name)
-                local_replay_values.append(replay3)
-
-        close_chosen_replay_file()
-
-    # Fetch replays from Firebase.
-    firebase_replays = firebase.get('/replays/' + player_username, None)
-
-    # Combine local and remote replays into one array.
-    if firebase_replays != None:
-        for key, value in firebase_replays.iteritems():
-            local_replays.append(key)
-            local_replay_values.append(value)
-
-    # Iterate through all 6 replays and parse the timestamp out.
-    for index, item in enumerate(local_replays):
-        if isinstance(local_replays[index], str):
-            timestamps.append(int(filter(str.isdigit, local_replays[index])))
-        elif isinstance(local_replays[index], unicode):
-            timestamps.append(int(filter(unicode.isdigit, local_replays[index])))
-
-    # Sort the replays in order.
-    sorted_timestamps = sorted(timestamps, reverse = True)
-    sorted_replays = sorted(local_replays, reverse = True)
-    sorted_replay_values = sorted(local_replay_values, reverse = True)
-
-    # Iterate through the timestamps and remove duplicates.
-    for index, item in enumerate(sorted_timestamps):
-        if (index + 1) < len(sorted_timestamps):
-            if sorted_timestamps[index] == sorted_timestamps[index + 1]:
-                sorted_timestamps.pop(index + 1)
-                sorted_replays.pop(index + 1)
-                sorted_replay_values.pop(index + 1)
-
-    '''for index, timestamp in enumerate(sorted_timestamps):
-        if index < 3:
-            print sorted_replays[index]'''
-
-    if len(sorted_replays) == 1:
-        firebase.put('/replays/', player_username,
-                     {sorted_replays[0]: sorted_replay_values[0]})
-    elif len(sorted_replays) == 2:
-        firebase.put('/replays/', player_username,
-                     {sorted_replays[0]: sorted_replay_values[0],
-                      sorted_replays[1]: sorted_replay_values[1]})
-    elif len(sorted_replays) == 3:
-        firebase.put('/replays/', player_username,
-                     {sorted_replays[0]: sorted_replay_values[0],
-                      sorted_replays[1]: sorted_replay_values[1],
-                      sorted_replays[2]: sorted_replay_values[2]})
-        ######Test Loop For Printing Results######
-
-
 def show_title_screen():
     """
-    Function to handle player choices on the title screen.
+    Function to display the screen to allow for the user to start
+    a new game or watch a replay of an already existing one.
     """
+    
+    # Global variable declarations.
     global grid
     global player_made_decision
     global start_new_game
@@ -776,6 +628,7 @@ def show_title_screen():
     global show_replay_3
     global exit_game
 
+    # Set the grid to be the frame of the screen.
     grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
             [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0],
@@ -919,11 +772,12 @@ def show_title_screen():
         # Update the console window to show changes.
         pygame.display.update()
 
-
 def open_new_game():
     """
-    Function to start a new game.
+    Function to allow for the player to start a new game.
     """
+
+    # Global variable declarations.
     global maze_is_valid
 
     # Set the caption for the console window.
@@ -947,14 +801,6 @@ def open_new_game():
             # Generate the maze using the
             # Recursive Backtracker algorithm.
             generate_maze_recursive_backtracker()
-
-            # Code to break the maze generation
-            # and test the number of switches.
-            '''for x in range(len(grid)):
-                for y in range(len(grid)):
-                    if current_number_of_attempts < 4:
-                        grid[7][x] = 0
-                        grid[y][7] = 0'''
 
             # Place the player, door, chest, and
             # key objects randomly on the grid.
@@ -994,14 +840,6 @@ def open_new_game():
 
             # Generate the maze using the Binary Tree algorithm.
             generate_maze_binary_tree()
-
-            # Code to break the maze generation
-            # and test the number of switches.
-            '''for x in range(len(grid)):
-                for y in range(len(grid)):
-                    if current_number_of_attempts < 8:
-                        grid[7][x] = 0
-                        grid[y][7] = 0'''
 
             # Place the player, door, chest, and
             # key objects randomly on the grid.
@@ -1053,6 +891,197 @@ def open_new_game():
     handle_input()
 
 
+
+################################################################################
+# Database
+################################################################################
+
+def password_check(password_input):
+    """
+    Function to check password for valid input
+    :param password_input: input password to check validity of
+    :return: help strings for invalid password or valid for good password
+    """
+
+    # Character counters.
+    lower_case_letters_count = 0
+    upper_case_letters_count = 0
+    numbers_count = 0
+
+    # Check if the entered password is 8 characters or more in length.
+    if len(password_input) < 8:
+        print "Password must be at least 8 characters long."
+    else:
+        # Password validity variables.
+        valid_upper = False
+        valid_lower = False
+        valid_digit = False
+
+        # Loop through each character and check for validity.
+        for character in password_input:
+            if character.isdigit():
+                numbers_count += 1
+            elif character.islower():
+                lower_case_letters_count += 1
+                print lower_case_letters_count
+            elif character.isupper():
+                upper_case_letters_count += 1
+
+        # Check for lower case count.
+        if lower_case_letters_count > 0:
+            valid_lower = True
+        else:
+            print "No lower case letters in password"
+
+        # Check for upper case count.
+        if upper_case_letters_count > 0:
+            valid_upper = True
+        else:
+            print "No upper case letters in password"
+
+        # Check for digit count.
+        if numbers_count > 0:
+            valid_digit = True
+        else:
+            print "No numbers in password"
+
+        # If all counts are valid.
+        if valid_upper & valid_lower & valid_digit:
+            print "Good password"
+            print "Lower case count: " + str(lower_case_letters_count)
+            print "Upper case count: " + str(upper_case_letters_count)
+            print "Number count: " + str(numbers_count)
+            return True
+
+def update_top10(new_move_value):
+    """
+    Function to update and print out the
+    top ten moves of the leaderboard.
+    : 
+    """
+
+    # Print out the top 10 moves of the leaderboard.
+    print "\nTop 10 Moves Leaderboard: "
+
+    # Get the top moves from the leader board.
+    leaderboard_moves = firebase.get('/leaderboard', None)
+
+    # Update the value of leaderboard_moves for
+    # the current user if it does not equal 0.
+    if new_move_value != 0:
+        leaderboard_moves[player_username] = new_move_value
+
+    # Sort the list of leaderboard moves.
+    sorted_items = sorted(leaderboard_moves, key = lambda x: leaderboard_moves[x])
+
+    # Iterate through the sorted items.
+    for index, value in enumerate(sorted_items):
+        # Continue until the index reaches 10.
+        if index < 10:
+            # Print out the top 10 moves in descending order (less moves, higher rank).
+            print ("#") + str(index + 1) , ("{} : {}".format(value, leaderboard_moves[value]))
+            # Push the leaderboard to the firebase database.
+            firebase.put('/leaderboard', value, leaderboard_moves[value])
+
+def save_replays():
+    """
+    Function to get the 3 most recent replays and save them
+    both locally in game files and remotely on Firebase.
+    """
+
+    # Variable for timestamps comparison.
+    timestamps = []
+    local_replays = []
+    local_replay_values = []
+
+    # Fetch replay 1 from the local game files.
+    open_chosen_replay_file(1)
+    if chosen_replay_file != None:
+        if not chosen_replay_file.closed:
+            replay1_name = str(chosen_replay_filename[:-4])
+            replay1 = chosen_replay_file.read()
+            if (replay1_name != None) and (replay1 != None):
+                local_replays.append(replay1_name)
+                local_replay_values.append(replay1)
+
+        # Close the opened chosen replay file.
+        close_chosen_replay_file()
+
+    # Fetch replay 2 from the local game files.
+    open_chosen_replay_file(2)
+    if chosen_replay_file != None:
+        if not chosen_replay_file.closed:
+            replay2_name = str(chosen_replay_filename[:-4])
+            replay2 = chosen_replay_file.read()
+
+            if (replay2_name != None) and (replay2 != None):
+                local_replays.append(replay2_name)
+                local_replay_values.append(replay2)
+
+        # Close the opened chosen replay file.
+        close_chosen_replay_file()
+
+    # Fetch replay 3 from the local game files.
+    open_chosen_replay_file(3)
+    if chosen_replay_file != None:
+        if not chosen_replay_file.closed:
+            replay3_name = str(chosen_replay_filename[:-4])
+            replay3 = chosen_replay_file.read()
+
+            if (replay3_name != None) and (replay3 != None):
+                local_replays.append(replay3_name)
+                local_replay_values.append(replay3)
+
+        # Close the opened chosen replay file.
+        close_chosen_replay_file()
+
+    # Fetch replays from Firebase.
+    firebase_replays = firebase.get('/replays/' + player_username, None)
+
+    # Combine local and remote replays into one array.
+    if firebase_replays != None:
+        for key, value in firebase_replays.iteritems():
+            local_replays.append(key)
+            local_replay_values.append(value)
+
+    # Iterate through all 6 replays and parse the timestamp out.
+    for index, item in enumerate(local_replays):
+        if isinstance(local_replays[index], str):
+            timestamps.append(int(filter(str.isdigit, local_replays[index])))
+        elif isinstance(local_replays[index], unicode):
+            timestamps.append(int(filter(unicode.isdigit, local_replays[index])))
+
+    # Sort the replays in order.
+    sorted_timestamps = sorted(timestamps, reverse = True)
+    sorted_replays = sorted(local_replays, reverse = True)
+    sorted_replay_values = sorted(local_replay_values, reverse = True)
+
+    # Iterate through the timestamps and remove duplicates.
+    for index, item in enumerate(sorted_timestamps):
+        if (index + 1) < len(sorted_timestamps):
+            if sorted_timestamps[index] == sorted_timestamps[index + 1]:
+                sorted_timestamps.pop(index + 1)
+                sorted_replays.pop(index + 1)
+                sorted_replay_values.pop(index + 1)
+
+    # Attempt to post a replay if there is only one replay available.
+    if len(sorted_replays) == 1:
+        firebase.put('/replays/', player_username,
+                     {sorted_replays[0]: sorted_replay_values[0]})
+    # Attempt to post two replays if there are two replays available.
+    elif len(sorted_replays) == 2:
+        firebase.put('/replays/', player_username,
+                     {sorted_replays[0]: sorted_replay_values[0],
+                      sorted_replays[1]: sorted_replay_values[1]})
+    # Attempt to post three replays if there are three replays available.
+    elif len(sorted_replays) == 3:
+        firebase.put('/replays/', player_username,
+                     {sorted_replays[0]: sorted_replay_values[0],
+                      sorted_replays[1]: sorted_replay_values[1],
+                      sorted_replays[2]: sorted_replay_values[2]})
+
+
+
 ################################################################################
 # Text Processing
 ################################################################################
@@ -1061,6 +1090,7 @@ def print_introduction_message():
     """
     Function to print out an introduction message.
     """
+
     print "\n\n\nIntroduction: "
     print "\nWelcome to Python-Text-Based-Maze-Game! (catchy name, huh?)"
     print "\nYour goal is to escape this maze. In order to do so, you must: "
@@ -1081,11 +1111,27 @@ def print_introduction_message():
     print "6. quit (back to title screen)"
     print "\nTo see this message again, enter the help command. Good luck!"
 
+def print_replay_message():
+    """
+    Function to print out a message for the replay system.
+    """
+
+    print "Replay System Command List: "
+    print "1. use pause"
+    print "2. use resume"
+    print "3. go back <number>"
+    print "4. go forward <number>"
+    print "5. use stop"
+    print "6. go faster"
+    print "7. go slower"
+    print "8. help"
+    print "\nTo see this message again, enter the help command."
 
 def help():
     """
     Function to print out directions and a list of commands.
     """
+
     print "Objectives: "
     print "1) Grab the key (used to unlock the door)"
     print "2) Open the chest"
@@ -1105,6 +1151,7 @@ def print_input(input):
     Function to get user input from the input text
     :param input: input to print
     """
+
     print "\nInput: " + input
 
 
@@ -1112,6 +1159,7 @@ def print_go_error():
     """
     Function to print error message for invalid go.
     """
+
     print "Output: Invalid move command..."
 
 
@@ -1119,6 +1167,7 @@ def print_input_error():
     """
     Function to print error message for invalid input.
     """
+
     print "Output: Invalid input. Command not recognized..."
 
 
@@ -1126,6 +1175,7 @@ def clear():
     """
     Function to clear user input from the InputText.
     """
+
     input_box.text = ""
 
 
@@ -1133,11 +1183,11 @@ def clear():
 # File Input/Output
 ################################################################################
 
-
 def manage_log_files():
     """
-    Function to manage the number of log files in the directory.
+    Function to manage the number of log files in the current working directory.
     """
+
     # List to store all filenames in the current working directory.
     general_filenames_list = []
     # List to store the filenames for log files.
@@ -1161,11 +1211,11 @@ def manage_log_files():
             # Remove the log file from the hard drive.
             os.remove(log_filenames_list[i])
 
-
 def manage_replay_files():
     """
     Function to manage the number of replay files in the directory.
     """
+
     # List to store all filenames in the current working directory.
     general_filenames_list = []
     # List to store the filenames for replay files.
@@ -1189,34 +1239,37 @@ def manage_replay_files():
             # Remove the replay file from the hard drive.
             os.remove(replay_filenames_list[i])
 
-
 def open_log_file():
     """
     Function to open the log file.
     """
+
+    # Global variable declarations.
     global log_file
     global log_filename
 
     # Open the log file in write mode.
     log_file = open(log_filename, "wb")
 
-
 def open_replay_file():
     """
     Function to open the replay file.
     """
+
+    # Global variable declarations.
     global replay_file
     global replay_filename
 
     # Open the replay file in write mode.
     replay_file = open(replay_filename, "wb")
 
-
 def open_chosen_replay_file(number):
     """
     Function to open the replay file chosen by the user.
     :param number: replay number to open
     """
+
+    # Global variable declarations.
     global chosen_replay_file
     global chosen_replay_filename
 
@@ -1250,12 +1303,13 @@ def open_chosen_replay_file(number):
         # Open the chosen replay file in write mode.
         chosen_replay_file = open(chosen_replay_filename, "rb")
 
-
 def write_to_log_file(string):
     """
     Function to write to the log file.
     :param string: string to write log file
     """
+
+    # Global variable declarations.
     global log_file
 
     # Write the string to the log file.
@@ -1264,12 +1318,13 @@ def write_to_log_file(string):
     # Update the changes to the log file.
     log_file.flush()
 
-
 def write_to_replay_file(string):
     """
     Function to write to the replay file.
     :param string: string to write to replay file
     """
+
+    # Global variable declarations.
     global replay_file
     global key_caesar_cipher
     global chosen_encryption_algorithm
@@ -1284,50 +1339,55 @@ def write_to_replay_file(string):
     # Update the changes to the replay file.
     replay_file.flush()
 
-
 def close_log_file():
     """
     Function to close the opened log file.
     """
+
+    # Global variable declarations.
     global log_file
 
     # Close the log file.
     log_file.close()
 
-
 def close_replay_file():
     """
     Function to close the opened replay file.
     """
+
+    # Global variable declarations.
     global replay_file
 
     # Close the replay file.
     replay_file.close()
 
-
 def close_chosen_replay_file():
     """
     Function to close the chosen replay file.
     """
+
+    # Global variable declarations.
     global chosen_replay_file
 
     # Close the chosen replay file.
     chosen_replay_file.close()
 
 
+
 ################################################################################
-# ENCRYPTION ALGORITHMS
+# Encryption
 ################################################################################
 
+################# Caesar Cipher Encryption (Simple encryption) #################
 
 def database_encrypt(n, plaintext):
-    #
     """
     Function to encrypt the database
     :param n:
     :param plaintext: text to encrypt
     :return: encrypted database
     """
+
     result = ''
 
     #
@@ -1368,15 +1428,14 @@ def database_encrypt(n, plaintext):
     #
     return result
 
-
 def database_decrypt(n, ciphertext):
-    #
     """
     Function to decrypt the database
     :param n:
     :param ciphertext: text to decrypt
     :return: decrypted database
     """
+
     result = ''
 
     #
@@ -1423,14 +1482,12 @@ def database_decrypt(n, ciphertext):
 # The following code is in a poor state., clean it up!
 
 
-
 #
 a_ordinal = ord('a')
 #
 z_ordinal = ord('z')
 #
 chosen_encryption_algorithm = "1"
-
 
 def caesar_cipher_encrypt(text, key):
     """
@@ -1439,6 +1496,7 @@ def caesar_cipher_encrypt(text, key):
     :param key: encryption key applied to text
     :return: encrypted text
     """
+
     # Convert to ASCI representation.
     clist = [ord(x) for x in text]
     #
@@ -1470,19 +1528,19 @@ def caesar_cipher_encrypt(text, key):
     # Return...
     return ''.join(cipher)
 
-
 def caesar_cipher_decrypt(text, key):
-    # Why is this variable named differently than clist in the above function?
-    # Do they provide different functionality?
     """
     Function to decrpyt the Caesar Cipher encrypted text.
     :param text: text to be decrypted
     :param key: decryption key applied to text
     :return: decrypted text
     """
+
+    # Why is this variable named differently than clist in the above function?
+    # Do they provide different functionality?
     cipher = [ord(x) for x in text]
 
-    # What the hell is a cleat?
+    # 
     cleat_text = list()
 
     #
@@ -1511,17 +1569,15 @@ def caesar_cipher_decrypt(text, key):
     #
     return ''.join(cleat_text)
 
-
-#######################################
-# AES Encryption (Complex encryption) #
+###################### AES Encryption (Complex encryption) #####################
 
 class AES(object):
-    # AES Functions for a single block
+    # AES Functions for a single block.
 
-    # Valid key sizes
+    # Valid key sizes.
     key_size = dict(SIZE_128=16, SIZE_192=24, SIZE_256=32)
 
-    # Rijndael S-box
+    # Rijndael S-box.
     sbox = [0x63, 0x7c, 0x77, 0x7b, 0xf2, 0x6b, 0x6f, 0xc5, 0x30, 0x01, 0x67,
             0x2b, 0xfe, 0xd7, 0xab, 0x76, 0xca, 0x82, 0xc9, 0x7d, 0xfa, 0x59,
             0x47, 0xf0, 0xad, 0xd4, 0xa2, 0xaf, 0x9c, 0xa4, 0x72, 0xc0, 0xb7,
@@ -1547,7 +1603,7 @@ class AES(object):
             0x89, 0x0d, 0xbf, 0xe6, 0x42, 0x68, 0x41, 0x99, 0x2d, 0x0f, 0xb0,
             0x54, 0xbb, 0x16]
 
-    # Rijndael Inverted S-box
+    # Rijndael Inverted S-box.
     rsbox = [0x52, 0x09, 0x6a, 0xd5, 0x30, 0x36, 0xa5, 0x38, 0xbf, 0x40, 0xa3,
              0x9e, 0x81, 0xf3, 0xd7, 0xfb, 0x7c, 0xe3, 0x39, 0x82, 0x9b, 0x2f,
              0xff, 0x87, 0x34, 0x8e, 0x43, 0x44, 0xc4, 0xde, 0xe9, 0xcb, 0x54,
@@ -1579,6 +1635,7 @@ class AES(object):
         :param num: index of s-box value
         :return: s-box value
         """
+
         return self.sbox[num]
 
     def get_sbox_invert(self, num):
@@ -1587,6 +1644,7 @@ class AES(object):
         :param num: index of inverted s-box value
         :return: inverted s-box value
         """
+
         return self.rsbox[num]
 
     def rotate(self, word):
@@ -1595,9 +1653,10 @@ class AES(object):
         :param word: word to be rotated
         :return: rotated word
         """
+
         return word[1:] + word[:1]
 
-    # Rijndael Rcon
+    # Rijndael Rcon.
     Rcon = [0x8d, 0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1b, 0x36,
             0x6c, 0xd8, 0xab, 0x4d, 0x9a, 0x2f, 0x5e, 0xbc, 0x63, 0xc6, 0x97,
             0x35, 0x6a, 0xd4, 0xb3, 0x7d, 0xfa, 0xef, 0xc5, 0x91, 0x39, 0x72,
@@ -1629,6 +1688,7 @@ class AES(object):
         :param num: index of Rcon value
         :return: Rcon value
         """
+
         return self.Rcon[num]
 
     def core(self, word, iteration):
@@ -1638,16 +1698,17 @@ class AES(object):
         :param iteration: loop variable
         :return: modified word
         """
-        # Key schedule core
-        # rotate the 32-bit word 8 bits to the left
+
+        # Key schedule core.
+        # rotate the 32-bit word 8 bits to the left.
         word = self.rotate(word)
 
-        # apply S-Box substitution on all 4 parts of the 32-bit word
+        # Apply S-Box substitution on all 4 parts of the 32-bit word.
         for i in range(4):
             word[i] = self.get_sbox_value(word[i])
 
             # XOR the output of the rcon operation with i to the first part
-            # (leftmost) only
+            # (leftmost) only.
             word[0] = word[0] ^ self.get_rcon_value(iteration)
             return word
 
@@ -1660,33 +1721,34 @@ class AES(object):
         :param expanded_key_size: final size of the expanded key
         :return: expanded key
         """
-        # Rijndael's key expansion
-        # Current expanded key_size, in bytes
+
+        # Rijndael's key expansion.
+        # Current expanded key_size, in bytes.
         current_size = 0
         rcon_iteration = 1
         expanded_key = [0] * expanded_key_size
 
-        # Set the 16, 24, 32 bytes of the expanded key to the input key
+        # Set the 16, 24, 32 bytes of the expanded key to the input key.
         for j in range(size):
             expanded_key[j] = key[j]
         current_size += size
 
         while current_size < expanded_key_size:
-            # Assign the previous 4 bytes to the temporary value t
+            # Assign the previous 4 bytes to the temporary value t.
             t = expanded_key[current_size - 4: current_size]
 
             # Every 16, 24, 32 bytes we apply the core schedule to t
-            # and increment rcon_iteration afterwards
+            # and increment rcon_iteration afterwards.
             if current_size % size == 0:
                 t = self.core(t, rcon_iteration)
                 rcon_iteration += 1
 
-            # For 256-bit keys, we add an extra sbox to the calculation
+            # For 256-bit keys, we add an extra sbox to the calculation.
             if size == self.key_size["SIZE_256"] and ((current_size % size) % 16):
                 for l in range(4): t[l] = self.get_sbox_value(t[l])
 
             # We XOR t with the four-byte block 16, 24, 32 bytes before the new
-            # expanded key. This becomes the next four bytes in the expanded key
+            # expanded key. This becomes the next four bytes in the expanded key.
             for m in range(4):
                 expanded_key[current_size] = expanded_key[current_size - size] ^ \
                                              t[m]
@@ -1700,7 +1762,8 @@ class AES(object):
         :param round_key: key added to the state
         :return: state
         """
-        # Adds (XORs) the round key to the state
+
+        # Adds (XORs) the round key to the state.
         for i in range(16):
             state[i] ^= round_key[i]
         return state
@@ -1713,6 +1776,8 @@ class AES(object):
         :param round_key_pointer:
         :return: round key
         """
+
+        # 
         round_key = [0] * 16
         for i in range(4):
             for j in range(4):
@@ -1726,22 +1791,20 @@ class AES(object):
         :param b: 8-bit character
         :return: product of a x b
         """
+
+        # 
         p = 0
         for counter in range(8):
             if b & 1: p ^= a
             hi_bit_set = a & 0x80
             a <<= 1
-            # keep a 8 bit
+            # Keep a 8 bit.
             a &= 0xFF
             if hi_bit_set:
                 a ^= 0x1b
             b >>= 1
         return p
 
-    #
-    # substitute all the values from the state with the value in the SBox
-    # using the state value as index for the SBox
-    #
     def sub_bytes(self, state, is_inv):
         """
         Function to substitute all the values from the state
@@ -1751,6 +1814,8 @@ class AES(object):
         :param is_inv: bool value to tell if it is inverted or not
         :return: state
         """
+
+        # 
         if is_inv:
             getter = self.get_sbox_invert
         else:
@@ -1765,6 +1830,8 @@ class AES(object):
         :param is_inv: bool value to tell if it is inverted or not
         :return: shifted state
         """
+
+        # 
         for i in range(4):
             state = self.shift_row(state, i * 4, i, is_inv)
         return state
@@ -1778,6 +1845,8 @@ class AES(object):
         :param is_inv: bool value to tell if it is inverted or not
         :return: shifted state
         """
+
+        # 
         for i in range(nbr):
             if is_inv:
                 state[state_pointer:state_pointer + 4] = \
@@ -1796,15 +1865,16 @@ class AES(object):
         :param is_inv: bool value to tell if it is inverted or not
         :return: mixed state
         """
-        # iterate over the 4 columns
+
+        # Iterate over the 4 columns.
         for i in range(4):
-            # construct one column by slicing over the 4 rows
+            # Construct one column by slicing over the 4 rows.
             column = state[i:i + 16:4]
 
-            # apply the mix_column on one column
+            # Apply the mix_column on one column.
             column = self.mix_column(column, is_inv)
 
-            # put the values back into the state
+            # Put the values back into the state.
             state[i:i + 16:4] = column
 
         return state
@@ -1816,6 +1886,8 @@ class AES(object):
         :param is_inv: bool value to tell if it is inverted or not
         :return: mixed column
         """
+
+        # 
         if is_inv:
             mult = [14, 9, 13, 11]
         else:
@@ -1840,6 +1912,8 @@ class AES(object):
         :param round_key: round key added to the state
         :return: state with performed operations applied
         """
+
+        # 
         state = self.sub_bytes(state, False)
         state = self.shift_rows(state, False)
         state = self.mix_columns(state, False)
@@ -1853,6 +1927,8 @@ class AES(object):
         :param round_key: round key added to the state
         :return: state with performed operations applied.
         """
+
+        # 
         state = self.shift_rows(state, True)
         state = self.sub_bytes(state, True)
         state = self.add_round_key(state, round_key)
@@ -1869,6 +1945,8 @@ class AES(object):
         :param nbr_rounds: number of rounds
         :return: modified state
         """
+
+        # 
         state = self.add_round_key(state, self.create_round_key(expanded_key, 0))
         i = 1
         while i < nbr_rounds:
@@ -1891,6 +1969,8 @@ class AES(object):
         :param nbr_rounds: number of rounds
         :return: modified state
         """
+
+        # 
         state = self.add_round_key(state,
                                    self.create_round_key(expanded_key, 16 * nbr_rounds))
         i = nbr_rounds - 1
@@ -1911,15 +1991,17 @@ class AES(object):
         :param size: size of the key
         :return: encrypted string
         """
+
+        # 
         output = [0] * 16
 
-        # the number of rounds
+        # The number of rounds.
         nbr_rounds = 0
 
-        # the 128 bit block to encode
+        # The 128 bit block to encode.
         block = [0] * 16
 
-        # set the number of rounds
+        # Set the number of rounds.
         if size == self.key_size["SIZE_128"]:
             nbr_rounds = 10
         elif size == self.key_size["SIZE_192"]:
@@ -1929,7 +2011,7 @@ class AES(object):
         else:
             return None
 
-        # the expanded key_size
+        # The expanded key_size.
         expanded_key_size = 16 * (nbr_rounds + 1)
 
         # Set the block values, for the block:
@@ -1937,24 +2019,24 @@ class AES(object):
         # a1,0 a1,1 a1,2 a1,3
         # a2,0 a2,1 a2,2 a2,3
         # a3,0 a3,1 a3,2 a3,3
-        # the mapping order is a0,0 a1,0 a2,0 a3,0 a0,1 a1,1 ... a2,3 a3,3
-        #
-        # iterate over the columns
+        # the mapping order is a0,0 a1,0 a2,0 a3,0 a0,1 a1,1 ... a2,3 a3,3.
+
+        # Iterate over the columns.
         for i in range(4):
-            # iterate over the rows
+            # Iterate over the rows.
             for j in range(4):
                 block[(i + (j * 4))] = input[(i * 4) + j]
 
-        # expand the key into an 176, 208, 240 bytes key
-        # the expanded key
+        # Expand the key into an 176, 208, 240 bytes key
+        # the expanded key.
         expanded_key = self.expand_key(key, size, expanded_key_size)
 
-        # encrypt the block using the expanded_key
+        # Encrypt the block using the expanded_key.
         block = self.aes_main(block, expanded_key, nbr_rounds)
 
-        # unmap the block again into the output
+        # Unmap the block again into the output.
         for k in range(4):
-            # iterate over the rows
+            # Iterate over the rows.
             for l in range(4):
                 output[(k * 4) + l] = block[(k + (l * 4))]
         return output
@@ -1967,15 +2049,17 @@ class AES(object):
         :param size: size of the key
         :return: decrypted string
         """
+
+        # 
         output = [0] * 16
 
-        # the number of rounds
+        # The number of rounds.
         nbr_rounds = 0
 
-        # the 128 bit block to decode
+        # The 128 bit block to decode.
         block = [0] * 16
 
-        # set the number of rounds
+        # Set the number of rounds.
         if size == self.key_size["SIZE_128"]:
             nbr_rounds = 10
         elif size == self.key_size["SIZE_192"]:
@@ -1985,7 +2069,7 @@ class AES(object):
         else:
             return None
 
-        # the expanded key_size
+        # The expanded key_size.
         expanded_key_size = 16 * (nbr_rounds + 1)
 
         # Set the block values, for the block:
@@ -1995,25 +2079,24 @@ class AES(object):
         # a3,0 a3,1 a3,2 a3,3
         # the mapping order is a0,0 a1,0 a2,0 a3,0 a0,1 a1,1 ... a2,3 a3,3
 
-        # iterate over the columns
+        # Iterate over the columns.
         for i in range(4):
-            # iterate over the rows
+            # Iterate over the rows.
             for j in range(4):
                 block[(i + (j * 4))] = input[(i * 4) + j]
 
-        # expand the key into an 176, 208, 240 bytes key
+        # Expand the key into an 176, 208, 240 bytes key.
         expanded_key = self.expand_key(key, size, expanded_key_size)
 
-        # decrypt the block using the expanded_key
+        # Decrypt the block using the expanded_key.
         block = self.aes_inv_main(block, expanded_key, nbr_rounds)
 
-        # unmap the block again into the output
+        # Unmap the block again into the output.
         for k in range(4):
-            # iterate over the rows
+            # Iterate over the rows.
             for l in range(4):
                 output[(k * 4) + l] = block[(k + (l * 4))]
         return output
-
 
 class AESModeOfOperation(object):
     """
@@ -2022,13 +2105,25 @@ class AESModeOfOperation(object):
     Choice of block encoding modes:  OFB (Output Feedback),
     CFB (Cipher Feedback), CBC (Cipher Block Chaining)
     """
+
+    # 
     aes = AES()
 
     # structure of supported modes of operation
-    modeOfOperation = dict(OFB=0, CFB=1, CBC=2)
+    modeOfOperation = dict(OFB = 0, CFB = 1, CBC = 2)
 
-    # converts a 16 character string into a number array
     def convert_string(self, string, start, end, mode):
+        """
+        Function to convert a 16 character string into a number array.
+        :param 
+        :param
+        :param
+        :param
+        :param
+        :return
+        """
+
+        # 
         if end - start > 16: end = start + 16
         if mode == self.modeOfOperation["CBC"]:
             ar = [0] * 16
@@ -2055,21 +2150,23 @@ class AESModeOfOperation(object):
         :param IV: the 128-bit hex Initialization Vector
         :return: Mode of encryption, length of string_in, encrypted string
         """
+
+        # 
         if len(key) % size:
             return None
         if len(IV) % 16:
             return None
 
-        # the AES input/output
+        # The AES input/output.
         plaintext = []
         input = [0] * 16
         output = []
         ciphertext = [0] * 16
 
-        # the output cipher string
+        # The output cipher string.
         cipher_out = []
 
-        # char first_round
+        # Char first_round.
         first_round = True
         if string_in != None:
             for j in range(int(math.ceil(float(len(string_in)) / 16))):
@@ -2079,7 +2176,7 @@ class AESModeOfOperation(object):
                     end = len(string_in)
                 plaintext = self.convert_string(string_in, start, end, mode)
 
-                # print 'PT@%s:%s' % (j, plaintext)
+                # Print 'PT@%s:%s' % (j, plaintext).
                 if mode == self.modeOfOperation["CFB"]:
                     if first_round:
                         output = self.aes.encrypt(IV, key, size)
@@ -2129,11 +2226,11 @@ class AESModeOfOperation(object):
                         else:
                             input[i] = plaintext[i] ^ ciphertext[i]
 
-                    # print 'IP@%s:%s' % (j, input)
+                    # Print 'IP@%s:%s' % (j, input).
                     first_round = False
                     ciphertext = self.aes.encrypt(input, key, size)
 
-                    # always 16 bytes because of the padding for CBC
+                    # Always 16 bytes because of the padding for CBC.
                     for k in range(16):
                         cipher_out.append(ciphertext[k])
 
@@ -2150,22 +2247,23 @@ class AESModeOfOperation(object):
         :param IV: the 128-bit number array Initialization Vector
         :return: decrypted plain text
         """
-        # cipher_in = unescCtrlChars(cipher_in)
+
+        # Cipher_in = unescCtrlChars(cipher_in).
         if len(key) % size:
             return None
         if len(IV) % 16:
             return None
-
-        # the AES input/output
+        
+        # The AES input/output.
         ciphertext = []
         input = []
         output = []
         plaintext = [0] * 16
 
-        # the output plain text character list
+        # The output plain text character list.
         chr_out = []
 
-        # char first_round
+        # Char first_round.
         first_round = True
         if cipher_in != None:
             for j in range(int(math.ceil(float(len(cipher_in)) / 16))):
@@ -2237,16 +2335,16 @@ class AESModeOfOperation(object):
 
         return "".join(chr_out)
 
-
 def append_pkcs7_padding(s):
     """
     Function to return s padded to a multiple of 16-bytes by PKCS7 padding.
     :param s: string to apply padding to
     :return: padded string
     """
+
+    # 
     numpads = 16 - (len(s) % 16)
     return s + numpads * chr(numpads)
-
 
 def strip_pkcs7_padding(s):
     """
@@ -2254,6 +2352,8 @@ def strip_pkcs7_padding(s):
     :param s: string to strip
     :return: stripped string
     """
+
+    # 
     if len(s) % 16 or not s:
         raise ValueError("String of len %d can't be PCKS7-padded" % len(s))
     numpads = ord(s[-1])
@@ -2261,7 +2361,6 @@ def strip_pkcs7_padding(s):
     if numpads > 16:
         raise ValueError("String ending with %r can't be PCKS7-padded" % s[-1])
     return s[:-numpads]
-
 
 def encrypt_data(key, data, mode=AESModeOfOperation.modeOfOperation["CBC"]):
     """
@@ -2272,6 +2371,8 @@ def encrypt_data(key, data, mode=AESModeOfOperation.modeOfOperation["CBC"]):
     :param mode: mode of operation of aes encryption
     :return: cipher string prepended with the initialization vector (iv)
     """
+
+    # 
     key = map(ord, key)
     if mode == AESModeOfOperation.modeOfOperation["CBC"]:
         data = append_pkcs7_padding(data)
@@ -2279,7 +2380,7 @@ def encrypt_data(key, data, mode=AESModeOfOperation.modeOfOperation["CBC"]):
     keysize = len(key)
     assert keysize in AES.key_size.values(), 'invalid key size: %s' % keysize
 
-    # Create a new initialization vector (iv) using random data
+    # Create a new initialization vector (iv) using random data.
     iv = [ord(i) for i in os.urandom(16)]
     moo = AESModeOfOperation()
     (mode, length, ciph) = moo.encrypt(data, mode, key, keysize, iv)
@@ -2289,7 +2390,6 @@ def encrypt_data(key, data, mode=AESModeOfOperation.modeOfOperation["CBC"]):
     # prepend the initialization vector (iv).
 
     return ''.join(map(chr, iv)) + ''.join(map(chr, ciph))
-
 
 def decrypt_data(key, data, mode=AESModeOfOperation.modeOfOperation["CBC"]):
     """
@@ -2302,11 +2402,13 @@ def decrypt_data(key, data, mode=AESModeOfOperation.modeOfOperation["CBC"]):
     :param mode: mode of operation of aes decryption
     :return: decrypted data
     """
+
+    # 
     key = map(ord, key)
     keysize = len(key)
     assert keysize in AES.key_size.values(), 'invalid key size: %s' % keysize
 
-    # iv is first 16 bytes
+    # The variable iv is first 16 bytes.
     iv = map(ord, data[:16])
     data = map(ord, data[16:])
     moo = AESModeOfOperation()
@@ -2316,22 +2418,26 @@ def decrypt_data(key, data, mode=AESModeOfOperation.modeOfOperation["CBC"]):
         decr = strip_pkcs7_padding(decr)
     return decr
 
-
 def generate_random_key(keysize):
     """
-    Function to generate a key from random data of length keysize
+    Function to generate a key from random data of length keysize.
     :param keysize: size of the key
     :return: key as a string of bytes
     """
+
+    # 
     if keysize not in (16, 24, 32):
         emsg = 'Invalid keysize, %s. Should be one of (16, 24, 32).'
         raise ValueError, emsg % keysize
 
     return os.urandom(keysize)
 
-
 def test_str(cleartext, keysize=16, mode_name="CBC"):
-    """Function to test AES with random key, choice of mode."""
+    """
+    Function to test AES with random key, choice of mode.
+    """
+
+    # 
     print 'Random key test', 'Mode:', mode_name
     print 'cleartext:', cleartext
     key = generate_random_key(keysize)
@@ -2342,8 +2448,17 @@ def test_str(cleartext, keysize=16, mode_name="CBC"):
     decr = decrypt_data(key, cipher, mode)
     print 'Decrypted:', decr
 
+# How to use AES Encryption in main.
 
-# How to use AES Encryption in main
+"""
+cleartext will be the replay file we are encrypting.
+Set the cypherkey and inspection vector.
+Choose mode of encryption operation and encrypt
+Print the data if you would like to check the work
+Decrpypt
+And the test_str call (test function)
+"""
+
 '''
 if __name__ == "__main__":
     moo = AESModeOfOperation()
@@ -2359,17 +2474,7 @@ if __name__ == "__main__":
     test_str(cleartext, 16, "CBC")
 '''
 
-"""
-cleartext will be the replay file we are encrypting.
-Set the cypherkey and inspection vector.
-Choose mode of encryption operation and encrypt
-Print the data if you would like to check the work
-Decrpypt
-And the test_str call (test function)
-"""
 
-
-# End AES Encryption (Complex Encryption)
 
 ################################################################################
 # Replay
@@ -2381,17 +2486,31 @@ def open_replay(number):
     :param number: replay number
     :return:
     """
+
+    # Global variable declarations.
     global grid
-    global object_position_dictionary
+    global marked_tile_list
+    global objects_starting_positions
+    global objects_current_positions
+    global current_game_states
     global player_object_position
     global chest_object_position
     global key_object_position
     global door_object_position
     global simple_enemy_object_position
     global smart_enemy_object_position
+    global enemy_grabbed_player
     global chest_combination_1_object_position
     global chest_combination_2_object_position
     global chest_combination_3_object_position
+    global player_grabbed_key
+    global player_used_key
+    global player_used_marker
+    global player_unlocked_chest
+    global player_opened_chest
+    global maze_is_valid
+    global player_is_authenticated
+    global player_made_decision
     global game_complete
     global key_caesar_cipher
 
@@ -2414,9 +2533,9 @@ def open_replay(number):
 
     # Decrypt the file if it was encrypted
     # using an encryption algorithm.
-    if (encryption_algorithm_key == ("1" or "2" or "3")):
-        # If the file was encrypted using the Caesar Cipher
-        # encryption algorithm, then decrypt the file using
+    if (encryption_algorithm_key == ("1" or "2")):
+        # If the file was encrypted using the Caesar Cipher 
+        # encryption algorithm, then decrypt the file using 
         # the Caesar Cipher decryption algorithm.
         if encryption_algorithm_key == "1":
             # Remove the first line which contains the
@@ -2435,19 +2554,8 @@ def open_replay(number):
             del encrypted_lines_list[0]
 
             # Decrypt the remaining lines and store into a list.
-            # chosen_replay_file_list = [algorithm_name_decrypt(x, key_algorithm_name)
-            # for x in encrypted_lines_list]
-        # If the file was encrypted using the <insert algorithm name here>
-        # encryption algorithm, then decrypt the file using
-        # the <insert algorithm name here> decryption algorithm.
-        elif encryption_algorithm_key == "3":
-            # Remove the first line which contains the
-            # value representing the chosen algorithm.
-            del encrypted_lines_list[0]
-
-            # Decrypt the remaining lines and store into a list.
-            # chosen_replay_file_list = [algorithm_name_decrypt(x, key_algorithm_name)
-            # for x in encrypted_lines_list]
+            #chosen_replay_file_list = [algorithm_name_decrypt(x, key_algorithm_name) 
+                                       #for x in encrypted_lines_list]
 
         # Close the opened chosen replay file after reading is complete.
         close_chosen_replay_file()
@@ -2459,48 +2567,49 @@ def open_replay(number):
 
         # Set the object positions equal to the same
         # object positions in the chosen replay file.
-        object_position_dictionary = ast.literal_eval(chosen_replay_file_list[0])
+        objects_starting_positions = ast.literal_eval(chosen_replay_file_list[0])
         # Remove the object position dictionary from the chosen replay file list.
         del chosen_replay_file_list[0]
 
         player_object_position = \
-            [object_position_dictionary['player'][0],
-             object_position_dictionary['player'][1]]
+        [objects_starting_positions['player'][0],
+        objects_starting_positions['player'][1]]
 
         chest_object_position = \
-            [object_position_dictionary['chest'][0],
-             object_position_dictionary['chest'][1]]
+        [objects_starting_positions['chest'][0],
+        objects_starting_positions['chest'][1]]
 
         key_object_position = \
-            [object_position_dictionary['key'][0],
-             object_position_dictionary['key'][1]]
+        [objects_starting_positions['key'][0],
+        objects_starting_positions['key'][1]]
 
         door_object_position = \
-            [object_position_dictionary['door'][0],
-             object_position_dictionary['door'][1]]
+        [objects_starting_positions['door'][0],
+        objects_starting_positions['door'][1]]
 
         simple_enemy_object_position = \
-            [object_position_dictionary['simple enemy'][0],
-             object_position_dictionary['simple enemy'][1]]
+        [objects_starting_positions['simple enemy'][0],
+        objects_starting_positions['simple enemy'][1]]
 
         smart_enemy_object_position = \
-            [object_position_dictionary['smart enemy'][0],
-             object_position_dictionary['smart enemy'][1]]
+        [objects_starting_positions['smart enemy'][0],
+        objects_starting_positions['smart enemy'][1]]
 
         chest_combination_1_object_position = \
-            [object_position_dictionary['chest combination 1'][0],
-             object_position_dictionary['chest combination 1'][1]]
+        [objects_starting_positions['chest combination 1'][0],
+        objects_starting_positions['chest combination 1'][1]]
 
         chest_combination_2_object_position = \
-            [object_position_dictionary['chest combination 2'][0],
-             object_position_dictionary['chest combination 2'][1]]
+        [objects_starting_positions['chest combination 2'][0],
+        objects_starting_positions['chest combination 2'][1]]
 
         chest_combination_3_object_position = \
-            [object_position_dictionary['chest combination 3'][0],
-             object_position_dictionary['chest combination 3'][1]]
+        [objects_starting_positions['chest combination 3'][0],
+        objects_starting_positions['chest combination 3'][1]]
 
-        # Print out the introduction message.
-        print_introduction_message()
+        # Print out the introduction message for the replay system.
+        print "\n\n\n"
+        print_replay_message()
 
         # Draw the maze and the objects within it.
         draw_screen(screen)
@@ -2520,216 +2629,663 @@ def open_replay(number):
 
         # Variable used as a counter for the following loop.
         i = 0
-        # Continue running until the player completes the game or closes the window.
+        # Variable used to store the interval of time to execute commands.
+        time_interval = 5000
+        # Variable used to store the time in which to execute a command.
+        time_execute_command = time_interval
+        # Variable to store the amount of time to wait before ending the replay.
+        time_exit_countdown = 7000
+        # Variable used to store the current time.
+        clock = pygame.time.Clock()
+        # Variable to determine if the replay is paused or not.
+        replay_is_paused = False
+        # Variable to determine if the player enters a command.
+        player_does_something = False
+        # Variable to determine if a command should be executed or not.
+        execute_command = False
+        # Variable to determine if a command should be reversed or not.
+        reverse_command = False
+        # Variable to determine if a command should be forwarded or not.
+        forward_command = False
+        # Variable to determine if the replay is at the end of the file or not.
+        end_of_file = False
+
+        # Continue running until the player completes
+        # the game or closes the window.
         while game_complete == False:
-            if i <= len(chosen_replay_file_list):
-                # Pause for 3 seconds before executing the next step/command.
-                time.sleep(3)
+            # Continue only if the replay is not paused.
+            if replay_is_paused == False:
+                # Subtract time if i is less than the maximum and the 
+                # end of the file is has not yet been reached.
+                if i <= len(chosen_replay_file_list) and end_of_file == False:
+                    # Set time_temp equal to the number of milliseconds 
+                    # from the last call of clock.tick().
+                    time_temp = clock.tick()
 
-                # Print user input string to the output console window.
-                # .rstrip() strips all whitespace from the input string.
-                input_string = chosen_replay_file_list[i].rstrip()
-                print_input(input_string)
+                    # Subtract the elapsed time from time_execute_command.
+                    time_execute_command = time_execute_command - time_temp
 
-                # Print error message if user input is empty.
-                if input_string == "":
-                    print "Output: You aren't even trying, are you?" \
-                          "\nTry entering actual text next time."
-                # Print the objects and list of commands for the help command.
-                elif input_string == "help":
-                    help()
-                # Go back to the title screen if the player chooses to.
-                elif input_string == "quit":
-                    game_complete = True
-                # Possible user input for the go <Direction> command.
-                elif input_string == "go forward" or input_string == "go up" \
-                        or input_string == "go north":
-                    go(0, -1)
-                elif input_string == "go right" or input_string == "go east":
-                    go(1, 0)
-                elif input_string == "go back" or input_string == "go down" \
-                        or input_string == "go south":
-                    go(0, 1)
-                elif input_string == "go left" or input_string == "go west":
-                    go(-1, 0)
-                elif input_string == "go chest":
-                    print "Output: A chest is for opening, not going." \
-                          "\nTry going in a direction instead."
-                elif input_string == "go key":
-                    print "Output: A key is for grabbing and/or using, not going." \
-                          "\nTry going in a direction instead."
-                elif input_string == "go door":
-                    print "Output: A door is for opening, not going." \
-                          "\nTry going in a direction instead."
-                elif input_string == "go wall":
-                    print "Output: You can't go into a wall. Are you even trying?"
-                elif input_string == "go marker":
-                    print "Output: A marker is for using, not going." \
-                          "\nTry going in a direction instead."
-                # Possible user input for the grab <Object> command.
-                elif input_string == "grab forward":
-                    print "Output: Forward is for going, not grabbing." \
-                          "\nTry grabbing when a key is near."
-                elif input_string == "grab right":
-                    print "Output: Right is for going, not grabbing." \
-                          "\nTry grabbing when a key is near."
-                elif input_string == "grab back":
-                    print "Output: Back is for going, not grabbing." \
-                          "\nTry grabbing when a key is near."
-                elif input_string == "grab left":
-                    print "Output: Left is for going, not grabbing." \
-                          "\nTry grabbing when a key is near."
-                elif input_string == "grab chest":
-                    print "Output: A chest is for opening, not grabbing." \
-                          "\nTry grabbing when a key is near."
-                elif input_string == "grab key":
-                    if player_grabbed_key:
-                        # Inform the player that they already have the key.
-                        print "Output: You already have the key." \
-                              "\nNow you can use it for something, " \
-                              "like unlocking a door maybe?"
-                    else:
-                        grab_key()
-                elif input_string == "grab door":
-                    print "Output: A door is for opening, not grabbing." \
-                          "\nTry grabbing when a key is near."
-                elif input_string == "grab wall":
-                    print "Output: You can't grab a wall." \
-                          "\nWell, I guess you could, but it's not helpful." \
-                          "\nTry grabbing when a key is near."
-                elif input_string == "grab marker":
-                    print "Output: A marker is for using, not grabbing." \
-                          "\nTry grabbing when a key is near."
-                # Possible user input for the open <Object> command.
-                elif input_string == "open forward":
-                    print "Output: Forward is for going, not opening." \
-                          "\nTry opening when a door is near."
-                elif input_string == "open right":
-                    print "Output: Right is for going, not opening." \
-                          "\nTry opening when a door is near."
-                elif input_string == "open back":
-                    print "Output: Back is for going, not opening." \
-                          "\nTry opening when a door is near."
-                elif input_string == "open left":
-                    print "Output: Left is for going, not opening." \
-                          "\nTry opening when a door is near."
-                elif input_string == "open chest":
-                    open_chest()
-                elif input_string == "open key":
-                    print "Output: A key is for grabbing and/or using, " \
-                          "not opening. \nTry opening when a door is near."
-                elif input_string == "open door":
-                    open_door()
-                elif input_string == "open wall":
-                    print "Output: You can try to open a wall, " \
-                          "but it won't be helpful."
-                elif input_string == "open marker":
-                    print "Output: A marker is for using, not opening." \
-                          "\nTry opening when a door is near."
-                # Possible user input for the use <Object> command.
-                elif input_string == "use forward":
-                    print "Output: Forward is for going, not using." \
-                          "\nTry using a key when a door is near."
-                elif input_string == "use right":
-                    print "Output: Right is for going, not using." \
-                          "\nTry using a key when a door is near."
-                elif input_string == "use back":
-                    print "Output: Back is for going, not using." \
-                          "\nTry using a key when a door is near."
-                elif input_string == "use left":
-                    print "Output: Left is for going, not using." \
-                          "\nTry using a key when a door is near."
-                elif input_string == "use chest":
-                    print "Output: A chest is for unlocking and opening, " \
-                          "not using. \nTry using a combination on the chest " \
-                          "instead."
-                elif input_string == "use key":
-                    use_key()
-                elif input_string == "use door":
-                    print "Output: A door is for opening, not using." \
-                          "\nTry using a key when a door is near."
-                elif input_string == "use wall":
-                    print "Output: You can try to use a wall, " \
-                          "but it's not helpful to you."
-                elif input_string == "use marker":
-                    use_marker()
+                    # If the time_execute_command is less than or equal to
+                    # zero, execute the next command and reset the timer.
+                    if time_execute_command <= 0:
+                        # Set execute_command equal to true.
+                        execute_command = True
+                        # Reset the value of time_execute_command.
+                        time_execute_command = time_interval
+                # If the end of the replay file has been reached,
+                # wait seven seconds to allow for user input
+                # commands before exiting to the title screen.
                 else:
+                    # Continue to wait unless the player entered a command.
+                    if player_does_something == False:
+                        # Wait 7 seconds before returning to the title screen.
+                        time_exit_countdown = time_exit_countdown - clock.tick()
+                        
+                        # Exit back to the title screen if the timer 
+                        # ends without intervention from the player.
+                        if time_exit_countdown <= 0:
+                            # Set game_complete equal to true to exit the loop. 
+                            game_complete = True
+                    # If the player enters a command, reset the countdown.
+                    else:
+                        # Discard the elapsed time.
+                        clock.tick()
+                        # Reset the value if the player does something.
+                        time_exit_countdown = 7000
+                        # Reset player_does_something equal to false.
+                        player_does_something = False
+            # If the replay is paused, wait until the player resumes it.
+            else:
+                # Discard the elapsed time.
+                clock.tick()
+                # Reset the value if the player does something.
+                time_exit_countdown = 7000
+
+            # Iterate through all of the events gathered from pygame.
+            for event in pygame.event.get():
+                sgc.event(event)
+                if event.type == GUI:
+                    input_string = event.text.lower()
+                    print_input(input_string)
                     # Parse the string into substrings and store into a list.
                     input_substring_list = input_string.split(" ")
 
-                    # If the string has 3 substrings, attempt to parse it.
-                    if len(input_substring_list) == 3:
-                        # Check if the first substring is equal to "go".
-                        if input_substring_list[0] == "go" and \
-                                input_substring_list[1].isalpha() and \
-                                input_substring_list[2].isdigit():
-                            go_length(input_substring_list[1],
-                                      input_substring_list[2])
-                        else:
-                            print_input_error()
-                    # If the string has 3 substrings, attempt to parse it.
-                    elif len(input_substring_list) == 2:
-                        # Check if the first substring is equal to "use".
-                        if input_substring_list[0] == "use":
-                            if input_substring_list[1].isdigit():
-                                unlock_chest(input_substring_list[1])
-                            else:
-                                print_input_error()
-                        else:
-                            print_input_error()
-                    # Not even close to a valid command or contains some
-                    # form of misspelling or incorrect input
-                    # (numbers, special characters, etc.).
-                    else:
-                        print_input_error()
+                    if input_string == "use pause":
+                        # Set replay_is_paused equal to true 
+                        # if the user commands it.
+                        replay_is_paused = True
+                        # Print out a message informing the user 
+                        # that the replay has been paused.
+                        print "Output: Replay paused."
+                    elif input_string == "use resume":
+                        # Set replay_is_paused equal to true 
+                        # if the user commands it.
+                        replay_is_paused = False
+                        # Print out a message informing the user 
+                        # that the replay has been resumed.
+                        print "Output: Replay resumed."
+                    elif input_string == "go back":
+                        # Set player_does_something equal to true.
+                        player_does_something = True
+                        # Set reverse_command equal to true.
+                        reverse_command = True
+                        # Set end_of_file equal to true.
+                        end_of_file = False
 
-                # Clear the contents of the screen.
-                screen.fill((0, 0, 0))
-                # Get objects within the field of view and store them into a list.
-                get_visible_object_list()
-                # Call the function to draw the maze and the objects inside.
-                draw_screen(screen)
+                        # Set i equal to the previous command.
+                        i = i - 3
+                        # Reset the value of time_execute_command.
+                        time_execute_command = time_interval
 
-                ################################################################
-                ### Comment out this code to enable the field of view system.###
-                draw_player_object(player_object, screen)
-                if not player_opened_chest:
-                    draw_closed_chest_object(chest_object_closed, screen)
+                        # If i goes below 0, default it to 0.
+                        if i < 0:
+                            # Set i equal to 0.
+                            i = 0
+                    elif input_substring_list[0] == "go" and \
+                        input_substring_list[1] == "back" and \
+                        input_substring_list[2].isdigit():
+                        # Set player_does_something equal to true.
+                        player_does_something = True
+                        # Set reverse_command equal to true.
+                        reverse_command = True
+                        # Set end_of_file equal to true.
+                        end_of_file = False
+
+                        # Set i equal to the previous command.
+                        i = (i - (3 * int(input_substring_list[2])))
+                        # Reset the value of time_execute_command.
+                        time_execute_command = time_interval
+
+                        # If i goes below 0, default it to 0.
+                        if i < 0:
+                            # Set i equal to 0.
+                            i = 0
+                    elif input_string == "go forward":
+                        # Set player_does_something equal to true.
+                        player_does_something = True
+                        # Set forward_command equal to true.
+                        forward_command = True
+
+                        # Increment i by 3 to set it to 
+                        # the next input_string position.
+                        i = i + 3
+
+                        # Reset time_execute_command to time_interval.
+                        time_execute_command =  time_interval
+
+                        # If i goes over the limit, set it's value to the limit.
+                        if i >= len(chosen_replay_file_list):
+                            # Set i equal to the length of the replay file list.
+                            i = len(chosen_replay_file_list)
+                    elif input_substring_list[0] == "go" and \
+                        input_substring_list[1] == "forward" and \
+                        input_substring_list[2].isdigit():
+                        # Set player_does_something equal to true.
+                        player_does_something = True
+                        # Set forward_command equal to true.
+                        forward_command = True
+
+                        # Incremennt i by the number that the user enters.
+                        # It is multiplied by three because each 
+                        # command has three parts. (user input,
+                        # current_objects_positions, current_game_states).
+                        i = (i + (3 * int(input_substring_list[2])))
+
+                        # Reset the value of time_execute_command.
+                        time_execute_command = time_interval
+
+                        # If i goes over the limit of the replay file,
+                        # set i to the limit of the replay file.
+                        if i > len(chosen_replay_file_list) - 3:
+                            # Set i equal to the length of the replay file list.
+                            i = len(chosen_replay_file_list) - 3
+                    elif input_string == "use stop":
+                        # Print out a message informing the user that the 
+                        # replay has been stopped and that they are being 
+                        # redirected to the title screen.
+                        print "Output: Replay stopped."
+                        print "\nExiting to the title screen..."
+                        # Set game_complete equal to true 
+                        # to exit out of the loop.
+                        game_complete = True
+                    elif input_string == "go faster":
+                        # Set player_does_something equal to true.
+                        player_does_something = True
+
+                        # Subtract a second from the interval 
+                        # if it greater than one second.
+                        if time_interval > 1000:
+                            # Subtract 1000 milliseconds from time_interval.
+                            time_interval = time_interval - 1000
+                            # Reset time_execute_command to time_interval.
+                            time_execute_command = time_interval
+
+                            # Print out a message informing the user that the 
+                            # speed in which the replay is played has increased.
+                            print "Output: Replay speed increased to", \
+                            (time_interval / 1000), "second(s) per command."
+                        else:
+                            # Print out a message informing the user that the 
+                            # maximum replay speed has been reached.
+                            print "Output: Fastest replay speed already."
+
+                    elif input_string == "go slower":
+                        # Set player_does_something equal to true.
+                        player_does_something = True
+
+                        # Add a second from the interval 
+                        # if it less than nine seconds.
+                        if time_interval < 9000:
+                            # Add 1000 milliseconds to time_interval.
+                            time_interval = time_interval + 1000
+                            # Reset time_execute_command to time_interval.
+                            time_execute_command = time_interval
+
+                            # Print out a message informing the user that the 
+                            # speed in which the replay is played has decreased.
+                            print "Output: Replay speed decreased to", \
+                            (time_interval / 1000), "second(s) per command."
+                        else:
+                            # Print out a message informing the user that the 
+                            # minimum replay speed has been reached.
+                            print "Output: Slowest replay speed already."
+
+                    elif input_string == "help":
+                        # Print out the introduction message 
+                        # for the replay system.
+                        print_replay_message()
+
+                    # Clear the contents of the InputBox if it is clicked on.
+                    if event.widget is input_box:
+                        clear()
+
+                # Quit the game if the user closes the window.
+                if event.type == QUIT:
+                    clear()
+                    return
+
+            if reverse_command == True:
+                # Reset the value to False to prevent
+                # unnecessary command reversals.
+                reverse_command = False
+                
+                if i == 0:
+                    # Set the object positions and game states back to the 
+                    # original values if the replay is at the start.
+                    player_object_position = \
+                    [objects_starting_positions['player'][0],
+                    objects_starting_positions['player'][1]]
+
+                    chest_object_position = \
+                    [objects_starting_positions['chest'][0],
+                    objects_starting_positions['chest'][1]]
+
+                    key_object_position = \
+                    [objects_starting_positions['key'][0],
+                    objects_starting_positions['key'][1]]
+
+                    door_object_position = \
+                    [objects_starting_positions['door'][0],
+                    objects_starting_positions['door'][1]]
+
+                    simple_enemy_object_position = \
+                    [objects_starting_positions['simple enemy'][0],
+                    objects_starting_positions['simple enemy'][1]]
+
+                    smart_enemy_object_position = \
+                    [objects_starting_positions['smart enemy'][0],
+                    objects_starting_positions['smart enemy'][1]]
+
+                    chest_combination_1_object_position = \
+                    [objects_starting_positions['chest combination 1'][0],
+                    objects_starting_positions['chest combination 1'][1]]
+
+                    chest_combination_2_object_position = \
+                    [objects_starting_positions['chest combination 2'][0],
+                    objects_starting_positions['chest combination 2'][1]]
+
+                    chest_combination_3_object_position = \
+                    [objects_starting_positions['chest combination 3'][0],
+                    objects_starting_positions['chest combination 3'][1]]
+
+                    player_grabbed_key = False
+                    player_used_key = False
+                    player_used_marker = False
+                    player_unlocked_chest = False
+                    player_opened_chest  = False
+                    enemy_grabbed_player = False
                 else:
-                    draw_opened_chest_object(chest_object_opened, screen)
+                    # Set the object positions equal to the current 
+                    # object positions in the chosen replay file.
+                    objects_current_positions = ast.literal_eval(
+                        chosen_replay_file_list[i - 2])
+
+                    player_object_position = \
+                    [objects_current_positions['player'][0],
+                    objects_current_positions['player'][1]]
+
+                    chest_object_position = \
+                    [objects_current_positions['chest'][0],
+                    objects_current_positions['chest'][1]]
+
+                    key_object_position = \
+                    [objects_current_positions['key'][0],
+                    objects_current_positions['key'][1]]
+
+                    door_object_position = \
+                    [objects_current_positions['door'][0],
+                    objects_current_positions['door'][1]]
+
+                    simple_enemy_object_position = \
+                    [objects_current_positions['simple enemy'][0],
+                    objects_current_positions['simple enemy'][1]]
+
+                    smart_enemy_object_position = \
+                    [objects_current_positions['smart enemy'][0],
+                    objects_current_positions['smart enemy'][1]]
+
+                    chest_combination_1_object_position = \
+                    [objects_current_positions['chest combination 1'][0],
+                    objects_current_positions['chest combination 1'][1]]
+
+                    chest_combination_2_object_position = \
+                    [objects_current_positions['chest combination 2'][0],
+                    objects_current_positions['chest combination 2'][1]]
+
+                    chest_combination_3_object_position = \
+                    [objects_current_positions['chest combination 3'][0],
+                    objects_current_positions['chest combination 3'][1]]
+
+                    # Set the current game states equal to the
+                    # game states in the chosen replay file.
+                    current_game_states = ast.literal_eval(
+                        chosen_replay_file_list[i - 1])
+
+                    player_grabbed_key = current_game_states['player_grabbed_key']
+                    player_opened_chest = current_game_states['player_opened_chest']
+                    player_used_marker = current_game_states['player_used_marker']
+                    enemy_grabbed_player = current_game_states['enemy_grabbed_player']
+
+                    # Determine where to place the marker if it has been used.
+                    if player_used_marker == True:
+                        # Set value equal to i.
+                        value = i
+                        # Iterate through the chosen_replay_file_list to 
+                        # determine where, if at all, a marker was used.
+                        while value > 0:
+                            # It the current command is equal to 'use marker', 
+                            # break and keep the current value of i.
+                            if chosen_replay_file_list[value].rstrip() == "use marker":
+                                # Break out of the loop.
+                                break
+                            else:
+                                # Decrement the value of the variable value.
+                                value = value - 3
+
+                        # Set the temporary object positions equal to 
+                        # the positions at which the last 'use marker' 
+                        # command was executed.
+                        temp_objects_current_positions = ast.literal_eval(
+                            chosen_replay_file_list[value + 1])
+
+                        # Set x and y equal to the current
+                        # player character object position.
+                        x, y = \
+                        [temp_objects_current_positions['player'][0],
+                        temp_objects_current_positions['player'][1]]
+
+                        # Clear the contents of the marked_tile_list.
+                        marked_tile_list = []
+
+                        # Add the tile coordinates to the marked_tile_list.
+                        if grid[y][x] == 0:
+                            marked_tile_list.append((x, y))
+                        if grid[y - 1][x - 1] == 0:
+                            marked_tile_list.append((x - 1, y - 1))
+                        if grid[y - 1][x] == 0:
+                            marked_tile_list.append((x, y - 1))
+                        if grid[y - 1][x + 1] == 0:
+                            marked_tile_list.append((x + 1, y - 1))
+                        if grid[y][x - 1] == 0:
+                            marked_tile_list.append((x - 1, y))
+                        if grid[y][x + 1] == 0:
+                            marked_tile_list.append((x + 1, y))
+                        if grid[y + 1][x - 1] == 0:
+                            marked_tile_list.append((x - 1, y + 1))
+                        if grid[y + 1][x] == 0:
+                            marked_tile_list.append((x, y + 1))
+                        if grid[y + 1][x + 1] == 0:
+                            marked_tile_list.append((x + 1, y + 1))
+
+            if forward_command == True:
+                # Reset the value to False to prevent
+                # unnecessary command forwards.
+                forward_command = False
+                
+                if i <= len(chosen_replay_file_list) - 3:
+                    # Set the object positions equal to the current 
+                    # object positions in the chosen replay file.
+                    objects_current_positions = ast.literal_eval(
+                        chosen_replay_file_list[i + 1])
+
+                    player_object_position = \
+                    [objects_current_positions['player'][0],
+                    objects_current_positions['player'][1]]
+
+                    chest_object_position = \
+                    [objects_current_positions['chest'][0],
+                    objects_current_positions['chest'][1]]
+
+                    key_object_position = \
+                    [objects_current_positions['key'][0],
+                    objects_current_positions['key'][1]]
+
+                    door_object_position = \
+                    [objects_current_positions['door'][0],
+                    objects_current_positions['door'][1]]
+
+                    simple_enemy_object_position = \
+                    [objects_current_positions['simple enemy'][0],
+                    objects_current_positions['simple enemy'][1]]
+
+                    smart_enemy_object_position = \
+                    [objects_current_positions['smart enemy'][0],
+                    objects_current_positions['smart enemy'][1]]
+
+                    chest_combination_1_object_position = \
+                    [objects_current_positions['chest combination 1'][0],
+                    objects_current_positions['chest combination 1'][1]]
+
+                    chest_combination_2_object_position = \
+                    [objects_current_positions['chest combination 2'][0],
+                    objects_current_positions['chest combination 2'][1]]
+
+                    chest_combination_3_object_position = \
+                    [objects_current_positions['chest combination 3'][0],
+                    objects_current_positions['chest combination 3'][1]]
+
+                    # Set the current game states equal to the
+                    # game states in the chosen replay file.
+                    current_game_states = ast.literal_eval(
+                        chosen_replay_file_list[i + 2])
+
+                    player_grabbed_key = current_game_states['player_grabbed_key']
+                    player_opened_chest = current_game_states['player_opened_chest']
+                    player_used_marker = current_game_states['player_used_marker']
+                    enemy_grabbed_player = current_game_states['enemy_grabbed_player']
+
+                    # Determine where to place the marker if it has been used.
+                    if player_used_marker == True:
+                        # Set value equal to i.
+                        value = i
+                        # Iterate through the chosen_replay_file_list to 
+                        # determine where, if at all, a marker was used.
+                        while value > 0:
+                            # It the current command is equal to 'use marker', 
+                            # break and keep the current value of i.
+                            if chosen_replay_file_list[value].rstrip() == "use marker":
+                                # Break out of the loop.
+                                break
+                            else:
+                                # Decrement the value of the variable value.
+                                value = value - 3
+
+                        # Set the temporary object positions equal to 
+                        # the positions at which the last 'use marker' 
+                        # command was executed.
+                        temp_objects_current_positions = ast.literal_eval(
+                            chosen_replay_file_list[value + 1])
+
+                        # Set x and y equal to the current
+                        # player character object position.
+                        x, y = \
+                        [temp_objects_current_positions['player'][0],
+                        temp_objects_current_positions['player'][1]]
+
+                        # Clear the contents of the marked_tile_list.
+                        marked_tile_list = []
+
+                        # Add the tile coordinates to the marked_tile_list.
+                        if grid[y][x] == 0:
+                            marked_tile_list.append((x, y))
+                        if grid[y - 1][x - 1] == 0:
+                            marked_tile_list.append((x - 1, y - 1))
+                        if grid[y - 1][x] == 0:
+                            marked_tile_list.append((x, y - 1))
+                        if grid[y - 1][x + 1] == 0:
+                            marked_tile_list.append((x + 1, y - 1))
+                        if grid[y][x - 1] == 0:
+                            marked_tile_list.append((x - 1, y))
+                        if grid[y][x + 1] == 0:
+                            marked_tile_list.append((x + 1, y))
+                        if grid[y + 1][x - 1] == 0:
+                            marked_tile_list.append((x - 1, y + 1))
+                        if grid[y + 1][x] == 0:
+                            marked_tile_list.append((x, y + 1))
+                        if grid[y + 1][x + 1] == 0:
+                            marked_tile_list.append((x + 1, y + 1))
+
+            if execute_command == True:
+                # Reset the value to False to prevent
+                # unnecessary command executions.
+                execute_command = False
+
+                if i <= len(chosen_replay_file_list) - 3:
+                    # Retrieve the input from the list of replay commands.
+                    # .rstrip() strips all whitespace from the input string.
+                    input_string = chosen_replay_file_list[i].rstrip()
+                    # Print out the user input from the replay file list.
+                    print_input(input_string)
+                    # Print out the current and total number of commands.
+                    a = ((i / 3) + 1)
+                    b = (len(chosen_replay_file_list) / 3)
+                    print "Command", a, "out of", b
+
+                    # Set the object positions equal to the current 
+                    # object positions in the chosen replay file.
+                    objects_current_positions = ast.literal_eval(
+                        chosen_replay_file_list[i + 1])
+
+                    player_object_position = \
+                    [objects_current_positions['player'][0],
+                    objects_current_positions['player'][1]]
+
+                    chest_object_position = \
+                    [objects_current_positions['chest'][0],
+                    objects_current_positions['chest'][1]]
+
+                    key_object_position = \
+                    [objects_current_positions['key'][0],
+                    objects_current_positions['key'][1]]
+
+                    door_object_position = \
+                    [objects_current_positions['door'][0],
+                    objects_current_positions['door'][1]]
+
+                    simple_enemy_object_position = \
+                    [objects_current_positions['simple enemy'][0],
+                    objects_current_positions['simple enemy'][1]]
+
+                    smart_enemy_object_position = \
+                    [objects_current_positions['smart enemy'][0],
+                    objects_current_positions['smart enemy'][1]]
+
+                    chest_combination_1_object_position = \
+                    [objects_current_positions['chest combination 1'][0],
+                    objects_current_positions['chest combination 1'][1]]
+
+                    chest_combination_2_object_position = \
+                    [objects_current_positions['chest combination 2'][0],
+                    objects_current_positions['chest combination 2'][1]]
+
+                    chest_combination_3_object_position = \
+                    [objects_current_positions['chest combination 3'][0],
+                    objects_current_positions['chest combination 3'][1]]
+
+                    # Set the current game states equal to the
+                    # game states in the chosen replay file.
+                    current_game_states = ast.literal_eval(
+                        chosen_replay_file_list[i + 2])
+
+                    player_grabbed_key = current_game_states['player_grabbed_key']
+                    player_opened_chest = current_game_states['player_opened_chest']
+                    player_used_marker = current_game_states['player_used_marker']
+                    enemy_grabbed_player = current_game_states['enemy_grabbed_player']
+
+                    if input_string == "use marker":
+                        # Set the value of player_used_marker equal to True.
+                        player_used_marker = True
+
+                        # Set x and y equal to the current 
+                        # player character object position.
+                        x = player_object_position[0]
+                        y = player_object_position[1]
+
+                        # Clear the contents of the marked_tile_list.
+                        marked_tile_list = []
+
+                        # Add the tile coordinates to the marked_tile_list.
+                        if grid[y][x] == 0:
+                            marked_tile_list.append((x, y))
+                        if grid[y - 1][x - 1] == 0:
+                            marked_tile_list.append((x - 1, y - 1))
+                        if grid[y - 1][x] == 0:
+                            marked_tile_list.append((x, y - 1))
+                        if grid[y - 1][x + 1] == 0:
+                            marked_tile_list.append((x + 1, y - 1))
+                        if grid[y][x - 1] == 0:
+                            marked_tile_list.append((x - 1, y))
+                        if grid[y][x + 1] == 0:
+                            marked_tile_list.append((x + 1, y))
+                        if grid[y + 1][x - 1] == 0:
+                            marked_tile_list.append((x - 1, y + 1))
+                        if grid[y + 1][x] == 0:
+                            marked_tile_list.append((x, y + 1))
+                        if grid[y + 1][x + 1] == 0:
+                            marked_tile_list.append((x + 1, y + 1))
+
+                    # If the enemy grabbed the player, remove the markers.
+                    if enemy_grabbed_player == True:
+                        # Set enemy_grabbed_player equal to false.
+                        enemy_grabbed_player = False
+                        # Set player_used_marker equal to false.
+                        player_used_marker = False
+                        # Clear out the tiles from the marked_tile_list.
+                        marked_tile_list = []
+
+                    # Increment i.
+                    i = i + 3
+
+                    # If the length of the replay file has been reached...
+                    if i >= len(chosen_replay_file_list):
+                        # Set end_of_file equal to true.
+                        end_of_file = True
+                        # Set time_execute_command equal to 0.
+                        time_execute_command = 0
+                        # Set time_exit_countdown equal to 7000.
+                        time_exit_countdown = 7000
+
+            # Clear the contents of the screen.
+            screen.fill((0, 0, 0))
+            # Get objects within the field of view and store them into a list.
+            get_visible_object_list()
+            # Call the function to draw the maze and the objects inside.
+            draw_screen(screen)
+
+            ####################################################################
+            ##### Comment out this code to enable the field of view system.#####
+            draw_player_object(player_object, screen)
+            if not player_opened_chest:
+                draw_closed_chest_object(chest_object_closed, screen)
+            else:
+                draw_opened_chest_object(chest_object_opened, screen)
+            if not player_grabbed_key:
                 draw_key_object(key_object, screen)
-                draw_door_object(door_object, screen)
-                draw_simple_enemy_object(simple_enemy_object, screen)
-                draw_smart_enemy_object(smart_enemy_object, screen)
-                draw_chest_combination_1_object(chest_combination_1_object, screen)
-                draw_chest_combination_2_object(chest_combination_2_object, screen)
-                draw_chest_combination_3_object(chest_combination_3_object, screen)
+            draw_door_object(door_object, screen)
+            draw_simple_enemy_object(simple_enemy_object, screen)
+            draw_smart_enemy_object(smart_enemy_object, screen)
+            draw_chest_combination_1_object(chest_combination_1_object, screen)
+            draw_chest_combination_2_object(chest_combination_2_object, screen)
+            draw_chest_combination_3_object(chest_combination_3_object, screen)
 
-                if player_used_marker == True:
-                    for z in range(len(marked_tile_list)):
-                        # Fill in the marked tiles with the color red.
-                        screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[z],
-                                                               screen))
-                ################################################################
+            if player_used_marker == True:
+                for z in range(len(marked_tile_list)):
+                    # Fill in the marked tiles with the color red.
+                    screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[z], 
+                                                            screen))
+            ####################################################################
 
-                # Update the InputText widget.
-                sgc.update(1)
-                # Update the console window to show changes.
-                pygame.display.update()
-
-            # Exit the loop if all commands in the list have been executed.
-            if i > len(chosen_replay_file_list):
-                game_complete = True
-
-            # Increment the value of i by 1.
-            i = i + 1
-        # Pause for 7 seconds before terminating the program.
-        time.sleep(7)
+            # Update the InputText widget.
+            sgc.update(1)
+            # Update the console window to show changes.
+            pygame.display.update()
 
         # Print new lines for spacing.
         print "\n\n"
 
-        # Exit the current scope and back to the
+        # Clear the inputBox before returning.
+        clear()
+        # Exit the current scope and back to the 
         # loop that controls the game state.
         return
 
@@ -2753,10 +3309,12 @@ def open_replay(number):
 ################################################################################
 
 def generate_maze_recursive_backtracker():
+    """
+    Function that generates a random maze 
+    using the Recursive Backtracker algorithm.
+    """
+
     # Size of the maze.
-    """
-    Function that generates a random maze using the Recursive Backtracker algorithm.
-    """
     maze_width = len(grid) - 1
     maze_height = len(grid) - 1
 
@@ -2836,12 +3394,12 @@ def generate_maze_recursive_backtracker():
             # Pop the top coordinates off the stack.
             coordinates_stack.pop()
 
-
 def generate_maze_binary_tree():
-    # Size of the maze.
     """
     Function that generates a random maze using the Binary Tree algorithm.
     """
+
+    # Size of the maze.
     maze_width = len(grid) - 1
     maze_height = len(grid) - 1
 
@@ -2903,11 +3461,12 @@ def generate_maze_binary_tree():
         # Block last row.
         grid[x][len(grid) - 1] = 0
 
-
 def reset_maze():
     """
     Function to reset the maze back to its original state.
     """
+
+    # Global variable declarations.
     global grid
 
     # Reset the grid.
@@ -2927,13 +3486,13 @@ def reset_maze():
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
             [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
-
 def check_maze_for_validity_player_door():
     """
     Function to test the maze for validity by checking
     the path from the player to the door object.
     :return: 0 if the maze is valid, 1 if the maze is invalid
     """
+
     # Create a test grid, which will be used in the A* algorithm
     # to test the maze to ensure that the player can reach the door.
     test_grid = GridWithWeights(len(grid), len(grid))
@@ -2964,13 +3523,13 @@ def check_maze_for_validity_player_door():
     # Return 1, the maze is invalid.
     return 1
 
-
 def check_maze_for_validity_player_key():
     """
     Function to test the maze for validity by checking
     the path from the player to the key object.
     :return: 0 if the maze if valid, 1 if the maze is invalid
     """
+
     # Create a test grid, which will be used in the A* algorithm
     # to test the maze to ensure that the player can reach the key.
     test_grid = GridWithWeights(len(grid), len(grid))
@@ -3001,13 +3560,13 @@ def check_maze_for_validity_player_key():
     # Return 1, the maze is invalid.
     return 1
 
-
 def check_maze_for_validity_player_chest():
     """
     Function to test the maze for validity by checking
     the path from the player to the chest object.
     :return: 0 if the maze is valid, 1 if the maze is invalid
     """
+
     # Create a test grid, which will be used in the A* algorithm
     # to test the maze to ensure that the player can reach the chest.
     test_grid = GridWithWeights(len(grid), len(grid))
@@ -3038,12 +3597,12 @@ def check_maze_for_validity_player_chest():
     # Return 1, the maze is invalid.
     return 1
 
-
 def draw_screen(screen):
     """
     Function to draw the screen.
     :param screen: screen to draw
     """
+
     ############################################################################
     ######### Comment out this code to enable the field of view system.#########
     for row in xrange(len(grid)):
@@ -3124,7 +3683,6 @@ def draw_screen(screen):
     draw_player_object(player_object, screen)'''
     ############################################################################
 
-
 def is_object_visible(object_position_x, object_position_y):
     """
     Function to determine if the given object is within the field of view.
@@ -3132,18 +3690,23 @@ def is_object_visible(object_position_x, object_position_y):
     :param object_position_y: object's y coordinate
     :return: bool value
     """
+
+    # Iterate through the visible_object_list and determine
+    # if the object is visible or not to the user.
     for i in range(len(visible_object_list)):
         if object_position_x == visible_object_list[i][0] and \
                         object_position_y == visible_object_list[i][1]:
+            # Return true if the object is in visible range of the player.
             return True
-
+    # Return false if the object is not in visible range of the player.
     return False
-
 
 def get_visible_object_list():
     """
     Function to store object coordinates that are within the field of view.
     """
+
+    # Global variable declarations.
     global visible_object_list
 
     # Set x and y equal to the current player character object position.
@@ -3195,7 +3758,6 @@ def get_visible_object_list():
             visible_object_list.append((x - 2, y))
             visible_object_list.append((x - 2, y + 1))
 
-
 def get_cell_rect(coordinates, screen):
     """
     Function to draw the container of the objects.
@@ -3203,6 +3765,7 @@ def get_cell_rect(coordinates, screen):
     :param screen:
     :return:
     """
+
     # Set row, column equal to the passed parameters.
     row, column = coordinates
     # Set the width of the cell to the width of the
@@ -3215,13 +3778,13 @@ def get_cell_rect(coordinates, screen):
                        column * cell_width + cell_margin / 2,
                        adjusted_width, adjusted_width)
 
-
 def draw_door_object(door_object, screen):
     """
     Function to draw the door object to the console window.
     :param door_object: door object to draw
     :param screen: screen to draw on
     """
+
     # Return the size and offset of the door object.
     rect = door_object.get_rect()
     # Receive the center of the door object.
@@ -3229,13 +3792,13 @@ def draw_door_object(door_object, screen):
     # Draw the door object image.
     screen.blit(door_object, rect)
 
-
 def draw_closed_chest_object(chest_object_closed, screen):
     """
     Function to draw the closed chest object to the console window.
     :param chest_object_closed: chest object to draw
     :param screen: screen to draw on
     """
+
     # Return the size and offset of the closed chest object.
     rect = chest_object_closed.get_rect()
     # Receive the center of the closed chest object.
@@ -3243,13 +3806,13 @@ def draw_closed_chest_object(chest_object_closed, screen):
     # Draw the closed chest object image.
     screen.blit(chest_object_closed, rect)
 
-
 def draw_opened_chest_object(chest_object_opened, screen):
     """
     Function to draw the opened chest object to the console window.
     :param chest_object_opened: chest object to draw
     :param screen: screen to draw on
     """
+
     # Return the size and offset of the opened chest object.
     rect = chest_object_opened.get_rect()
     # Receive the center of the opened chest object.
@@ -3257,13 +3820,13 @@ def draw_opened_chest_object(chest_object_opened, screen):
     # Draw the opened chest object image.
     screen.blit(chest_object_opened, rect)
 
-
 def draw_key_object(key_object, screen):
     """
     Function to draw the key object to the console window.
     :param key_object: key object to draw
     :param screen: screen to draw on
     """
+
     # Return the size and offset of the key object.
     rect = key_object.get_rect()
     # Receive the center of the key object.
@@ -3271,13 +3834,13 @@ def draw_key_object(key_object, screen):
     # Draw the key object image.
     screen.blit(key_object, rect)
 
-
 def draw_player_object(player_object, screen):
     """
     Function to draw the player character object to the console window.
     :param player_object: player object to draw
     :param screen: screen to draw on
     """
+
     # Return the size and offset of the player object.
     rect = player_object.get_rect()
     # Receive the center of the player object.
@@ -3285,13 +3848,13 @@ def draw_player_object(player_object, screen):
     # Draw the player object image.
     screen.blit(player_object, rect)
 
-
 def draw_simple_enemy_object(simple_enemy_object, screen):
     """
     Function to draw the simple enemy object to the console window.
     :param simple_enemy_object: simple enemy object to draw
     :param screen: screen to draw on
     """
+
     # Return the size and offset of the simple enemy object.
     rect = simple_enemy_object.get_rect()
     # Receive the center of the simple enemy object.
@@ -3299,13 +3862,13 @@ def draw_simple_enemy_object(simple_enemy_object, screen):
     # Draw the simple enemy object image.
     screen.blit(simple_enemy_object, rect)
 
-
 def draw_smart_enemy_object(smart_enemy_object, screen):
     """
     Function to draw the smart enemy object to the console window.
     :param smart_enemy_object: smart enemy object to draw
     :param screen: screen to draw on
     """
+
     # Return the size and offset of the smart enemy object.
     rect = smart_enemy_object.get_rect()
     # Receive the center of the smart enemy object.
@@ -3313,13 +3876,13 @@ def draw_smart_enemy_object(smart_enemy_object, screen):
     # Draw the smart enemy object image.
     screen.blit(smart_enemy_object, rect)
 
-
 def draw_chest_combination_1_object(chest_combination_1_object, screen):
     """
     Function to draw the chest combination 1 object to the console window.
     :param chest_combination_1_object: combination to draw
     :param screen: screen to draw on
     """
+
     # Return the size and offset of the chest_combination_1 object.
     rect = chest_combination_1_object.get_rect()
     # Receive the center of the chest_combination_1 object.
@@ -3327,13 +3890,13 @@ def draw_chest_combination_1_object(chest_combination_1_object, screen):
     # Draw the chest_combination_1 object image.
     screen.blit(chest_combination_1_object, rect)
 
-
 def draw_chest_combination_2_object(chest_combination_2_object, screen):
     """
     Function to draw the chest combination 2 object to the console window.
     :param chest_combination_2_object: combination to draw
     :param screen: screen to draw on
     """
+
     # Return the size and offset of the chest_combination_2 object.
     rect = chest_combination_2_object.get_rect()
     # Receive the center of the chest_combination_2 object.
@@ -3341,19 +3904,20 @@ def draw_chest_combination_2_object(chest_combination_2_object, screen):
     # Draw the chest_combination_2 object image.
     screen.blit(chest_combination_2_object, rect)
 
-
 def draw_chest_combination_3_object(chest_combination_3_object, screen):
     """
     Function to draw the chest combination 3 object to the console window.
     :param chest_combination_3_object: combination to draw
     :param screen: screen to draw on
     """
+
     # Return the size and offset of the chest_combination_3 object.
     rect = chest_combination_3_object.get_rect()
     # Receive the center of the chest_combination_3 object.
     rect.center = get_cell_rect(chest_combination_3_object_position, screen).center
     # Draw the chest_combination_3 object image.
     screen.blit(chest_combination_3_object, rect)
+
 
 
 ################################################################################
@@ -3365,6 +3929,8 @@ def generate_random_object_positions():
     Function to generate random start positions for
     the player, chest, key, door, and enemy objects.
     """
+
+    # Global variable declarations.
     global player_object_position
     global chest_object_position
     global key_object_position
@@ -3387,7 +3953,7 @@ def generate_random_object_positions():
             player_object_position[1] = randomy
 
             # Add the player object position to the dictionary.
-            object_position_dictionary['player'] = randomx, randomy
+            objects_starting_positions['player'] = randomx, randomy
 
             # Increment the number of placed objects.
             number_of_objects += 1
@@ -3404,7 +3970,7 @@ def generate_random_object_positions():
             chest_object_position[1] = randomy
 
             # Add the chest object position to the dictionary.
-            object_position_dictionary['chest'] = randomx, randomy
+            objects_starting_positions['chest'] = randomx, randomy
 
             # Increment the number of placed objects.
             number_of_objects += 1
@@ -3421,7 +3987,7 @@ def generate_random_object_positions():
             key_object_position[1] = randomy
 
             # Add the key object position to the dictionary.
-            object_position_dictionary['key'] = randomx, randomy
+            objects_starting_positions['key'] = randomx, randomy
 
             # Increment the number of placed objects.
             number_of_objects += 1
@@ -3438,7 +4004,7 @@ def generate_random_object_positions():
             door_object_position[1] = randomy
 
             # Add the door object position to the dictionary.
-            object_position_dictionary['door'] = randomx, randomy
+            objects_starting_positions['door'] = randomx, randomy
 
             # Increment the number of placed objects.
             number_of_objects += 1
@@ -3456,7 +4022,7 @@ def generate_random_object_positions():
             simple_enemy_object_position[1] = randomy
 
             # Add the simple enemy object position to the dictionary.
-            object_position_dictionary['simple enemy'] = randomx, randomy
+            objects_starting_positions['simple enemy'] = randomx, randomy
 
             # Increment the number of placed objects.
             number_of_objects += 1
@@ -3474,16 +4040,17 @@ def generate_random_object_positions():
             smart_enemy_object_position[1] = randomy
 
             # Add the smart enemy object position to the dictionary.
-            object_position_dictionary['smart enemy'] = randomx, randomy
+            objects_starting_positions['smart enemy'] = randomx, randomy
 
             # Increment the number of placed objects.
             number_of_objects += 1
-
 
 def generate_optimal_object_positions():
     """
     Function to generate random positions for the objects on the optimal path.
     """
+
+    # Global variable declarations.
     global chest_combination_1_object_position
     global chest_combination_2_object_position
     global chest_combination_3_object_position
@@ -3560,7 +4127,7 @@ def generate_optimal_object_positions():
             chest_combination_1_object_position[1] = randomy
 
             # Add the chest_combination_1 object position to the dictionary.
-            object_position_dictionary['chest combination 1'] = randomx, randomy
+            objects_starting_positions['chest combination 1'] = randomx, randomy
 
             # Increment the number of placed objects.
             number_of_objects += 1
@@ -3607,7 +4174,7 @@ def generate_optimal_object_positions():
             chest_combination_2_object_position[1] = randomy
 
             # Add the chest_combination_2 object position to the dictionary.
-            object_position_dictionary['chest combination 2'] = randomx, randomy
+            objects_starting_positions['chest combination 2'] = randomx, randomy
 
             # Increment the number of placed objects.
             number_of_objects += 1
@@ -3654,20 +4221,20 @@ def generate_optimal_object_positions():
             chest_combination_3_object_position[1] = randomy
 
             # Add the chest_combination_3 object position to the dictionary.
-            object_position_dictionary['chest combination 3'] = randomx, randomy
+            objects_starting_positions['chest combination 3'] = randomx, randomy
 
             # Increment the number of placed objects.
             number_of_objects += 1
 
-
 def position_is_object(x, y):
-    # Return True for the player object.
     """
     Function to determine if the coordinate is blocked by an object.
     :param x: object's x coordinate
     :param y: object's y coordinate
     :return: bool value if coordinate is blocked
     """
+
+    # Return True for the player object.
     if x == player_object_position[0] and y == player_object_position[1]:
         return True
     # Return True for the chest object.
@@ -3702,7 +4269,6 @@ def position_is_object(x, y):
 
     return False
 
-
 def position_is_wall(x, y):
     """
     Function to determine if the coordinate is blocked by a wall.
@@ -3710,18 +4276,19 @@ def position_is_wall(x, y):
     :param y: wall y coordinate
     :return: bool value if coordinate is blocked by wall
     """
+
     # Return True for the wall object.
     if grid[y][x] == 0:
         return True
 
     return False
 
-
 def reset_object_positions_and_state_conditions():
     """
     Function that resets the position of the player
     and confiscates all gathered items.
     """
+
     # Global variables used to store objective states.
     global player_grabbed_key
     global player_used_key
@@ -3742,17 +4309,18 @@ def reset_object_positions_and_state_conditions():
     player_opened_chest = False
 
     # Reset all object positions.
-    player_object_position = [object_position_dictionary['player'][0],
-                              object_position_dictionary['player'][1]]
+    player_object_position = [objects_starting_positions['player'][0], 
+    objects_starting_positions['player'][1]]
 
-    key_object_position = [object_position_dictionary['key'][0],
-                           object_position_dictionary['key'][1]]
+    key_object_position = [objects_starting_positions['key'][0],
+    objects_starting_positions['key'][1]]
 
-    simple_enemy_object_position = [object_position_dictionary['simple enemy'][0],
-                                    object_position_dictionary['simple enemy'][1]]
+    simple_enemy_object_position = [objects_starting_positions['simple enemy'][0],
+    objects_starting_positions['simple enemy'][1]]
 
-    smart_enemy_object_position = [object_position_dictionary['smart enemy'][0],
-                                   object_position_dictionary['smart enemy'][1]]
+    smart_enemy_object_position = [objects_starting_positions['smart enemy'][0],
+    objects_starting_positions['smart enemy'][1]]
+
 
 
 ################################################################################
@@ -3764,7 +4332,11 @@ def handle_input():
     Function to handle player character movement.
     :return: nothing to return
     """
+
+    # Global variable declarations.
     global replay_filename
+    global objects_current_positions
+    global current_game_states
     global player_object
     global chest_object_closed
     global chest_object_opened
@@ -3772,12 +4344,17 @@ def handle_input():
     global door_object
     global simple_enemy_object
     global smart_enemy_object
+    global enemy_grabbed_player
     global chest_combination_1_object
     global chest_combination_2_object
     global chest_combination_3_object
     global player_made_decision
     global marked_tile_list
     global player_used_marker
+    global player_grabbed_key
+    global player_used_key
+    global player_unlocked_chest
+    global player_opened_chest
     global game_complete
     global chosen_encryption_algorithm
     global player_game_moves
@@ -3800,7 +4377,7 @@ def handle_input():
     # Grid containing the positions of all walls and floors in the maze.
     write_to_replay_file(str(grid))
     # Dictionary containing the starting positions of all objects in the grid.
-    write_to_replay_file(str(object_position_dictionary))
+    write_to_replay_file(str(objects_starting_positions))
 
     # Continue running until the player completes the game or closes the window.
     while game_complete == False:
@@ -3814,9 +4391,6 @@ def handle_input():
                     # Print user input string to the output console window.
                     input_string = event.text.lower()
                     print_input(input_string)
-
-                    # Write the input to the replay file.
-                    write_to_replay_file(input_string)
 
                     # Print error message if user input is empty.
                     if input_string == "":
@@ -3970,6 +4544,39 @@ def handle_input():
                         else:
                             print_input_error()
 
+                    # Store the current object positions into the dictionary.
+                    objects_current_positions['player'] = \
+                        player_object_position[0], player_object_position[1]
+                    objects_current_positions['chest'] = \
+                        chest_object_position[0], chest_object_position[1] 
+                    objects_current_positions['key'] = \
+                        key_object_position[0], key_object_position[1]
+                    objects_current_positions['door'] = \
+                        door_object_position[0], door_object_position[1]
+                    objects_current_positions['simple enemy'] = \
+                        simple_enemy_object_position[0], simple_enemy_object_position[1]
+                    objects_current_positions['smart enemy'] = \
+                        smart_enemy_object_position[0], smart_enemy_object_position[1]
+                    objects_current_positions['chest combination 1'] = \
+                        chest_combination_1_object_position[0], chest_combination_1_object_position[1]
+                    objects_current_positions['chest combination 2'] = \
+                        chest_combination_2_object_position[0], chest_combination_2_object_position[1]
+                    objects_current_positions['chest combination 3'] = \
+                        chest_combination_3_object_position[0], chest_combination_3_object_position[1]
+
+                    # Store the game states into the dictionary.
+                    current_game_states['player_grabbed_key'] = player_grabbed_key
+                    current_game_states['player_used_marker'] = player_used_marker
+                    current_game_states['player_opened_chest'] = player_opened_chest
+                    current_game_states['enemy_grabbed_player'] = enemy_grabbed_player
+
+                    # Write the input to the replay file.
+                    write_to_replay_file(input_string)
+                    # Write the current object positions to the replay file.
+                    write_to_replay_file(str(objects_current_positions))
+                    # Write the current game states to the replay file.
+                    write_to_replay_file(str(current_game_states))
+
                     # Clear the contents of the InputBox if it is clicked on.
                     if event.widget is input_box:
                         clear()
@@ -3996,6 +4603,7 @@ def handle_input():
                         go(-1, 0)
                 # Quit the game if the user closes the window.
                 elif event.type == QUIT:
+                    clear()
                     return
 
             # Clear the contents of the screen.
@@ -4050,7 +4658,9 @@ def handle_input():
     save_replays()
 
     # Exit the current scope and back to the loop that controls the game state.
+    clear()
     return
+
 
 
 ################################################################################
@@ -4058,21 +4668,28 @@ def handle_input():
 ################################################################################
 
 def go(dx, dy):
-    global player_game_moves
     """
     Function to move the player character object through the maze.
     :param dx: player x coordinate
     :param dy: player y coordinate
     """
+
+    # Global variable declarations.
+    global player_game_moves
+
     # Call the function to reset the game if the player character
     # is in the same coordinate as either enemy.
     if player_object_position == simple_enemy_object_position \
-            or player_object_position == smart_enemy_object_position:
+        or player_object_position == smart_enemy_object_position:
+        # Set the value of enemy_grabbed_player equal to true.
+        enemy_grabbed_player = True
+
         # Print out an message informing the user that they lost.
         print "Output: The enemy grabbed you! Your stuff was confiscated "
         print "\tand you were returned to where you started. "
         print "\tYou will have to try your luck again...\n"
-        # Play the die sound
+
+        # Play the die sound.
         die_sound.play()
         # Reset the locations of all objects and state conditions.
         reset_object_positions_and_state_conditions()
@@ -4099,24 +4716,12 @@ def go(dx, dy):
         else:
             # Print out an error for the invalid move.
             print_go_error()
-            # Play the pain sound for running into wall
+            # Play the pain sound for running into wall.
             pain_sound.play()
 
         # Call the function to move the enemies.
         move_simple_enemy()
         move_smart_enemy()
-
-    # Call the function to reset the game if the player character
-    # is in the same coordinate as either enemy.
-    if player_object_position == simple_enemy_object_position \
-            or player_object_position == smart_enemy_object_position:
-        # Print out an message informing the user that they lost.
-        print "Output: The enemy grabbed you! Your stuff was confiscated "
-        print "\tand you were returned to where you started. "
-        print "\tYou will have to try your luck again...\n"
-        # Reset the locations of all objects and state conditions.
-        reset_object_positions_and_state_conditions()
-
 
 def go_length(direction, length):
     """
@@ -4125,6 +4730,7 @@ def go_length(direction, length):
     :param direction: direction to move player
     :param length: distance to move player
     """
+
     # Check if the second substring is equal to "forward".
     if direction == "forward" or direction == "up" or direction == "north":
         # Variable used as a counter.
@@ -4189,18 +4795,19 @@ def go_length(direction, length):
     else:
         print_input_error()
 
-
 def use_marker():
     """
     Function to use the marker.
     """
+
+    # Global variable declarations.
     global marked_tile_list
     global player_used_marker
 
     # Change the value of player_used_marker to True. It is used in the
     # draw_screen function to determine when to start drawing the marker.
     player_used_marker = True
-    # Play the sound for using the marker
+    # Play the sound for using the marker.
     use_marker_sound.play()
 
     # Set x and y equal to the current player character object position.
@@ -4234,12 +4841,12 @@ def use_marker():
     move_simple_enemy()
     move_smart_enemy()
 
-
 def grab_key():
     """
     Function to grab the key.
     """
-    # Needed to change their properties.
+
+    # Global variable declarations.
     global key_object_position
     global player_grabbed_key
     global key_object_color
@@ -4261,7 +4868,7 @@ def grab_key():
         key_object_position[1] = 0
         # Set player_grabbed_key equal to True.
         player_grabbed_key = True
-        # Play the sound for grabbing the key
+        # Play the sound for grabbing the key.
         grab_key_sound.play()
     else:
         # Inform the player that the key is not within their reach.
@@ -4272,13 +4879,13 @@ def grab_key():
     move_simple_enemy()
     move_smart_enemy()
 
-
 def unlock_chest(user_input_combination):
     """
     Function to unlock the chest.
     :param user_input_combination: combination the user inputs
     """
-    # Needed to change their properties.
+
+    # Global variable declarations.
     global player_unlocked_chest
 
     # Set x and y equal to the current player character object position.
@@ -4303,7 +4910,7 @@ def unlock_chest(user_input_combination):
                 # Set player_unlocked_chest equal to True.
                 player_unlocked_chest = True
                 # Play the sound for using the combo
-                # to eventually open the chest
+                # to eventually open the chest.
                 use_combo_sound.play()
             else:
                 # Inform the player that the combination is incorrect.
@@ -4317,12 +4924,12 @@ def unlock_chest(user_input_combination):
     move_simple_enemy()
     move_smart_enemy()
 
-
 def open_chest():
     """
     Function to open the chest.
     """
-    # Needed to change their properties.
+
+    # Global variable declarations.
     global chest_object_position
     global player_opened_chest
 
@@ -4348,9 +4955,9 @@ def open_chest():
 
                 # Set player_grabbed_chest equal to True.
                 player_opened_chest = True
-                # Play the sound for opening the chest
+                # Play the sound for opening the chest.
                 open_chest_sound.play()
-                # Play the treasure sound
+                # Play the treasure sound.
                 treasure_sound.play()
             else:
                 # Inform the player that the combination is incorrect.
@@ -4365,12 +4972,12 @@ def open_chest():
     move_simple_enemy()
     move_smart_enemy()
 
-
 def use_key():
     """
     Function to use the key.
     """
-    # Needed to change their properties.
+
+    # Global variable declarations.
     global door_object_position
     global player_used_key
 
@@ -4393,7 +5000,7 @@ def use_key():
                   "\nThe key wasn't so useless after all!"
             # Set player_used_key equal to True.
             player_used_key = True
-            # Play the sound for unlocking the door (using the key)
+            # Play the sound for unlocking the door (using the key).
             unlock_door_sound.play()
         else:
             # Inform the player that they need the key to unlocked the door.
@@ -4408,12 +5015,12 @@ def use_key():
     move_simple_enemy()
     move_smart_enemy()
 
-
 def open_door():
     """
     Function to open the door.
     """
-    # Needed to change their properties.
+
+    # Global variable declarations.
     global door_object
     global door_object_position
     global player_opened_chest
@@ -4432,17 +5039,18 @@ def open_door():
         if player_used_key and player_opened_chest:
             # Inform the player that they have opened the door.
             print "Output: You have opened the door!"
-            # Play sound for opening the door
+            # Play sound for opening the door.
             open_door_sound.play()
             # Congratulate the player on completing the game.
             print "\n\nCongratulations! You have escaped!"
-            # Stop the background music
+            # Stop the background music.
             background_sound.stop()
-            # Play the congratulatory game over sound
+            # Play the congratulatory game over sound.
             game_over_sound.play()
             # Call function to update top 10 moves if needed.
             print "Number of moves made: ", player_game_moves
             print "\n\n"
+            # Call the function to update the billboard.
             update_top10(player_game_moves)
             # Set game_complete equal to True.
             game_complete = True
@@ -4480,7 +5088,6 @@ def open_door():
     move_simple_enemy()
     move_smart_enemy()
 
-
 def player_next_to_object(x, y, a, b):
     """
     Function that returns true if the player character
@@ -4491,6 +5098,7 @@ def player_next_to_object(x, y, a, b):
     :param b: object y coordinate
     :return: bool value if player is next to an object
     """
+
     # Check the location that the player character object currently is.
     if x == a and y == b:
         return True
@@ -4523,6 +5131,7 @@ def player_next_to_object(x, y, a, b):
     return False
 
 
+
 ################################################################################
 # Enemies
 ################################################################################
@@ -4531,6 +5140,8 @@ def move_simple_enemy():
     """
     Function to move the simple enemy object in a random direction.
     """
+
+    # Global variable declarations.
     global simple_enemy_object_position
 
     # Call the function to reset the game if the player character
@@ -4548,6 +5159,7 @@ def move_simple_enemy():
     x = simple_enemy_object_position[0]
     y = simple_enemy_object_position[1]
 
+    # Set direction equal to a randomly chosen direction.
     direction = random.randint(1, 4)
 
     # Set nx and ny equal to the new simple enemy object position.
@@ -4586,11 +5198,12 @@ def move_simple_enemy():
         # Reset the locations of all objects and state conditions.
         reset_object_positions_and_state_conditions()
 
-
 def move_smart_enemy():
     """
     Function to move the smart enemy in a direction towards the player.
     """
+
+    # Global variable declarations.
     global smart_enemy_object_position
 
     # Call the function to reset the game if the player character
@@ -4669,10 +5282,10 @@ def move_smart_enemy():
         # Reset the locations of all objects and state conditions.
         reset_object_positions_and_state_conditions()
 
-    '''# Variable that store the enemy location.
+    '''# Variable that stores the enemy location.
     smart_enemy_location = (smart_enemy_object_position[0],
                                 smart_enemy_object_position[1])
-    # Variable that store the current location.
+    # Variable that stores the current location.
     player_location = (player_object_position[0],
                                 player_object_position[1])
 
@@ -4728,16 +5341,18 @@ def move_smart_enemy():
         # No two algorithms match, re-spawn enemy.
         respawn_smart_enemy()'''
 
-
 def respawn_smart_enemy():
     """
     Function to reset the smart enemy object position.
     """
+
+    # Global variable declarations.
     global smart_enemy_object_position
 
     # Reset the smart enemy object's position.
-    smart_enemy_object_position = [object_position_dictionary['smart enemy'][0],
-                                   object_position_dictionary['smart enemy'][1]]
+    smart_enemy_object_position = [objects_starting_positions['smart enemy'][0],
+    objects_starting_positions['smart enemy'][1]]
+
 
 
 ################################################################################
@@ -4755,6 +5370,7 @@ class SquareGrid:
         :param width: width of grid
         :param height: height of grid
         """
+
         self.width = width
         self.height = height
         self.walls = []
@@ -4765,6 +5381,7 @@ class SquareGrid:
         :param id: neighbor id
         :return: bool value if neighbor is in bounds
         """
+
         (x, y) = id
         return 0 <= x < self.width and 0 <= y < self.height
 
@@ -4774,6 +5391,7 @@ class SquareGrid:
         :param id: element id
         :return: bool value if element is valid
         """
+
         return id not in self.walls
 
     def neighbors(self, id):
@@ -4782,13 +5400,13 @@ class SquareGrid:
         :param id: id of item to find neighbors for
         :return: resultant list of neighbors
         """
+
         (x, y) = id
         results = [(x + 1, y), (x, y - 1), (x - 1, y), (x, y + 1)]
         if (x + y) % 2 == 0: results.reverse()
         results = filter(self.in_bounds, results)
         results = filter(self.passable, results)
         return results
-
 
 class GridWithWeights(SquareGrid, object):
     """
@@ -4801,6 +5419,7 @@ class GridWithWeights(SquareGrid, object):
         :param width: width of grid
         :param height: height of grid
         """
+
         super(GridWithWeights, self).__init__(width, height)
         self.weights = {}
 
@@ -4811,8 +5430,8 @@ class GridWithWeights(SquareGrid, object):
         :param to_node: node to move to
         :return: cost of moving from node to node
         """
-        return self.weights.get(to_node, 1)
 
+        return self.weights.get(to_node, 1)
 
 class PriorityQueue:
     """
@@ -4823,6 +5442,7 @@ class PriorityQueue:
         """
         Function to initialize.
         """
+
         self.elements = []
 
     def empty(self):
@@ -4830,6 +5450,7 @@ class PriorityQueue:
         Function to empty priority queue
         :return:
         """
+
         return len(self.elements) == 0
 
     def put(self, item, priority):
@@ -4838,6 +5459,7 @@ class PriorityQueue:
         :param item: item to put
         :param priority: priority queue
         """
+
         heapq.heappush(self.elements, (priority, item))
 
     def get(self):
@@ -4845,8 +5467,8 @@ class PriorityQueue:
         Function to get priority queue
         :return: priority queue elements
         """
-        return heapq.heappop(self.elements)[1]
 
+        return heapq.heappop(self.elements)[1]
 
 def heuristic(a, b):
     """
@@ -4855,10 +5477,10 @@ def heuristic(a, b):
     :param b:
     :return:
     """
+
     (x1, y1) = a
     (x2, y2) = b
     return abs(x1 - x2) + abs(y1 - y2)
-
 
 # Function that implements the A* algorithm.
 # Parameters:
@@ -4873,6 +5495,7 @@ def a_star_search(graph, start, goal):
     :param goal: the ending location (door location at start).
     :return: where we came from and how much it has cost us
     """
+
     # Initialize variables.
     frontier = PriorityQueue()  # Expanding queue that keeps track of the path.
     came_from = {}  # Dictionary that maps the coordinates to the cost.
@@ -4913,13 +5536,11 @@ def a_star_search(graph, start, goal):
     # Return came_from and cost_so_far.
     return came_from, cost_so_far
 
-
 # Class used for...
 class Cls(object):
     def __repr__(self):
         os.system('cls')
         return ''
-
 
 def is_valid(point, grid):
     """
@@ -4928,12 +5549,12 @@ def is_valid(point, grid):
     :param grid: grid that contains the point
     :return: bool value if point is valid
     """
+
     # Check if the point of the grid is out of range or is a wall.
     if (point[0] > 14) or (point[1] > 14) or (grid[point[0]][point[1]] == 0):
         return False
     else:
         return True
-
 
 def add_neighbours(point, neighbours_list, visited_list, grid, dict):
     """
@@ -4945,6 +5566,7 @@ def add_neighbours(point, neighbours_list, visited_list, grid, dict):
     :param dict: dictionary of points
     :return: nothing to return
     """
+
     # Return if the point is null.
     if point == []:
         return
@@ -4974,7 +5596,6 @@ def add_neighbours(point, neighbours_list, visited_list, grid, dict):
             add_to_dictionary(dict, point, neighbor_point_1)
     visited_list.append(point)
 
-
 def add_to_dictionary(dictionary, parent, child):
     """
     Dictionary used to print the success path after it has been generated.
@@ -4982,12 +5603,12 @@ def add_to_dictionary(dictionary, parent, child):
     :param parent:
     :param child:
     """
+
     p_l = map(str, parent)
     c_l = map(str, child)
     p_l = ','.join(p_l)
     c_l = ','.join(c_l)
     dictionary[c_l] = p_l
-
 
 def depth_first_search(start_point, end_point, graph, dict):
     """
@@ -4997,6 +5618,7 @@ def depth_first_search(start_point, end_point, graph, dict):
     :param graph: graph we are using
     :param dict: dictionary to add neighbors to
     """
+
     # List of neighbors.
     neighbours_list = [[]]
     # List of visited nodes.
@@ -5018,7 +5640,6 @@ def depth_first_search(start_point, end_point, graph, dict):
         point = neighbours_list.pop()
         add_neighbours(point, neighbours_list, visited_list, graph, dict)
 
-
 def breath_first_search(start_point, end_point, graph, dict):
     """
     Function that contains the main logic of the BFS algorithm.
@@ -5027,6 +5648,7 @@ def breath_first_search(start_point, end_point, graph, dict):
     :param graph: graph we are using
     :param dict: dictionary to add neighbors to
     """
+
     neighbours_list = [[]]
     visited_list = [[]]
     add_neighbours(start_point, neighbours_list, visited_list, graph, dict)
@@ -5044,7 +5666,6 @@ def breath_first_search(start_point, end_point, graph, dict):
         for a in old_list:
             add_neighbours(a, neighbours_list, visited_list, graph, dict)
 
-
 def draw_hierarchy(dict, point):
     """
     Function to add the locations at the end to the list (stack).
@@ -5052,6 +5673,7 @@ def draw_hierarchy(dict, point):
     :param point: location to add
     :return: list
     """
+
     list = []
     p_l = map(str, point)
     p_l = ','.join(p_l)
@@ -5067,7 +5689,6 @@ def draw_hierarchy(dict, point):
         except:
             break
     return list
-
 
 '''
 def perform_search():
@@ -5101,9 +5722,12 @@ def perform_search():
     breath_first_search(chest, goal, grid, dict1)
     goal_path_list1 = draw_hierarchy(dict1, goal)'''
 
+
+
 ################################################################################
 # Start
 ################################################################################
+
 # Executes the main function.
 if __name__ == "__main__":
     # Manage the log files.
