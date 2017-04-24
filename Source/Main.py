@@ -2667,23 +2667,16 @@ def open_replay(number):
     # Randomly choose a 1 or 2 for the algorithm indicator
     # Use this when we figure out Chance's algorithm
     #algorithm_indicator = random.randint(1, 2)
-    algorithm_indicator = "1"
-
-    # Set this indicator to the chosen_encryption_algorithm variable
-    #chosen_encryption_algorithm = algorithm_indicator
-
-    # Encrypt the algorithm_indicator using a simple encryption
-    encrypted_algorithm_indicator = algorithm_indicator_encrypt(algorithm_indicator)
 
     # Read each line of the encrypted chosen replay file and store into a list.
     encrypted_lines_list = chosen_replay_file.readlines()
 
-    # Add the encrypted algorithm indicator to the beginning of the list
-    encrypted_lines_list = list(encrypted_algorithm_indicator) + encrypted_lines_list
-
     # Remove the first line from the chosen replay file and store it.
     encryption_algorithm_key = encrypted_lines_list[0].strip()
 
+    # Encrypt the algorithm indicator using a simple encryption
+    encrypted_algorithm_indicator = algorithm_indicator_encrypt(encryption_algorithm_key)
+    
     # Decrypt the algorithm_indicator using a simple decryption
     encryption_algorithm_key = algorithm_indicator_decrypt(encryption_algorithm_key)
 
