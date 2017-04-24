@@ -604,6 +604,7 @@ def show_login_signup_screen():
                               "\nYour password must contain:" \
                               "\nat least 8 characters," \
                               "\nat least one digit," \
+                              "\nat least one lowercase letter," \
                               "\nand at least one uppercase letter."
 
                         # Increment the value of i.
