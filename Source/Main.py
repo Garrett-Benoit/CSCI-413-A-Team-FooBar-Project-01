@@ -1606,10 +1606,10 @@ def database_decrypt(n, ciphertext):
 # The following code is in a poor state., clean it up!
 
 
-#
-a_ordinal = ord('a')
-#
-z_ordinal = ord('z')
+#Base on the range of ASCII table the first character is space
+a_ordinal = ord(' ')
+#Base on the range of ASCII table the last character is tilde
+z_ordinal = ord('~')
 #
 chosen_encryption_algorithm = "1"
 
