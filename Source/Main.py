@@ -4418,9 +4418,6 @@ def reset_object_positions_and_state_conditions():
     global simple_enemy_object_position
     global smart_enemy_object_position
 
-    # Play the lovely sound of death.
-    die_sound.play()
-
     # Reset all objective states.
     player_grabbed_key = False
     player_used_key = False
@@ -4440,6 +4437,9 @@ def reset_object_positions_and_state_conditions():
 
     smart_enemy_object_position = [objects_starting_positions['smart enemy'][0],
     objects_starting_positions['smart enemy'][1]]
+    
+    # Play the lovely sound of death.
+    die_sound.play()
 
 
 
