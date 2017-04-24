@@ -484,42 +484,82 @@ def show_login_signup_screen():
                         # Increment the value of i.
                         i = i + 1
                     elif i == 2:
-                        # Get the encrypted username from the server.
-                        result = firebase.get('/users', temp_username)
+                        # Initialize result.
+                        result = ""
 
-                        # Determine if the username exists on the server.
-                        if result != None:
-                            # Get the password from the server and decrypt it.
-                            decrypted_password = database_decrypt(
-                                key_caesar_cipher, result['password'])
+                        try:
+                            # Get the encrypted username from the server.
+                            result = firebase.get('/users', temp_username)
+                        except:
+                            # Print a message informing the user that an 
+                            # Internet connection is not established.
+                            print ("Output: Please connect to the " +
+                                    "Internet before attempting to login.")
 
-                            # Determine if the passwords match.
-                            if temp_password == decrypted_password:
-                                # The player has been successfully authenticated.
-                                player_is_authenticated = True
+                            # Store the exception.
+                            e = sys.exc_info()[0]
+                            # Piece the exception message together for printing.
+                            exception_message = (str(time.strftime("%H-%M-%S")) + ": Error: "
+                                                 + str(e) + " \n\t\t\tNo Internet connection "
+                                                 + "detected. User login failed.")
+                            # Print the exception to the log file.
+                            write_to_log_file(exception_message)
+                        else:
+                            # Determine if the username exists on the server.
+                            if result != "":
+                                # Get the password from the server and decrypt it.
+                                decrypted_password = database_decrypt(
+                                    key_caesar_cipher, result['password'])
 
-                                # Set player_username to logged in user.
-                                player_username = temp_username
-                                # Function to get the 3 most recent replays and 
-                                # save them both locally and remotely.
-                                save_replays()
+                                # Determine if the passwords match.
+                                if temp_password == decrypted_password:
+                                    # The player has been successfully authenticated.
+                                    player_is_authenticated = True
 
-                                # Print out a message informing the user that
-                                # they have been successfully logged in.
-                                print "Output: Authentication successful.\n" \
-                                      + "\tYou have been successfully logged in."
+                                    # Set player_username to logged in user.
+                                    player_username = temp_username
 
-                                # Print out the top moves from the leader board.
-                                update_top10(0)
+                                    try:
+                                        # Function to get the 3 most recent replays and 
+                                        # save them both locally and remotely.
+                                        save_replays()
+                                    except:
+                                        # Store the exception.
+                                        e = sys.exc_info()[0]
+                                        # Piece the exception message together for printing.
+                                        exception_message = (str(time.strftime("%H-%M-%S")) + ": Error: "
+                                                             + str(e) + " \n\t\t\tNo Internet connection "
+                                                             + "detected. Replays failed to "
+                                                             + "be saved to database.")
+                                        # Print the exception to the log file.
+                                        write_to_log_file(exception_message)
 
-                            # The password does not match the username.
+                                    # Print out a message informing the user that
+                                    # they have been successfully logged in.
+                                    print "Output: Authentication successful.\n" \
+                                          + "\tYou have been successfully logged in."
+
+                                    try:
+                                        # Print out the top moves from the leader board.
+                                        update_top10(0)
+                                    except:
+                                        # Store the exception.
+                                        e = sys.exc_info()[0]
+                                        # Piece the exception message together for printing.
+                                        exception_message = (str(time.strftime("%H-%M-%S")) + ": Error: "
+                                                             + str(e) + " \n\t\t\tNo Internet connection "
+                                                             + "detected. Leaderboard fetch failed.")
+                                        # Print the exception to the log file.
+                                        write_to_log_file(exception_message)
+
+                                # The password does not match the username.
+                                else:
+                                    print "Output: Authentication Error." \
+                                          + " Incorrect password."
+                            # The username does not exist.
                             else:
                                 print "Output: Authentication Error." \
-                                      + " Incorrect password."
-                        # The username does not exist.
-                        else:
-                            print "Output: Authentication Error." \
-                                  + " Incorrect username."
+                                      + " Incorrect username."
 
                         # Reset values and variables used in the
                         # loop and print out an authentication
@@ -565,43 +605,95 @@ def show_login_signup_screen():
                         # Increment the value of i.
                         i = i + 1
                     elif i == 3:
-                        # Determine if the username exists on the server.
-                        if (firebase.get('/users', temp_username)) == None:
+                        # Initialize result.
+                        result = ""
 
-                            # If the password returns a valid input.
-                            if password_check(temp_password):
+                        try:
+                            # Get the username from the database if it exists.
+                            result = firebase.get('/users', temp_username)
+                        except:
+                            # Print a message informing the user that an 
+                            # Internet connection is not established.
+                            print ("Output: Please connect to the " +
+                                    "Internet before attempting to signup.")
 
-                                # Encrypt the entered password before storing.
-                                encrypted_password = database_encrypt(
-                                    key_caesar_cipher, temp_password)
-
-                                # Create the account if it does not already exist.
-                                if firebase.put('/users/', temp_username,
-                                                {'email': temp_email,
-                                                 'password': encrypted_password}):
-                                    # The player has been successfully authenticated.
-                                    player_is_authenticated = True
-
-                                    # Set player_username to logged in user.
-                                    player_username = temp_username
-                                    # Function to get the 3 most recent replays and 
-                                    # save them both locally and remotely.
-                                    save_replays()
-
-                                    # Print out a message informing the user
-                                    # that they have successfully signed up.
-                                    print "Output: Authentication successful.\n" \
-                                          + "\tYou have successfully signed up."
-
-                                # The account already exists.
-                                else:
-                                    print "Output: Authentication Error." \
-                                          + " Existing account detected."
-
-                        # The username already exists.
+                            # Store the exception.
+                            e = sys.exc_info()[0]
+                            # Piece the exception message together for printing.
+                            exception_message = (str(time.strftime("%H-%M-%S")) + ": Error: "
+                                                 + str(e) + " \n\t\t\tNo Internet connection "
+                                                 + "detected. User signup failed.")
+                            # Print the exception to the log file.
+                            write_to_log_file(exception_message)
                         else:
-                            print "Output: Authentication Error." \
-                                  + " Existing username detected."
+                            # Determine if the username exists on the server.
+                            if result == None:
+                                # If the password returns a valid input.
+                                if password_check(temp_password):
+                                    # Encrypt the entered password before storing.
+                                    encrypted_password = database_encrypt(
+                                        key_caesar_cipher, temp_password)
+
+                                    # Initialize result.
+                                    result = ""
+
+                                    try:
+                                        # Create the account if it does not already exist.
+                                        result = firebase.put('/users/', temp_username,
+                                                    {'email': temp_email,
+                                                     'password': encrypted_password})
+                                    except:
+                                        # Print a message informing the user that an 
+                                        # Internet connection is not established.
+                                        print ("Output: Please stay connected to the " +
+                                                "Internet during the signup attempt.")
+
+                                        # Store the exception.
+                                        e = sys.exc_info()[0]
+                                        # Piece the exception message together for printing.
+                                        exception_message = (str(time.strftime("%H-%M-%S")) + ": Error: "
+                                                             + str(e) + " \n\t\t\tNo Internet connection "
+                                                             + "detected. User signup failed.")
+                                        # Print the exception to the log file.
+                                        write_to_log_file(exception_message)
+                                    else:
+                                        # Continue if the account created successfully.
+                                        if result != None:
+                                            # The player has been successfully authenticated.
+                                            player_is_authenticated = True
+
+                                            # Set player_username to logged in user.
+                                            player_username = temp_username
+
+                                            try:
+                                                # Function to get the 3 most recent replays and 
+                                                # save them both locally and remotely.
+                                                save_replays()
+                                            except:
+                                                # Store the exception.
+                                                e = sys.exc_info()[0]
+                                                # Piece the exception message together for printing.
+                                                exception_message = (str(time.strftime("%H-%M-%S")) + ": Error: "
+                                                                     + str(e) + " \n\t\t\tNo Internet connection "
+                                                                     + "detected. Replays failed to "
+                                                                     + "be saved to database.")
+                                                # Print the exception to the log file.
+                                                write_to_log_file(exception_message)
+
+                                            # Print out a message informing the user
+                                            # that they have successfully signed up.
+                                            print "Output: Authentication successful.\n" \
+                                                  + "\tYou have successfully signed up."
+
+                                        # The account already exists.
+                                        else:
+                                            print "Output: Authentication Error." \
+                                                  + " Existing account detected."
+
+                            # The username already exists.
+                            else:
+                                print "Output: Authentication Error." \
+                                      + " Existing username detected."
 
                         # Reset values and variables used in the
                         # loop and print out an authentication
@@ -986,11 +1078,11 @@ def update_top10(new_move_value):
     : 
     """
 
-    # Print out the top 10 moves of the leaderboard.
-    print "\nTop 10 Moves Leaderboard: "
-
     # Get the top moves from the leader board.
     leaderboard_moves = firebase.get('/leaderboard', None)
+
+    # Print out the top 10 moves of the leaderboard.
+    print "\nTop 10 Moves Leaderboard: "
 
     # Update the value of leaderboard_moves for
     # the current user if it does not equal 0.
@@ -3323,9 +3415,7 @@ def open_replay(number):
 
         # Piece the exception message together for printing.
         exception_message = (str(time.strftime("%H-%M-%S")) + ": Error: "
-                             + "Incorrect encryption algorithm key"
-                             + " \n\t\t\tIgnoring your feeble "
-                             + "attempts to crash the game and continuing.")
+                             + "Incorrect encryption algorithm key")
         # Print the exception to the log file.
         write_to_log_file(exception_message)
 
@@ -4684,8 +4774,19 @@ def handle_input():
     # Close the opened replay file.
     close_replay_file()
 
-    # Update the users replays remotely.
-    save_replays()
+    try:
+        # Update the users replays remotely.
+        save_replays()
+    except:
+        # Store the exception.
+        e = sys.exc_info()[0]
+        # Piece the exception message together for printing.
+        exception_message = (str(time.strftime("%H-%M-%S")) + ": Error: "
+                                + str(e) + " \n\t\t\tNo Internet connection "
+                                + "detected. Replays failed to "
+                                + "be saved to database.")
+        # Print the exception to the log file.
+        write_to_log_file(exception_message)
 
     # Exit the current scope and back to the loop that controls the game state.
     clear()
@@ -5078,8 +5179,20 @@ def open_door():
             # Call function to update top 10 moves if needed.
             print "Number of moves made: ", player_game_moves
             print "\n\n"
-            # Call the function to update the billboard.
-            update_top10(player_game_moves)
+
+            try:
+                # Call the function to update the billboard.
+                update_top10(player_game_moves)
+            except:
+                # Store the exception.
+                e = sys.exc_info()[0]
+                # Piece the exception message together for printing.
+                exception_message = (str(time.strftime("%H-%M-%S")) + ": Error: "
+                                        + str(e) + " \n\t\t\tNo Internet connection "
+                                        + "detected. Leaderboard fetch failed.")
+                # Print the exception to the log file.
+                write_to_log_file(exception_message)
+
             # Set game_complete equal to True.
             game_complete = True
         elif player_used_key and not player_opened_chest:
