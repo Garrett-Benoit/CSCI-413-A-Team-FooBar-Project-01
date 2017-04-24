@@ -1687,6 +1687,20 @@ def caesar_cipher_decrypt(text, key):
     #
     return ''.join(cleat_text)
 
+###################### Algorithm Indicator Encryption/Decryption ###############
+
+# Function that accepts a 1 or 2 that serves as the indication
+# for which algorithm will be used to encrypt/decrypt the rest of
+# the file, and then does a simple encryption
+def algorithm_indicator_encrypt(algorithm_indicator):
+    encrypted_indicator = algorithm_indicator + 5
+    return encrypted_indicator
+
+# Function that accepts the encrypted indicator, and then decrypts it
+def algorithm_indicator_decrypt(encrypted_indicator):
+    decrypted_indicator = encrypted_indicator - 5
+    return decrypted_indicator
+
 ###################### AES Encryption (Complex encryption) #####################
 
 class AES(object):
