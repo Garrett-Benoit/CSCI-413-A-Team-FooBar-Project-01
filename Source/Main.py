@@ -1451,6 +1451,8 @@ def write_to_replay_file(string):
     # Encrypt string before writing to the replay file.
     if (chosen_encryption_algorithm == "1"):
         replay_file.write(caesar_cipher_encrypt(string, key_caesar_cipher) + "\n")
+    #elif (chosen_encryption_algorithm == "2"):
+    #    replay_file.write(chance's algorithm')
     else:
         replay_file.write(string + "\n")
 
@@ -2657,11 +2659,28 @@ def open_replay(number):
     elif number == 3:
         pygame.display.set_caption("Replay 3: " + str(chosen_replay_filename[7:-4]))
 
+    # Randomly choose a 1 or 2 for the algorithm indicator
+    # Use this when we figure out Chance's algorithm
+    #algorithm_indicator = random.randint(1, 2)
+    algorithm_indicator = "1"
+
+    # Set this indicator to the chosen_encryption_algorithm variable
+    #chosen_encryption_algorithm = algorithm_indicator
+
+    # Encrypt the algorithm_indicator using a simple encryption
+    encrypted_algorithm_indicator = algorithm_indicator_encrypt(algorithm_indicator)
+
     # Read each line of the encrypted chosen replay file and store into a list.
     encrypted_lines_list = chosen_replay_file.readlines()
 
+    # Add the encrypted algorithm indicator to the beginning of the list
+    encrypted_lines_list = encrypted_algorithm_indicator + encrypted_lines_list
+
     # Remove the first line from the chosen replay file and store it.
     encryption_algorithm_key = encrypted_lines_list[0].strip()
+
+    # Decrypt the algorithm_indicator using a simple decryption
+    encryption_algorithm_key = algorithm_indicator_decrypt(encryption_algorithm_key)
 
     # Decrypt the file if it was encrypted
     # using an encryption algorithm.
