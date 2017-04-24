@@ -1602,16 +1602,13 @@ def database_decrypt(n, ciphertext):
     return result
 
 
-# Give more descriptive names for all variables, keep to the formatting you see
-# in this file, and add descriptive comments!
-# The following code is in a poor state., clean it up!
-
-
 #Base on the range of ASCII table the first character is space
-a_ordinal = ord(' ')
+space_ordinal = ord(' ')
+
 #Base on the range of ASCII table the last character is tilde
-z_ordinal = ord('~')
-#
+tilde_ordinal = ord('~')
+
+#Chosen digit to indicate Simple Caesar Cipher Algorithm
 chosen_encryption_algorithm = "1"
 
 def caesar_cipher_encrypt(text, key):
@@ -1622,77 +1619,75 @@ def caesar_cipher_encrypt(text, key):
     :return: encrypted text
     """
 
-    # Convert to ASCI representation.
-    clist = [ord(x) for x in text]
-    #
+    #Convert to ASCII representation.
+    plain_text = [ord(x) for x in text]
+    
+    #List to hold the encrypted characters
     cipher = list()
 
-    #
-    for x in clist:
-        #
-        if (x >= a_ordinal and x <= z_ordinal):
+    #Encrypt each character in plain_text
+    for x in plain_text:
+        #Check if character is in our alphabet
+        if (x >= space_ordinal and x <= tilde_ordinal):
             # Shift the character.
             new_char = x + key
 
-            # Shift character is more than last character, cycle back to A.
-            if (new_char > z_ordinal):
-                # Subtract 1 to avoid cases where z and a conflict.
-                c = a_ordinal + (new_char - z_ordinal - 1)
+            # Shift character is more than last character, cycle back to space.
+            if (new_char > tilde_ordinal): 
+                # Subtract 1 to adjust cycle.
+                c = space_ordinal + (new_char - tilde_ordinal - 1)
 
-                #
+                #Add encrypted character to cipher text
                 cipher.append(chr(c))
 
-            #
+            #Character is in caesar alphabet
             else:
-                #
+                #Add the encrypted character
                 cipher.append(chr(new_char))
-        #
+        #Character is not in alphabet
         else:
-            #
+            #Add plain character as it is not part of alphabet we are encrypting
             cipher.append(chr(x))
-    # Return...
+    #Return encrypted string join() converts list to string
     return ''.join(cipher)
 
 def caesar_cipher_decrypt(text, key):
     """
-    Function to decrpyt the Caesar Cipher encrypted text.
+    Function to decrypt the Caesar Cipher encrypted text.
     :param text: text to be decrypted
     :param key: decryption key applied to text
     :return: decrypted text
     """
 
-    # Why is this variable named differently than clist in the above function?
-    # Do they provide different functionality?
+    #To store the encrypted text
     cipher = [ord(x) for x in text]
 
-    # 
-    cleat_text = list()
+    #Representing the decrypted text
+    clear_text = list()
 
-    #
+    #Decrypt each character in cipher
     for x in cipher:
-        #
-        if (x >= a_ordinal and x <= z_ordinal):
-            #
+        #Check if character is in our alphabet
+        if (x >= space_ordinal and x <= tilde_ordinal):
+            #Subtract key from the character to reverse encryption process
             new_char = x - key
 
-            #
-            if (new_char < a_ordinal):
-                #
-                print("C: %d" % (a_ordinal - new_char))
-
+            #Check if character is less than the first character in alphabet
+            if (new_char < space_ordinal):
+               
                 # Add 1 to adjust cycle again.
-                c = z_ordinal - (a_ordinal - new_char) + 1
+                c = tilde_ordinal - (space_ordinal - new_char) + 1
 
-                #
-                cleat_text.append(chr(c))
+                #Add decrypted character to the clear text
+                clear_text.append(chr(c))
             else:
-                #
-                cleat_text.append(chr(new_char))
+                #Add decrypted character to clear text
+                clear_text.append(chr(new_char))
         else:
-            #
-            cleat_text.append(chr(x))
-    #
-    return ''.join(cleat_text)
+            #Character not in alphabet, assume that it's already decrypted
+            clear_text.append(chr(x))
+    #Convert clear_text list to a string
+    return ''.join(clear_text)
 
 ###################### Algorithm Indicator Encryption/Decryption ###############
 
