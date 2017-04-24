@@ -1601,7 +1601,6 @@ def database_decrypt(n, ciphertext):
     #
     return result
 
-
 #Base on the range of ASCII table the first character is space
 space_ordinal = ord(' ')
 
