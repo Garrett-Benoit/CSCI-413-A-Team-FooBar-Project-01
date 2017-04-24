@@ -1699,13 +1699,13 @@ def caesar_cipher_decrypt(text, key):
 # for which algorithm will be used to encrypt/decrypt the rest of
 # the file, and then does a simple encryption
 def algorithm_indicator_encrypt(algorithm_indicator):
-    encrypted_indicator = algorithm_indicator + 5
-    return encrypted_indicator
+    encrypted_indicator = int(algorithm_indicator) + 5
+    return str(encrypted_indicator)
 
 # Function that accepts the encrypted indicator, and then decrypts it
 def algorithm_indicator_decrypt(encrypted_indicator):
-    decrypted_indicator = encrypted_indicator - 5
-    return decrypted_indicator
+    decrypted_indicator = int(encrypted_indicator) - 5
+    return str(decrypted_indicator)
 
 ###################### AES Encryption (Complex encryption) #####################
 
@@ -2678,7 +2678,7 @@ def open_replay(number):
     encrypted_lines_list = chosen_replay_file.readlines()
 
     # Add the encrypted algorithm indicator to the beginning of the list
-    encrypted_lines_list = encrypted_algorithm_indicator + encrypted_lines_list
+    encrypted_lines_list = list(encrypted_algorithm_indicator) + encrypted_lines_list
 
     # Remove the first line from the chosen replay file and store it.
     encryption_algorithm_key = encrypted_lines_list[0].strip()
