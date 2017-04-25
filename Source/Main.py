@@ -112,6 +112,7 @@ player_unlocked_chest = False
 player_opened_chest = False
 enemy_grabbed_player = False
 player_invincible = False
+player_can_see = True
 chest_combination = (chest_combination_1_object +
                      chest_combination_2_object +
                      chest_combination_3_object)
@@ -248,6 +249,7 @@ def main():
     global exit_game
     global player_is_authenticated
     global player_invincible
+    global player_can_see
     global player_made_decision
     global show_replay_1
     global show_replay_2
@@ -370,6 +372,7 @@ def main():
         maze_is_valid = False
         player_is_authenticated = False
         player_invincible = False
+        player_can_see = True
         player_made_decision = False
         show_replay_1 = False
         show_replay_2 = False
@@ -4503,6 +4506,7 @@ def handle_input():
     global chosen_encryption_algorithm
     global player_game_moves
     global player_invincible
+    global player_can_see
 
     # Reset player's moves to zero.
     player_game_moves = 0
@@ -4551,6 +4555,13 @@ def handle_input():
                         else:
                             print "You feel superhuman!"
                             player_invincible = True
+                    elif input_string == "magic man":
+                        if player_can_see == True:
+                            print "I'm blind!"
+                            player_can_see = False
+                        else:
+                            print "I can see clearly now!"
+                            player_can_see = True
                     # Go back to the title screen if the player chooses to.
                     elif input_string == "quit":
                         game_complete = True
