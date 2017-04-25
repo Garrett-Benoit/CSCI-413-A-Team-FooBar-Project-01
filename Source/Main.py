@@ -3018,7 +3018,6 @@ def open_replay(number):
                 # Quit the game if the user closes the window.
                 if event.type == QUIT:
                     clear()
-                    return
 
             if reverse_command == True:
                 # Reset the value to False to prevent
@@ -4785,7 +4784,6 @@ def handle_input():
                 # Quit the game if the user closes the window.
                 elif event.type == QUIT:
                     clear()
-                    return
 
             # Clear the contents of the screen.
             screen.fill((0, 0, 0))
