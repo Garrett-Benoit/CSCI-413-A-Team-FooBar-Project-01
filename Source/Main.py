@@ -11,7 +11,8 @@
 #                   Garrett Benoit, and Zackary Hermsen.
 # Assignment:       Team-Programming-Assignment-01
 # Language:         Python
-# Tools:            Pygame (Library), Microsoft Visual Studios (IDE).
+# Tools:            Pygame (Library), Microsoft Visual Studios (IDE), 
+#                   PyCharm (IDE), Gimp (Image editor), iTunes (Music Converter).
 
 
 
