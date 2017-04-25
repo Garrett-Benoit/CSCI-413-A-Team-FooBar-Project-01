@@ -1708,9 +1708,6 @@ def caesar_cipher_decrypt(text, key):
 
             #
             if (new_char < a_ordinal):
-                #
-                print("C: %d" % (a_ordinal - new_char))
-
                 # Add 1 to adjust cycle again.
                 c = z_ordinal - (a_ordinal - new_char) + 1
 
