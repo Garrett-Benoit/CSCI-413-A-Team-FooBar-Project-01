@@ -923,21 +923,6 @@ def show_title_screen():
         screen.fill((0, 0, 0))
         # Call the function to draw the maze and the objects inside.
         draw_screen(screen)
-        # Set the title of the game and the names of team members on the screen.
-        default_font_1 = pygame.font.SysFont("None", 45)
-        default_font_2 = pygame.font.SysFont("None", 25)
-        label_1 = default_font_1.render("Python-Text-Based-Maze-Game",
-                                        1, (255, 255, 255))
-        label_2 = default_font_2.render("Taylor Venissat, Phuong Ho, Chance Johnson,",
-                                        1, (255, 255, 255))
-        label_3 = default_font_2.render("Garrett Benoit, and Zackary Hermsen",
-                                        1, (255, 255, 255))
-
-        # Draw the labels onto the screen.
-        screen.blit(label_1, (70, 120))
-        screen.blit(label_2, (110, 175))
-        screen.blit(label_3, (140, 200))
-     
         # Update the InputText widget.
         sgc.update(1)
         # Update the console window to show changes.
