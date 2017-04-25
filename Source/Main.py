@@ -776,7 +776,7 @@ def show_login_signup_screen():
         # Call the function to draw the maze and the objects inside.
         draw_screen(screen)
         # Update the InputText widget.
-        sgc.update(1)
+        sgc.update(5)
         # Update the console window to show changes.
         pygame.display.update()
 
@@ -924,7 +924,7 @@ def show_title_screen():
         # Call the function to draw the maze and the objects inside.
         draw_screen(screen)
         # Update the InputText widget.
-        sgc.update(1)
+        sgc.update(5)
         # Update the console window to show changes.
         pygame.display.update()
 
@@ -2779,7 +2779,7 @@ def open_replay(number):
         draw_chest_combination_2_object(chest_combination_2_object, screen)
         draw_chest_combination_3_object(chest_combination_3_object, screen)
         # Update the InputText widget.
-        sgc.update(1)
+        sgc.update(5)
         # Update the console window to show changes.
         pygame.display.update()
 
@@ -3433,7 +3433,7 @@ def open_replay(number):
             ####################################################################
 
             # Update the InputText widget.
-            sgc.update(1)
+            sgc.update(5)
             # Update the console window to show changes.
             pygame.display.update()
 
@@ -4818,7 +4818,7 @@ def handle_input():
             ####################################################################
 
             # Update the InputText widget.
-            sgc.update(1)
+            sgc.update(5)
             # Update the console window to show changes.
             pygame.display.update()
         # End the catch block and print the exception
