@@ -3396,25 +3396,26 @@ def open_replay(number):
 
             ####################################################################
             ##### Comment out this code to enable the field of view system.#####
-            draw_player_object(player_object, screen)
-            if not player_opened_chest:
-                draw_closed_chest_object(chest_object_closed, screen)
-            else:
-                draw_opened_chest_object(chest_object_opened, screen)
-            if not player_grabbed_key:
-                draw_key_object(key_object, screen)
-            draw_door_object(door_object, screen)
-            draw_simple_enemy_object(simple_enemy_object, screen)
-            draw_smart_enemy_object(smart_enemy_object, screen)
-            draw_chest_combination_1_object(chest_combination_1_object, screen)
-            draw_chest_combination_2_object(chest_combination_2_object, screen)
-            draw_chest_combination_3_object(chest_combination_3_object, screen)
+            if player_can_see == True:
+                draw_player_object(player_object, screen)
+                if not player_opened_chest:
+                    draw_closed_chest_object(chest_object_closed, screen)
+                else:
+                    draw_opened_chest_object(chest_object_opened, screen)
+                if not player_grabbed_key:
+                    draw_key_object(key_object, screen)
+                draw_door_object(door_object, screen)
+                draw_simple_enemy_object(simple_enemy_object, screen)
+                draw_smart_enemy_object(smart_enemy_object, screen)
+                draw_chest_combination_1_object(chest_combination_1_object, screen)
+                draw_chest_combination_2_object(chest_combination_2_object, screen)
+                draw_chest_combination_3_object(chest_combination_3_object, screen)
 
-            if player_used_marker == True:
-                for z in range(len(marked_tile_list)):
-                    # Fill in the marked tiles with the color red.
-                    screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[z], 
-                                                            screen))
+                if player_used_marker == True:
+                    for z in range(len(marked_tile_list)):
+                        # Fill in the marked tiles with the color red.
+                        screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[z], 
+                                                                screen))
             ####################################################################
 
             # Update the InputText widget.
@@ -3749,82 +3750,85 @@ def draw_screen(screen):
 
     ############################################################################
     ######### Comment out this code to enable the field of view system.#########
-    for row in xrange(len(grid)):
-        for column in xrange(len(grid[0])):
-            #screen.fill(cell_colors[grid[column][row]],
-            #            get_cell_rect((row, column), screen))
-            rec = get_cell_rect((row, column), screen)
-            screen.blit(cell_colors[grid[column][row]], rec)
+    if player_can_see == True:
+        for row in xrange(len(grid)):
+            for column in xrange(len(grid[0])):
+                #screen.fill(cell_colors[grid[column][row]],
+                #            get_cell_rect((row, column), screen))
+                rec = get_cell_rect((row, column), screen)
+                screen.blit(cell_colors[grid[column][row]], rec)
     ############################################################################
 
     ############################################################################
     ######### Comment out this code to disable the field of view system.########
-    '''# Color the visible objects of the grid.
-    for i in range(len(visible_object_list)):
-        # Only draw the tile if it is in the range of the grid.
-        if visible_object_list[i][0] >= 0 and \
-            visible_object_list[i][0] < len(grid) and \
-            visible_object_list[i][1] >= 0 and \
-            visible_object_list[i][1] < len(grid):
-            if grid[visible_object_list[i][1]][visible_object_list[i][0]] == 0:
-                # Fill the wall object with the color white.
-                screen.fill((255, 255, 255), \
-                    get_cell_rect((visible_object_list[i][0],
-                                   visible_object_list[i][1]), screen))
+    if player_can_see == False:
+        # Color the visible objects of the grid.
+        for i in range(len(visible_object_list)):
+            # Only draw the tile if it is in the range of the grid.
+            if visible_object_list[i][0] >= 0 and \
+                visible_object_list[i][0] < len(grid) and \
+                visible_object_list[i][1] >= 0 and \
+                visible_object_list[i][1] < len(grid):
+                if grid[visible_object_list[i][1]][visible_object_list[i][0]] == 0:
 
-    # Call the function to draw the door object if visible.
-    if is_object_visible(door_object_position[0], door_object_position[1]):
-        draw_door_object(door_object, screen)
+                    # Fill the wall object with the color white.
+                    screen.fill((255, 255, 255), \
+                        get_cell_rect((visible_object_list[i][0],
+                                       visible_object_list[i][1]), screen))
 
-    if is_object_visible(chest_object_position[0], chest_object_position[1]):
-        # Draw the closed chest if the chest has not been opened and is visible.
-        if not player_opened_chest:
-            # Call the function to draw the closed chest object if visible.
-            draw_closed_chest_object(chest_object_closed, screen)
-        # Draw the opened chest if the chest has been opened and is visible.
-        else:
-            # Call the function to draw the opened chest object if visible.
-            draw_opened_chest_object(chest_object_opened, screen)
+        # Call the function to draw the door object if visible.
+        if is_object_visible(door_object_position[0], door_object_position[1]):
+            draw_door_object(door_object, screen)
 
-    # Call the function to draw the key object if visible.
-    if is_object_visible(key_object_position[0], key_object_position[1]):
-        if not player_grabbed_key:
-            draw_key_object(key_object, screen)
+        if is_object_visible(chest_object_position[0], chest_object_position[1]):
+            # Draw the closed chest if the chest has not been opened and is visible.
+            if not player_opened_chest:
+                # Call the function to draw the closed chest object if visible.
+                draw_closed_chest_object(chest_object_closed, screen)
+            # Draw the opened chest if the chest has been opened and is visible.
+            else:
+                # Call the function to draw the opened chest object if visible.
+                draw_opened_chest_object(chest_object_opened, screen)
 
-    # Call the function to draw the simple enemy object if visible.
-    if is_object_visible(simple_enemy_object_position[0],
-    simple_enemy_object_position[1]):
-        draw_simple_enemy_object(simple_enemy_object, screen)
+        # Call the function to draw the key object if visible.
+        if is_object_visible(key_object_position[0], key_object_position[1]):
+            if not player_grabbed_key:
+                draw_key_object(key_object, screen)
 
-    # Call the function to draw the smart enemy object if visible.
-    if is_object_visible(smart_enemy_object_position[0],
-    smart_enemy_object_position[1]):
-        draw_smart_enemy_object(smart_enemy_object, screen)
+        # Call the function to draw the simple enemy object if visible.
+        if is_object_visible(simple_enemy_object_position[0],
+        simple_enemy_object_position[1]):
+            draw_simple_enemy_object(simple_enemy_object, screen)
 
-    # Call the function to draw the chest_combination_1 object if visible.
-    if is_object_visible(chest_combination_1_object_position[0], \
-        chest_combination_1_object_position[1]):
-        draw_chest_combination_1_object(chest_combination_1_object, screen)
+        # Call the function to draw the smart enemy object if visible.
+        if is_object_visible(smart_enemy_object_position[0],
+        smart_enemy_object_position[1]):
+            draw_smart_enemy_object(smart_enemy_object, screen)
 
-    # Call the function to draw the chest_combination_2 object if visible.
-    if is_object_visible(chest_combination_2_object_position[0], \
-        chest_combination_2_object_position[1]):
-        draw_chest_combination_2_object(chest_combination_2_object, screen)
+        # Call the function to draw the chest_combination_1 object if visible.
+        if is_object_visible(chest_combination_1_object_position[0], \
+            chest_combination_1_object_position[1]):
+            draw_chest_combination_1_object(chest_combination_1_object, screen)
 
-    # Call the function to draw the chest_combination_3 object if visible.
-    if is_object_visible(chest_combination_3_object_position[0], \
-        chest_combination_3_object_position[1]):
-        draw_chest_combination_3_object(chest_combination_3_object, screen)
+        # Call the function to draw the chest_combination_2 object if visible.
+        if is_object_visible(chest_combination_2_object_position[0], \
+            chest_combination_2_object_position[1]):
+            draw_chest_combination_2_object(chest_combination_2_object, screen)
 
-    # Change the color of the visible marked tiles if any exist.
-    if player_used_marker == True:
-        for z in range(len(marked_tile_list)):
-            if is_object_visible(marked_tile_list[z][0], marked_tile_list[z][1]):
-                # Fill in the marked tiles with the color red.
-                screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[z], screen))
+        # Call the function to draw the chest_combination_3 object if visible.
+        if is_object_visible(chest_combination_3_object_position[0], \
+            chest_combination_3_object_position[1]):
+            draw_chest_combination_3_object(chest_combination_3_object, screen)
 
-    # Call the function to draw the player character object.
-    draw_player_object(player_object, screen)'''
+        # Change the color of the visible marked tiles if any exist.
+        if player_used_marker == True:
+            for z in range(len(marked_tile_list)):
+                if is_object_visible(marked_tile_list[z][0], marked_tile_list[z][1]):
+                    # Fill in the marked tiles with the color red.
+                    screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[z], screen))
+
+        # Call the function to draw the player character object.
+        draw_player_object(player_object, screen)
     ############################################################################
 
 def is_object_visible(object_position_x, object_position_y):
@@ -4778,24 +4782,25 @@ def handle_input():
 
             ####################################################################
             ##### Comment out this code to enable the field of view system.#####
-            draw_player_object(player_object, screen)
-            if not player_opened_chest:
-                draw_closed_chest_object(chest_object_closed, screen)
-            else:
-                draw_opened_chest_object(chest_object_opened, screen)
-            draw_key_object(key_object, screen)
-            draw_door_object(door_object, screen)
-            draw_simple_enemy_object(simple_enemy_object, screen)
-            draw_smart_enemy_object(smart_enemy_object, screen)
-            draw_chest_combination_1_object(chest_combination_1_object, screen)
-            draw_chest_combination_2_object(chest_combination_2_object, screen)
-            draw_chest_combination_3_object(chest_combination_3_object, screen)
+            if player_can_see == True:
+                draw_player_object(player_object, screen)
+                if not player_opened_chest:
+                    draw_closed_chest_object(chest_object_closed, screen)
+                else:
+                    draw_opened_chest_object(chest_object_opened, screen)
+                draw_key_object(key_object, screen)
+                draw_door_object(door_object, screen)
+                draw_simple_enemy_object(simple_enemy_object, screen)
+                draw_smart_enemy_object(smart_enemy_object, screen)
+                draw_chest_combination_1_object(chest_combination_1_object, screen)
+                draw_chest_combination_2_object(chest_combination_2_object, screen)
+                draw_chest_combination_3_object(chest_combination_3_object, screen)
 
-            if player_used_marker == True:
-                for z in range(len(marked_tile_list)):
-                    # Fill in the marked tiles with the color red.
-                    screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[z],
-                                                           screen))
+                if player_used_marker == True:
+                    for z in range(len(marked_tile_list)):
+                        # Fill in the marked tiles with the color red.
+                        screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[z],
+                                                                screen))
             ####################################################################
 
             # Update the InputText widget.
