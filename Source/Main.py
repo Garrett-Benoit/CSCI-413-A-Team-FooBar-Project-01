@@ -111,6 +111,7 @@ player_used_marker = False
 player_unlocked_chest = False
 player_opened_chest = False
 enemy_grabbed_player = False
+player_invincible = False
 chest_combination = (chest_combination_1_object +
                      chest_combination_2_object +
                      chest_combination_3_object)
@@ -246,6 +247,7 @@ def main():
     global game_complete
     global exit_game
     global player_is_authenticated
+    global player_invincible
     global player_made_decision
     global show_replay_1
     global show_replay_2
@@ -367,6 +369,7 @@ def main():
         enemy_grabbed_player = False
         maze_is_valid = False
         player_is_authenticated = False
+        player_invincible = False
         player_made_decision = False
         show_replay_1 = False
         show_replay_2 = False
@@ -4499,6 +4502,7 @@ def handle_input():
     global game_complete
     global chosen_encryption_algorithm
     global player_game_moves
+    global player_invincible
 
     # Reset player's moves to zero.
     player_game_moves = 0
@@ -4540,6 +4544,13 @@ def handle_input():
                     # Print the objects and list of commands for the help command.
                     elif input_string == "help":
                         help()
+                    elif input_string == "superman":
+                        if player_invincible == True:
+                            print "You feel normal."
+                            player_invincible = False
+                        else:
+                            print "You feel superhuman!"
+                            player_invincible = True
                     # Go back to the title screen if the player chooses to.
                     elif input_string == "quit":
                         game_complete = True
