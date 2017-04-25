@@ -185,32 +185,38 @@ art_directory = "art"
 pygame.mixer.init()
 
 # Load sounds and set their volumes.
-background_sound = pygame.mixer.Sound("sounds/background_sound.wav")
-background_sound.set_volume(0.2)
+login_signup_music = pygame.mixer.Sound("sounds/login_signup_music.ogg")
+login_signup_music.set_volume(0.3)
+title_music = pygame.mixer.Sound("sounds/title_music.ogg")
+title_music.set_volume(0.3)
+background_music = pygame.mixer.Sound("sounds/background_music.wav")
+background_music.set_volume(0.3)
+replay_music = pygame.mixer.Sound("sounds/replay_music.ogg")
+replay_music.set_volume(0.3)
+game_over_music = pygame.mixer.Sound("sounds/game_over_music.wav")
+game_over_music.set_volume(0.3)
 go_sound = pygame.mixer.Sound("sounds/go_sound.wav")
 go_sound.set_volume(0.2)
 pain_sound = pygame.mixer.Sound("sounds/pain_sound.wav")
-pain_sound.set_volume(0.3)
+pain_sound.set_volume(0.1)
 die_sound = pygame.mixer.Sound("sounds/die_sound.wav")
-die_sound.set_volume(0.8)
-game_over_sound = pygame.mixer.Sound("sounds/game_over_sound.wav")
-game_over_sound.set_volume(1)
+die_sound.set_volume(0.1)
 grab_key_sound = pygame.mixer.Sound("sounds/grab_key_sound.wav")
-grab_key_sound.set_volume(0.8)
+grab_key_sound.set_volume(0.1)
 open_chest_sound = pygame.mixer.Sound("sounds/open_chest_sound.wav")
-open_chest_sound.set_volume(0.8)
+open_chest_sound.set_volume(0.2)
 open_door_sound = pygame.mixer.Sound("sounds/open_door_sound.wav")
-open_door_sound.set_volume(0.8)
+open_door_sound.set_volume(0.2)
 treasure_sound = pygame.mixer.Sound("sounds/treasure_sound.wav")
-treasure_sound.set_volume(0.8)
+treasure_sound.set_volume(0.1)
 unlock_door_sound = pygame.mixer.Sound("sounds/unlock_door_sound.wav")
-unlock_door_sound.set_volume(1)
+unlock_door_sound.set_volume(0.1)
 use_combo_sound = pygame.mixer.Sound("sounds/use_combo_sound.wav")
-use_combo_sound.set_volume(1)
+use_combo_sound.set_volume(0.1)
 use_marker_sound = pygame.mixer.Sound("sounds/use_marker_sound.wav")
-use_marker_sound.set_volume(1)
+use_marker_sound.set_volume(0.2)
 enemy_respawn_sound = pygame.mixer.Sound("sounds/enemy_respawn_sound.wav")
-enemy_respawn_sound.set_volume(1)
+enemy_respawn_sound.set_volume(0.2)
 
 
 
@@ -323,20 +329,35 @@ def main():
                                            "floor.png")).convert()
     cell_colors = wall, floor
 
+    # Cue the music that will play during the login/signup screen.
+    login_signup_music.play(-1)
+
     # Call the function to handle the login/signup of the player.
     show_login_signup_screen()
 
     # Loop that determines manages the game states.
     while not exit_game:
+        # Stop any background music that may be
+        # still playing from previous games.
+        login_signup_music.stop()
+        title_music.stop()
+        background_music.stop()
+        replay_music.stop()
+        game_over_music.stop()
+
+        # Cue the music that will play during the title screen.
+        title_music.play(-1)
+
         # Call the function to handle the player choices at the title screen.
         show_title_screen()
 
         # Stop any background music that may be 
         # still playing from previous games.
-        background_sound.stop()
-
-        # Cue the background music that will indefinitely loop.
-        background_sound.play(-1)
+        login_signup_music.stop()
+        title_music.stop()
+        background_music.stop()
+        replay_music.stop()
+        game_over_music.stop()
 
         # Reset the maze before continuing.
         reset_maze()
@@ -347,15 +368,23 @@ def main():
 
         # Open replay 1, the oldest replay.
         if show_replay_1 == True:
+            # Cue the music that will play during the replay screen.
+            replay_music.play(-1)
             open_replay(1)
         # Open replay 2, the middle-aged replay.
         elif show_replay_2 == True:
+            # Cue the music that will play during the replay screen.
+            replay_music.play(-1)
             open_replay(2)
         # Open replay 3, the youngest replay.
         elif show_replay_3 == True:
+            # Cue the music that will play during the replay screen.
+            replay_music.play(-1)
             open_replay(3)
         # Start a new game.
         elif start_new_game == True:
+            # Cue the music that will play during the new game screen.
+            background_music.play(-1)
             open_new_game()
 
         # Reset the state of player
@@ -5221,9 +5250,9 @@ def open_door():
             # Congratulate the player on completing the game.
             print "\n\nCongratulations! You have escaped!"
             # Stop the background music.
-            background_sound.stop()
+            background_music.stop()
             # Play the congratulatory game over sound.
-            game_over_sound.play()
+            game_over_music.play()
             # Call function to update top 10 moves if needed.
             print "Number of moves made: ", player_game_moves
             print "\n\n"
