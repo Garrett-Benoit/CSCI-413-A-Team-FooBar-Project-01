@@ -3917,7 +3917,7 @@ def get_visible_object_list():
         visible_object_list.append((x + 1, y + 1))
 
     # Tiles that are within 2 squares from the player character object.
-    if x - 1 >= 0 and x + 1 < len(grid) and y - 2 >= 0 and y - 2 < len(grid):
+    if x - 1 >= 0 and x + 1 < len(grid) and y - 2 >= 0 and y + 2 < len(grid):
         if grid[y - 1][x] == 1:
             visible_object_list.append((x - 1, y - 2))
             visible_object_list.append((x, y - 2))
