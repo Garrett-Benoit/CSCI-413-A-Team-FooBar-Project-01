@@ -109,7 +109,7 @@ floor_object = pygame.image.load(os.path.join(art_directory, "floor.png")).conve
 # Create a variable that stores the wall and floor object.
 cell_colors = wall_object, floor_object
 # Symbol representing the first chest combination.
-chest_combination_1_number = str(random.randint(0, 9))
+chest_combination_1_number = "0"
 # Color of the chest_combination_1_object.
 chest_combination_1_object_color = (255, 255, 255)
 # Position of the chest_combination_1_object.
@@ -119,7 +119,7 @@ chest_combination_1_object = pygame.font.Font(None, object_size).render(
                                     chest_combination_1_number, False,
                                     chest_combination_1_object_color)
 # Symbol representing the second chest combination.
-chest_combination_2_number = str(random.randint(0, 9))
+chest_combination_2_number = "0"
 # Color of the chest_combination_2_object.
 chest_combination_2_object_color = (255, 255, 255)
 # Position of the chest_combination_2_object.
@@ -129,7 +129,7 @@ chest_combination_2_object = pygame.font.Font(None, object_size).render(
                                     chest_combination_2_number, False,
                                     chest_combination_2_object_color)
 # Symbol representing the third chest combination.
-chest_combination_3_number = str(random.randint(0, 9))
+chest_combination_3_number = "0"
 # Color of the chest_combination_3_object.
 chest_combination_3_object_color = (255, 255, 255)
 # Position of the chest_combination_3_object.
@@ -174,9 +174,7 @@ player_opened_chest = False
 enemy_grabbed_player = False
 player_is_invincible = False
 player_is_blind = False
-chest_combination = (chest_combination_1_number +
-                     chest_combination_2_number +
-                     chest_combination_3_number)
+chest_combination = "000"
 maze_is_valid = False
 player_username = ""
 player_is_authenticated = False
@@ -891,6 +889,13 @@ def open_new_game():
     """
 
     # Global variable declarations.
+    global chest_combination_1_number
+    global chest_combination_2_number
+    global chest_combination_3_number
+    global chest_combination_1_object
+    global chest_combination_2_object
+    global chest_combination_3_object
+    global chest_combination
     global maze_is_valid
 
     # Set the caption for the console window.
@@ -918,6 +923,34 @@ def open_new_game():
             # Place the player, door, chest, and
             # key objects randomly on the grid.
             generate_random_object_positions()
+
+            # Set the first chest combination to a random number.
+            chest_combination_1_number = str(random.randint(0, 9))
+            # Recreate the first chest combination object.
+            chest_combination_1_object = pygame.font.Font(None, \
+                                        object_size).render(
+                                        chest_combination_1_number, False,
+                                        chest_combination_1_object_color)
+                        
+            # Set the second chest combination to a random number.
+            chest_combination_2_number = str(random.randint(0, 9))
+            # Recreate the second chest combination object.
+            chest_combination_2_object = pygame.font.Font(None, \
+                                        object_size).render(
+                                        chest_combination_2_number, False,
+                                        chest_combination_2_object_color)
+
+            # Reset the third chest combination to a random number.
+            chest_combination_3_number = str(random.randint(0, 9))
+            # Recreate the third chest combination object.
+            chest_combination_3_object = pygame.font.Font(None, \
+                                        object_size).render(
+                                        chest_combination_3_number, False,
+                                        chest_combination_3_object_color)
+
+            chest_combination = (chest_combination_1_number +
+                                    chest_combination_2_number +
+                                    chest_combination_3_number)
 
             # Test the validity of the maze.
             if check_maze_for_validity_player_door() == 0:
@@ -957,6 +990,34 @@ def open_new_game():
             # Place the player, door, chest, and
             # key objects randomly on the grid.
             generate_random_object_positions()
+
+            # Set the first chest combination to a random number.
+            chest_combination_1_number = str(random.randint(0, 9))
+            # Recreate the first chest combination object.
+            chest_combination_1_object = pygame.font.Font(None, \
+                                        object_size).render(
+                                        chest_combination_1_number, False,
+                                        chest_combination_1_object_color)
+                        
+            # Set the second chest combination to a random number.
+            chest_combination_2_number = str(random.randint(0, 9))
+            # Recreate the second chest combination object.
+            chest_combination_2_object = pygame.font.Font(None, \
+                                        object_size).render(
+                                        chest_combination_2_number, False,
+                                        chest_combination_2_object_color)
+
+            # Reset the third chest combination to a random number.
+            chest_combination_3_number = str(random.randint(0, 9))
+            # Recreate the third chest combination object.
+            chest_combination_3_object = pygame.font.Font(None, \
+                                        object_size).render(
+                                        chest_combination_3_number, False,
+                                        chest_combination_3_object_color)
+
+            chest_combination = (chest_combination_1_number +
+                                    chest_combination_2_number +
+                                    chest_combination_3_number)
 
             # Test the validity of the maze.
             if check_maze_for_validity_player_door() == 0:
@@ -4066,6 +4127,9 @@ def generate_random_object_positions():
     global door_object_position
     global simple_enemy_object_position
     global smart_enemy_object_position
+    global chest_combination_1_object_position
+    global chest_combination_2_object_position
+    global chest_combination_3_object_position
 
     # Variable representing the number of objects on the grid.
     number_of_objects = 0
