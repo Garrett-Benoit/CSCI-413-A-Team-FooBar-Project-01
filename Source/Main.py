@@ -89,19 +89,19 @@ smart_enemy_object_position = [0, 0] # Position of the smart enemy.
 # Symbol representing the first chest combination.
 chest_combination_1_object = str(random.randint(0, 9))
 # Color of the chest_combination_1_object.
-chest_combination_1_object_color = (255, 0, 0)
+chest_combination_1_object_color = (255, 215, 0)
 # Position of the chest_combination_1_object.
 chest_combination_1_object_position = [0, 0]
 # Symbol representing the second chest combination.
 chest_combination_2_object = str(random.randint(0, 9))
 # Color of the chest_combination_2_object.
-chest_combination_2_object_color = (255, 0, 0)
+chest_combination_2_object_color = (255, 215, 0)
 # Position of the chest_combination_2_object.
 chest_combination_2_object_position = [0, 0]
 # Symbol representing the third chest combination.
 chest_combination_3_object = str(random.randint(0, 9))
 # Color of the chest_combination_3_object.
-chest_combination_3_object_color = (255, 0, 0)
+chest_combination_3_object_color = (255, 215, 0)
 # Position of the chest_combination_3_object.
 chest_combination_3_object_position = [0, 0]
 object_size = 35 # Size of all objects drawn to the console window.
@@ -186,21 +186,21 @@ pygame.mixer.init()
 
 # Load sounds and set their volumes.
 login_signup_music = pygame.mixer.Sound("sounds/login_signup_music.ogg")
-login_signup_music.set_volume(0.3)
+login_signup_music.set_volume(0.5)
 title_music = pygame.mixer.Sound("sounds/title_music.ogg")
-title_music.set_volume(0.3)
+title_music.set_volume(0.4)
 background_music = pygame.mixer.Sound("sounds/background_music.wav")
-background_music.set_volume(0.3)
+background_music.set_volume(0.2)
 replay_music = pygame.mixer.Sound("sounds/replay_music.ogg")
 replay_music.set_volume(0.3)
 game_over_music = pygame.mixer.Sound("sounds/game_over_music.wav")
-game_over_music.set_volume(0.3)
+game_over_music.set_volume(0.5)
 go_sound = pygame.mixer.Sound("sounds/go_sound.wav")
 go_sound.set_volume(0.2)
 pain_sound = pygame.mixer.Sound("sounds/pain_sound.wav")
 pain_sound.set_volume(0.1)
 die_sound = pygame.mixer.Sound("sounds/die_sound.wav")
-die_sound.set_volume(0.1)
+die_sound.set_volume(0.2)
 grab_key_sound = pygame.mixer.Sound("sounds/grab_key_sound.wav")
 grab_key_sound.set_volume(0.1)
 open_chest_sound = pygame.mixer.Sound("sounds/open_chest_sound.wav")
@@ -650,7 +650,12 @@ def show_login_signup_screen():
                     elif i == 2:
                         # Print a message informing the
                         # user to input a password.
-                        print "Output: Please enter a password: "
+                        print "Output: Please enter a password: " \
+                              "\nYour password must contain:" \
+                              "\nat least 8 characters," \
+                              "\nat least one digit," \
+                              "\nat least one lowercase letter," \
+                              "\nand at least one uppercase letter."
 
                         # Increment the value of i.
                         i = i + 1
@@ -1489,6 +1494,8 @@ def write_to_replay_file(string):
     # Encrypt string before writing to the replay file.
     if (chosen_encryption_algorithm == "1"):
         replay_file.write(caesar_cipher_encrypt(string, key_caesar_cipher) + "\n")
+    #elif (chosen_encryption_algorithm == "2"):
+    #    replay_file.write(chance's algorithm')
     else:
         replay_file.write(string + "\n")
 
@@ -1632,17 +1639,13 @@ def database_decrypt(n, ciphertext):
     #
     return result
 
+#Base on the range of ASCII table the first character is space
+space_ordinal = ord(' ')
 
-# Give more descriptive names for all variables, keep to the formatting you see
-# in this file, and add descriptive comments!
-# The following code is in a poor state., clean it up!
+#Base on the range of ASCII table the last character is tilde
+tilde_ordinal = ord('~')
 
-
-#
-a_ordinal = ord('a')
-#
-z_ordinal = ord('z')
-#
+#Chosen digit to indicate Simple Caesar Cipher Algorithm
 chosen_encryption_algorithm = "1"
 
 def caesar_cipher_encrypt(text, key):
@@ -1653,74 +1656,88 @@ def caesar_cipher_encrypt(text, key):
     :return: encrypted text
     """
 
-    # Convert to ASCI representation.
-    clist = [ord(x) for x in text]
-    #
+    #Convert to ASCII representation.
+    plain_text = [ord(x) for x in text]
+    
+    #List to hold the encrypted characters
     cipher = list()
 
-    #
-    for x in clist:
-        #
-        if (x >= a_ordinal and x <= z_ordinal):
+    #Encrypt each character in plain_text
+    for x in plain_text:
+        #Check if character is in our alphabet
+        if (x >= space_ordinal and x <= tilde_ordinal):
             # Shift the character.
             new_char = x + key
 
-            # Shift character is more than last character, cycle back to A.
-            if (new_char > z_ordinal):
-                # Subtract 1 to avoid cases where z and a conflict.
-                c = a_ordinal + (new_char - z_ordinal - 1)
+            # Shift character is more than last character, cycle back to space.
+            if (new_char > tilde_ordinal): 
+                # Subtract 1 to adjust cycle.
+                c = space_ordinal + (new_char - tilde_ordinal - 1)
 
-                #
+                #Add encrypted character to cipher text
                 cipher.append(chr(c))
 
-            #
+            #Character is in caesar alphabet
             else:
-                #
+                #Add the encrypted character
                 cipher.append(chr(new_char))
-        #
+        #Character is not in alphabet
         else:
-            #
+            #Add plain character as it is not part of alphabet we are encrypting
             cipher.append(chr(x))
-    # Return...
+    #Return encrypted string join() converts list to string
     return ''.join(cipher)
 
 def caesar_cipher_decrypt(text, key):
     """
-    Function to decrpyt the Caesar Cipher encrypted text.
+    Function to decrypt the Caesar Cipher encrypted text.
     :param text: text to be decrypted
     :param key: decryption key applied to text
     :return: decrypted text
     """
 
-    # Why is this variable named differently than clist in the above function?
-    # Do they provide different functionality?
+    #To store the encrypted text
     cipher = [ord(x) for x in text]
 
-    # 
-    cleat_text = list()
+    #Representing the decrypted text
+    clear_text = list()
 
-    #
+    #Decrypt each character in cipher
     for x in cipher:
-        #
-        if (x >= a_ordinal and x <= z_ordinal):
-            #
+        #Check if character is in our alphabet
+        if (x >= space_ordinal and x <= tilde_ordinal):
+            #Subtract key from the character to reverse encryption process
             new_char = x - key
 
-            #
-            if (new_char < a_ordinal):
+            #Check if character is less than the first character in alphabet
+            if (new_char < space_ordinal):
                 # Add 1 to adjust cycle again.
-                c = z_ordinal - (a_ordinal - new_char) + 1
+                c = tilde_ordinal - (space_ordinal - new_char) + 1
 
-                #
-                cleat_text.append(chr(c))
+                #Add decrypted character to the clear text
+                clear_text.append(chr(c))
             else:
-                #
-                cleat_text.append(chr(new_char))
+                #Add decrypted character to clear text
+                clear_text.append(chr(new_char))
         else:
-            #
-            cleat_text.append(chr(x))
-    #
-    return ''.join(cleat_text)
+            #Character not in alphabet, assume that it's already decrypted
+            clear_text.append(chr(x))
+    #Convert clear_text list to a string
+    return ''.join(clear_text)
+
+###################### Algorithm Indicator Encryption/Decryption ###############
+
+# Function that accepts a 1 or 2 that serves as the indication
+# for which algorithm will be used to encrypt/decrypt the rest of
+# the file, and then does a simple encryption
+def algorithm_indicator_encrypt(algorithm_indicator):
+    encrypted_indicator = int(algorithm_indicator) + 5
+    return str(encrypted_indicator)
+
+# Function that accepts the encrypted indicator, and then decrypts it
+def algorithm_indicator_decrypt(encrypted_indicator):
+    decrypted_indicator = int(encrypted_indicator) - 5
+    return str(decrypted_indicator)
 
 ###################### AES Encryption (Complex encryption) #####################
 
@@ -2678,11 +2695,21 @@ def open_replay(number):
     elif number == 3:
         pygame.display.set_caption("Replay 3: " + str(chosen_replay_filename[7:-4]))
 
+    # Randomly choose a 1 or 2 for the algorithm indicator
+    # Use this when we figure out Chance's algorithm
+    #algorithm_indicator = random.randint(1, 2)
+
     # Read each line of the encrypted chosen replay file and store into a list.
     encrypted_lines_list = chosen_replay_file.readlines()
 
     # Remove the first line from the chosen replay file and store it.
     encryption_algorithm_key = encrypted_lines_list[0].strip()
+
+    # Encrypt the algorithm indicator using a simple encryption
+    encrypted_algorithm_indicator = algorithm_indicator_encrypt(encryption_algorithm_key)
+    
+    # Decrypt the algorithm_indicator using a simple decryption
+    encryption_algorithm_key = algorithm_indicator_decrypt(encryption_algorithm_key)
 
     # Decrypt the file if it was encrypted
     # using an encryption algorithm.
