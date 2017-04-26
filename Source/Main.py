@@ -4761,24 +4761,64 @@ def handle_input():
 
                 # Possible user input using the arrow keys.
                 if event.type == KEYDOWN:
+                    key_string = ""
                     # Store the key press event.
                     key = event.key
                     # Move the player character object up if the up arrow key was
                     # pressed and if there are no objects blocking the path.
                     if key == K_UP:
+                        key_string = "go north"
                         go(0, -1)
                     # Move the player character object right if the right arrow key
                     # was pressed and if there are no objects blocking the path.
                     elif key == K_RIGHT:
+                        key_string = "go east"
                         go(1, 0)
                     # Move the player character object down if the down arrow key
                     # was pressed and if there are no objects blocking the path.
                     elif key == K_DOWN:
+                        key_string = "go south"
                         go(0, 1)
                     # Move the player character object left if the left arrow key
                     # was pressed and if there are no objects blocking the path.
                     elif key == K_LEFT:
+                        key_string = "go west"
                         go(-1, 0)
+
+                    if key_string != "":
+                        # Store the current object positions into the dictionary.
+                        objects_current_positions['player'] = \
+                            player_object_position[0], player_object_position[1]
+                        objects_current_positions['chest'] = \
+                            chest_object_position[0], chest_object_position[1] 
+                        objects_current_positions['key'] = \
+                            key_object_position[0], key_object_position[1]
+                        objects_current_positions['door'] = \
+                            door_object_position[0], door_object_position[1]
+                        objects_current_positions['simple enemy'] = \
+                            simple_enemy_object_position[0], simple_enemy_object_position[1]
+                        objects_current_positions['smart enemy'] = \
+                            smart_enemy_object_position[0], smart_enemy_object_position[1]
+                        objects_current_positions['chest combination 1'] = \
+                            chest_combination_1_object_position[0], chest_combination_1_object_position[1]
+                        objects_current_positions['chest combination 2'] = \
+                            chest_combination_2_object_position[0], chest_combination_2_object_position[1]
+                        objects_current_positions['chest combination 3'] = \
+                            chest_combination_3_object_position[0], chest_combination_3_object_position[1]
+
+                        # Store the game states into the dictionary.
+                        current_game_states['player_grabbed_key'] = player_grabbed_key
+                        current_game_states['player_used_marker'] = player_used_marker
+                        current_game_states['player_opened_chest'] = player_opened_chest
+                        current_game_states['enemy_grabbed_player'] = enemy_grabbed_player
+
+                        # Write the input to the replay file.
+                        write_to_replay_file(key_string)
+                        # Write the current object positions to the replay file.
+                        write_to_replay_file(str(objects_current_positions))
+                        # Write the current game states to the replay file.
+                        write_to_replay_file(str(current_game_states))
+
                 # Quit the game if the user closes the window.
                 elif event.type == QUIT:
                     clear()
