@@ -920,9 +920,8 @@ def open_new_game():
             # Recursive Backtracker algorithm.
             generate_maze_recursive_backtracker()
 
-            # Place the player, door, chest, and
-            # key objects randomly on the grid.
-            generate_random_object_positions()
+            # Place the objects in the maze.
+            generate_object_positions()
 
             # Set the first chest combination to a random number.
             chest_combination_1_number = str(random.randint(0, 9))
@@ -956,10 +955,6 @@ def open_new_game():
             if check_maze_for_validity_player_door() == 0:
                 if check_maze_for_validity_player_key() == 0:
                     if check_maze_for_validity_player_chest() == 0:
-                        # Place the chest combination objects along the
-                        # optimal path and the enemies near the door.
-                        generate_optimal_object_positions()
-
                         # Print to log file that the maze successfully
                         # generated along with the number of times it
                         # took and the maze generation algorithm used.
@@ -987,9 +982,8 @@ def open_new_game():
             # Generate the maze using the Binary Tree algorithm.
             generate_maze_binary_tree()
 
-            # Place the player, door, chest, and
-            # key objects randomly on the grid.
-            generate_random_object_positions()
+            # Place the objects in the maze.
+            generate_object_positions()
 
             # Set the first chest combination to a random number.
             chest_combination_1_number = str(random.randint(0, 9))
@@ -1023,10 +1017,6 @@ def open_new_game():
             if check_maze_for_validity_player_door() == 0:
                 if check_maze_for_validity_player_key() == 0:
                     if check_maze_for_validity_player_chest() == 0:
-                        # Place the chest combination objects along the
-                        # optimal path and the enemies near the door.
-                        generate_optimal_object_positions()
-
                         # Print to log file that the maze successfully
                         # generated along with the number of times it
                         # took and the maze generation algorithm used.
@@ -4114,10 +4104,9 @@ def draw_chest_combination_3_object(chest_combination_3_object, screen):
 # Object Placement
 ################################################################################
 
-def generate_random_object_positions():
+def generate_object_positions():
     """
-    Function to generate random start positions for
-    the player, chest, key, door, and enemy objects.
+    Function to generate random positions for the objects in the maze.
     """
 
     # Global variable declarations.
@@ -4134,24 +4123,63 @@ def generate_random_object_positions():
     # Variable representing the number of objects on the grid.
     number_of_objects = 0
 
-    while number_of_objects != 1:
-        # Generate a random x and y coordinate for the object position.
-        randomx = random.randint(1, len(grid) - 1)
-        randomy = random.randint(1, len(grid) - 1)
-
-        if not position_is_wall(randomx, randomy) and \
-                not position_is_object(randomx, randomy):
-            # Set the player object position equal to the random x and y values.
-            player_object_position[0] = randomx
-            player_object_position[1] = randomy
-
-            # Add the player object position to the dictionary.
-            objects_starting_positions['player'] = randomx, randomy
-
-            # Increment the number of placed objects.
-            number_of_objects += 1
-
     while number_of_objects != 2:
+        # Generate a random x and y coordinate for the object position.
+        randomx1 = random.randint(1, len(grid) - 1)
+        randomy1 = random.randint(1, len(grid) - 1)
+        randomx2 = random.randint(1, len(grid) - 1)
+        randomy2 = random.randint(1, len(grid) - 1)
+
+        if not position_is_wall(randomx1, randomy1) and \
+            not position_is_object(randomx1, randomy1) and \
+            not position_is_wall(randomx2, randomy2) and \
+            not position_is_object(randomx2, randomy2):
+            # Create a test grid, which will be used in the A* algorithm
+            # to generate a list for the rest of the object placement.
+            test_grid = GridWithWeights(len(grid), len(grid))
+
+            # Traverse the grid to grab all of the wall locations.
+            for row in xrange(len(grid)):
+                for column in xrange(len(grid[0])):
+                    if grid[column][row] == 0:
+                        wall = (row, column)
+                        # Add the wall locations to the graph's list of walls.
+                        test_grid.walls.append(wall)
+
+            # The position of the first coordinates.
+            start = (randomx1, randomy1)
+            # The position of the second coordinates.
+            goal = (randomx2, randomy2)
+            # Get dictionaries mapping positions using the A* search algorithm.
+            came_from, cost_so_far = a_star_search(test_grid, start, goal)
+
+            # List that contains all coordinates located in the path.
+            path_coordinates_list = []
+
+            # Store all possible coordinates into the path_coordinates_list.
+            for coordinates, cost in cost_so_far.iteritems():
+                if cost > 0 and not position_is_object(coordinates[0], coordinates[1]):
+                    path_coordinates_list.append(coordinates)
+
+            if len(path_coordinates_list) > 75:
+                # Set the player object position equal to the random x and y values.
+                player_object_position[0] = randomx1
+                player_object_position[1] = randomy1
+
+                # Add the player object position to the dictionary.
+                objects_starting_positions['player'] = randomx1, randomy1
+
+                # Set the door object position equal to the random x and y values.
+                door_object_position[0] = randomx2
+                door_object_position[1] = randomy2
+
+                # Add the door object position to the dictionary.
+                objects_starting_positions['door'] = randomx2, randomy2
+
+                # Increment the number of placed objects.
+                number_of_objects += 2
+
+    while number_of_objects != 3:
         # Generate a random x and y coordinate for the object position.
         randomx = random.randint(1, len(grid) - 1)
         randomy = random.randint(1, len(grid) - 1)
@@ -4168,7 +4196,7 @@ def generate_random_object_positions():
             # Increment the number of placed objects.
             number_of_objects += 1
 
-    while number_of_objects != 3:
+    while number_of_objects != 4:
         # Generate a random x and y coordinate for the object position.
         randomx = random.randint(1, len(grid) - 1)
         randomy = random.randint(1, len(grid) - 1)
@@ -4184,72 +4212,6 @@ def generate_random_object_positions():
 
             # Increment the number of placed objects.
             number_of_objects += 1
-
-    while number_of_objects != 4:
-        # Generate a random x and y coordinate for the object position.
-        randomx = random.randint(1, len(grid) - 1)
-        randomy = random.randint(1, len(grid) - 1)
-
-        if not position_is_wall(randomx, randomy) and \
-                not position_is_object(randomx, randomy):
-            # Set the door object position equal to the random x and y values.
-            door_object_position[0] = randomx
-            door_object_position[1] = randomy
-
-            # Add the door object position to the dictionary.
-            objects_starting_positions['door'] = randomx, randomy
-
-            # Increment the number of placed objects.
-            number_of_objects += 1
-
-    while number_of_objects != 5:
-        # Generate a random x and y coordinate for the object position.
-        randomx = random.randint(1, len(grid) - 1)
-        randomy = random.randint(1, len(grid) - 1)
-
-        if not position_is_wall(randomx, randomy) and \
-                not position_is_object(randomx, randomy):
-            # Set the simple enemy object position
-            # equal to the random x and y values.
-            simple_enemy_object_position[0] = randomx
-            simple_enemy_object_position[1] = randomy
-
-            # Add the simple enemy object position to the dictionary.
-            objects_starting_positions['simple enemy'] = randomx, randomy
-
-            # Increment the number of placed objects.
-            number_of_objects += 1
-
-    while number_of_objects != 6:
-        # Generate a random x and y coordinate for the object position.
-        randomx = random.randint(1, len(grid) - 1)
-        randomy = random.randint(1, len(grid) - 1)
-
-        if not position_is_wall(randomx, randomy) and \
-                not position_is_object(randomx, randomy):
-            # Set the smart enemy object position
-            # equal to the random x and y values.
-            smart_enemy_object_position[0] = randomx
-            smart_enemy_object_position[1] = randomy
-
-            # Add the smart enemy object position to the dictionary.
-            objects_starting_positions['smart enemy'] = randomx, randomy
-
-            # Increment the number of placed objects.
-            number_of_objects += 1
-
-def generate_optimal_object_positions():
-    """
-    Function to generate random positions for the objects on the optimal path.
-    """
-
-    # Global variable declarations.
-    global chest_combination_1_object_position
-    global chest_combination_2_object_position
-    global chest_combination_3_object_position
-
-    # Variable representing the number of objects on the grid.
-    number_of_objects = 0
 
     # Create a test grid, which will be used in the A* algorithm
     # to generate a list for the rest of the object placement.
@@ -4270,19 +4232,22 @@ def generate_optimal_object_positions():
     # Get dictionaries mapping positions using the A* search algorithm.
     came_from, cost_so_far = a_star_search(test_grid, start, goal)
 
-    # List that contains all possible coordinates located in the optimal path.
-    optimal_path_coordinates_list = []
+    # List that contains all coordinates located in the path.
+    path_coordinates_list = []
+    # List that contains the cost of all coordinates located in the path.
+    path_coordinates_cost_list = []
 
-    # Store all possible coordinates into the optimal_path_coordinates_list.
+    # Store all possible coordinates into the path_coordinates_list.
     for coordinates, cost in cost_so_far.iteritems():
         if cost > 0 and not position_is_object(coordinates[0], coordinates[1]):
-            optimal_path_coordinates_list.append(coordinates)
+            path_coordinates_list.append(coordinates)
+            path_coordinates_cost_list.append(cost)
 
-    while number_of_objects != 1:
+    while number_of_objects != 5:
         # Generate a random x and y coordinate for the object position.
-        temp = random.randint(0, len(optimal_path_coordinates_list) - 1)
-        x = optimal_path_coordinates_list[temp][0]
-        y = optimal_path_coordinates_list[temp][1]
+        temp = random.randint(0, len(path_coordinates_list) - 1)
+        x = path_coordinates_list[temp][0]
+        y = path_coordinates_list[temp][1]
 
         # Instantiate the neighbor_wall_coordinates_list.
         neighbor_wall_coordinates_list = []
@@ -4325,11 +4290,11 @@ def generate_optimal_object_positions():
             # Increment the number of placed objects.
             number_of_objects += 1
 
-    while number_of_objects != 2:
+    while number_of_objects != 6:
         # Generate a random x and y coordinate for the object position.
-        temp = random.randint(0, len(optimal_path_coordinates_list) - 1)
-        x = optimal_path_coordinates_list[temp][0]
-        y = optimal_path_coordinates_list[temp][1]
+        temp = random.randint(0, len(path_coordinates_list) - 1)
+        x = path_coordinates_list[temp][0]
+        y = path_coordinates_list[temp][1]
 
         # Instantiate the neighbor_wall_coordinates_list.
         neighbor_wall_coordinates_list = []
@@ -4372,11 +4337,11 @@ def generate_optimal_object_positions():
             # Increment the number of placed objects.
             number_of_objects += 1
 
-    while number_of_objects != 3:
+    while number_of_objects != 7:
         # Generate a random x and y coordinate for the object position.
-        temp = random.randint(0, len(optimal_path_coordinates_list) - 1)
-        x = optimal_path_coordinates_list[temp][0]
-        y = optimal_path_coordinates_list[temp][1]
+        temp = random.randint(0, len(path_coordinates_list) - 1)
+        x = path_coordinates_list[temp][0]
+        y = path_coordinates_list[temp][1]
 
         # Instantiate the neighbor_wall_coordinates_list.
         neighbor_wall_coordinates_list = []
@@ -4415,6 +4380,136 @@ def generate_optimal_object_positions():
 
             # Add the chest_combination_3 object position to the dictionary.
             objects_starting_positions['chest combination 3'] = randomx, randomy
+
+            # Increment the number of placed objects.
+            number_of_objects += 1
+
+    while number_of_objects != 8:
+        # Set x and y coordinate for the object position.
+        x = door_object_position[0]
+        y = door_object_position[1]
+
+        # Instantiate the neighbor_floor_coordinates_list.
+        neighbor_floor_coordinates_list = []
+
+        # Add the tile coordinates to the neighbor_floor_coordinates_list.
+        if grid[y - 1][x - 1] == 1:
+            neighbor_floor_coordinates_list.append((x - 1, y - 1))
+        if grid[y - 1][x] == 1:
+            neighbor_floor_coordinates_list.append((x, y - 1))
+        if grid[y - 1][x + 1] == 1:
+            neighbor_floor_coordinates_list.append((x + 1, y - 1))
+        if grid[y][x - 1] == 1:
+            neighbor_floor_coordinates_list.append((x - 1, y))
+        if grid[y][x + 1] == 1:
+            neighbor_floor_coordinates_list.append((x + 1, y))
+        if grid[y + 1][x - 1] == 1:
+            neighbor_floor_coordinates_list.append((x - 1, y + 1))
+        if grid[y + 1][x] == 1:
+            neighbor_floor_coordinates_list.append((x, y + 1))
+        if grid[y + 1][x + 1] == 1:
+            neighbor_floor_coordinates_list.append((x + 1, y + 1))
+
+        if x - 2 >= 1 and x + 2 < (len(grid) - 1) and \
+            y - 2 >= 1 and y + 2 < (len(grid) - 1):
+            if grid[y - 2][x - 2] == 1:
+                neighbor_floor_coordinates_list.append((x - 2, y - 2))
+            if grid[y - 2][x] == 1:
+                neighbor_floor_coordinates_list.append((x, y - 2))
+            if grid[y - 2][x + 2] == 1:
+                neighbor_floor_coordinates_list.append((x + 2, y - 2))
+            if grid[y][x - 2] == 1:
+                neighbor_floor_coordinates_list.append((x - 2, y))
+            if grid[y][x + 2] == 1:
+                neighbor_floor_coordinates_list.append((x + 2, y))
+            if grid[y + 2][x - 2] == 1:
+                neighbor_floor_coordinates_list.append((x - 2, y + 2))
+            if grid[y + 2][x] == 1:
+                neighbor_floor_coordinates_list.append((x, y + 2))
+            if grid[y + 2][x + 2] == 1:
+                neighbor_floor_coordinates_list.append((x + 2, y + 2))
+
+        # Get a random position in neighbor_floor_coordinates_list.
+        temp = random.randint(0, len(neighbor_floor_coordinates_list) - 1)
+
+        # Set randomx, and randomy to the randomly picked coordinates.
+        randomx = neighbor_floor_coordinates_list[temp][0]
+        randomy = neighbor_floor_coordinates_list[temp][1]
+
+        if not position_is_wall(randomx, randomy) and \
+                not position_is_object(randomx, randomy):
+            # Set the simple enemy object position
+            # equal to the random x and y values.
+            simple_enemy_object_position[0] = randomx
+            simple_enemy_object_position[1] = randomy
+
+            # Add the simple enemy object position to the dictionary.
+            objects_starting_positions['simple enemy'] = randomx, randomy
+
+            # Increment the number of placed objects.
+            number_of_objects += 1
+
+    while number_of_objects != 9:
+        # Set x and y coordinate for the object position.
+        x = door_object_position[0]
+        y = door_object_position[1]
+
+        # Instantiate the neighbor_floor_coordinates_list.
+        neighbor_floor_coordinates_list = []
+
+        # Add the tile coordinates to the neighbor_floor_coordinates_list.
+        if grid[y - 1][x - 1] == 1:
+            neighbor_floor_coordinates_list.append((x - 1, y - 1))
+        if grid[y - 1][x] == 1:
+            neighbor_floor_coordinates_list.append((x, y - 1))
+        if grid[y - 1][x + 1] == 1:
+            neighbor_floor_coordinates_list.append((x + 1, y - 1))
+        if grid[y][x - 1] == 1:
+            neighbor_floor_coordinates_list.append((x - 1, y))
+        if grid[y][x + 1] == 1:
+            neighbor_floor_coordinates_list.append((x + 1, y))
+        if grid[y + 1][x - 1] == 1:
+            neighbor_floor_coordinates_list.append((x - 1, y + 1))
+        if grid[y + 1][x] == 1:
+            neighbor_floor_coordinates_list.append((x, y + 1))
+        if grid[y + 1][x + 1] == 1:
+            neighbor_floor_coordinates_list.append((x + 1, y + 1))
+
+        if x - 2 >= 1 and x + 2 < (len(grid) - 1) and \
+            y - 2 >= 1 and y + 2 < (len(grid) - 1):
+            if grid[y - 2][x - 2] == 1:
+                neighbor_floor_coordinates_list.append((x - 2, y - 2))
+            if grid[y - 2][x] == 1:
+                neighbor_floor_coordinates_list.append((x, y - 2))
+            if grid[y - 2][x + 2] == 1:
+                neighbor_floor_coordinates_list.append((x + 2, y - 2))
+            if grid[y][x - 2] == 1:
+                neighbor_floor_coordinates_list.append((x - 2, y))
+            if grid[y][x + 2] == 1:
+                neighbor_floor_coordinates_list.append((x + 2, y))
+            if grid[y + 2][x - 2] == 1:
+                neighbor_floor_coordinates_list.append((x - 2, y + 2))
+            if grid[y + 2][x] == 1:
+                neighbor_floor_coordinates_list.append((x, y + 2))
+            if grid[y + 2][x + 2] == 1:
+                neighbor_floor_coordinates_list.append((x + 2, y + 2))
+
+        # Get a random position in neighbor_floor_coordinates_list.
+        temp = random.randint(0, len(neighbor_floor_coordinates_list) - 1)
+
+        # Set randomx, and randomy to the randomly picked coordinates.
+        randomx = neighbor_floor_coordinates_list[temp][0]
+        randomy = neighbor_floor_coordinates_list[temp][1]
+
+        if not position_is_wall(randomx, randomy) and \
+                not position_is_object(randomx, randomy):
+            # Set the smart enemy object position
+            # equal to the random x and y values.
+            smart_enemy_object_position[0] = randomx
+            smart_enemy_object_position[1] = randomy
+
+            # Add the smart enemy object position to the dictionary.
+            objects_starting_positions['smart enemy'] = randomx, randomy
 
             # Increment the number of placed objects.
             number_of_objects += 1
