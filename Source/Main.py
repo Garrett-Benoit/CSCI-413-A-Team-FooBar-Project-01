@@ -111,8 +111,8 @@ player_used_marker = False
 player_unlocked_chest = False
 player_opened_chest = False
 enemy_grabbed_player = False
-player_invincible = False
-player_can_see = True
+player_is_invincible = False
+player_is_blind = False
 chest_combination = (chest_combination_1_object +
                      chest_combination_2_object +
                      chest_combination_3_object)
@@ -254,8 +254,8 @@ def main():
     global game_complete
     global exit_game
     global player_is_authenticated
-    global player_invincible
-    global player_can_see
+    global player_is_invincible
+    global player_is_blind
     global player_made_decision
     global show_replay_1
     global show_replay_2
@@ -400,8 +400,8 @@ def main():
         enemy_grabbed_player = False
         maze_is_valid = False
         player_is_authenticated = False
-        player_invincible = False
-        player_can_see = True
+        player_is_invincible = False
+        player_is_blind = False
         player_made_decision = False
         show_replay_1 = False
         show_replay_2 = False
@@ -3431,9 +3431,7 @@ def open_replay(number):
             # Call the function to draw the maze and the objects inside.
             draw_screen(screen)
 
-            ####################################################################
-            ##### Comment out this code to enable the field of view system.#####
-            if player_can_see == True:
+            if player_is_blind == False:
                 if not player_opened_chest:
                     draw_closed_chest_object(chest_object_closed, screen)
                 else:
@@ -3453,7 +3451,6 @@ def open_replay(number):
                         # Fill in the marked tiles with the color red.
                         screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[z], 
                                                                 screen))
-            ####################################################################
 
             # Update the InputText widget.
             sgc.update(5)
@@ -3785,20 +3782,15 @@ def draw_screen(screen):
     :param screen: screen to draw
     """
 
-    ############################################################################
-    ######### Comment out this code to enable the field of view system.#########
-    if player_can_see == True:
+    # Iterate through all tiles in the grid and draw them.
+    if player_is_blind == False:
         for row in xrange(len(grid)):
             for column in xrange(len(grid[0])):
-                #screen.fill(cell_colors[grid[column][row]],
-                #            get_cell_rect((row, column), screen))
                 rec = get_cell_rect((row, column), screen)
                 screen.blit(cell_colors[grid[column][row]], rec)
-    ############################################################################
 
-    ############################################################################
-    ######### Comment out this code to disable the field of view system.########
-    if player_can_see == False:
+    # Iterate through all tiles in the visible object list and draw them.
+    if player_is_blind == True:
         # Color the visible objects of the grid.
         for i in range(len(visible_object_list)):
             # Only draw the tile if it is in the range of the grid.
@@ -3807,11 +3799,15 @@ def draw_screen(screen):
                 visible_object_list[i][1] >= 0 and \
                 visible_object_list[i][1] < len(grid):
                 if grid[visible_object_list[i][1]][visible_object_list[i][0]] == 0:
-
-                    # Fill the wall object with the color white.
-                    screen.fill((255, 255, 255), \
-                        get_cell_rect((visible_object_list[i][0],
-                                       visible_object_list[i][1]), screen))
+                    rec = get_cell_rect((visible_object_list[i][0], \
+                        visible_object_list[i][1]), screen)
+                    screen.blit(cell_colors[grid[visible_object_list[i][1]] \
+                        [visible_object_list[i][0]]], rec)
+                elif grid[visible_object_list[i][1]][visible_object_list[i][0]] == 1:
+                    rec = get_cell_rect((visible_object_list[i][0], \
+                        visible_object_list[i][1]), screen)
+                    screen.blit(cell_colors[grid[visible_object_list[i][1]] \
+                        [visible_object_list[i][0]]], rec)
 
         # Call the function to draw the door object if visible.
         if is_object_visible(door_object_position[0], door_object_position[1]):
@@ -3866,7 +3862,6 @@ def draw_screen(screen):
 
         # Call the function to draw the player character object.
         draw_player_object(player_object, screen)
-    ############################################################################
 
 def is_object_visible(object_position_x, object_position_y):
     """
@@ -4546,8 +4541,8 @@ def handle_input():
     global game_complete
     global chosen_encryption_algorithm
     global player_game_moves
-    global player_invincible
-    global player_can_see
+    global player_is_invincible
+    global player_is_blind
 
     # Reset player's moves to zero.
     player_game_moves = 0
@@ -4590,19 +4585,19 @@ def handle_input():
                     elif input_string == "help":
                         help()
                     elif input_string == "superman":
-                        if player_invincible == True:
+                        if player_is_invincible == True:
                             print "You feel normal."
-                            player_invincible = False
+                            player_is_invincible = False
                         else:
                             print "You feel superhuman!"
-                            player_invincible = True
-                    elif input_string == "magic man":
-                        if player_can_see == True:
-                            print "I'm blind!"
-                            player_can_see = False
-                        else:
+                            player_is_invincible = True
+                    elif input_string == "batman":
+                        if player_is_blind == True:
                             print "I can see clearly now!"
-                            player_can_see = True
+                            player_is_blind = False
+                        else:
+                            print "I'm blind!"
+                            player_is_blind = True
                     # Go back to the title screen if the player chooses to.
                     elif input_string == "quit":
                         game_complete = True
@@ -4857,9 +4852,7 @@ def handle_input():
             # Call the function to draw the maze and the objects inside.
             draw_screen(screen)
 
-            ####################################################################
-            ##### Comment out this code to enable the field of view system.#####
-            if player_can_see == True:
+            if player_is_blind == False:
                 if not player_opened_chest:
                     draw_closed_chest_object(chest_object_closed, screen)
                 else:
@@ -4878,7 +4871,6 @@ def handle_input():
                         # Fill in the marked tiles with the color red.
                         screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[z],
                                                                 screen))
-            ####################################################################
 
             # Update the InputText widget.
             sgc.update(5)
@@ -4936,13 +4928,13 @@ def go(dx, dy):
 
     # Global variable declarations.
     global player_game_moves
-    global player_invincible
+    global player_is_invincible
 
     # Call the function to reset the game if the player character
     # is in the same coordinate as either enemy.
     if player_object_position == simple_enemy_object_position \
         or player_object_position == smart_enemy_object_position:
-        if player_invincible == False:
+        if player_is_invincible == False:
             # Set the value of enemy_grabbed_player equal to true.
             enemy_grabbed_player = True
 
@@ -5448,7 +5440,7 @@ def move_simple_enemy():
     # is in the same coordinate as either enemy.
     if player_object_position == simple_enemy_object_position \
             or player_object_position == smart_enemy_object_position:
-        if player_invincible == False:
+        if player_is_invincible == False:
             # Set the value of enemy_grabbed_player equal to true.
             enemy_grabbed_player = True
 
@@ -5496,7 +5488,7 @@ def move_simple_enemy():
     # is in the same coordinate as either enemy.
     if player_object_position == simple_enemy_object_position \
         or player_object_position == smart_enemy_object_position:
-        if player_invincible == False:
+        if player_is_invincible == False:
             # Set the value of enemy_grabbed_player equal to true.
             enemy_grabbed_player = True
 
@@ -5520,7 +5512,7 @@ def move_smart_enemy():
     # is in the same coordinate as either enemy.
     if player_object_position == simple_enemy_object_position \
         or player_object_position == smart_enemy_object_position:
-        if player_invincible == False:
+        if player_is_invincible == False:
             # Set the value of enemy_grabbed_player equal to true.
             enemy_grabbed_player = True
 
@@ -5595,7 +5587,7 @@ def move_smart_enemy():
     # is in the same coordinate as either enemy.
     if player_object_position == simple_enemy_object_position \
         or player_object_position == smart_enemy_object_position:
-        if player_invincible == False:
+        if player_is_invincible == False:
             # Set the value of enemy_grabbed_player equal to true.
             enemy_grabbed_player = True
 
