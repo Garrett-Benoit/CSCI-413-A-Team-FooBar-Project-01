@@ -1108,10 +1108,6 @@ def password_check(password_input):
 
         # If all counts are valid.
         if valid_upper & valid_lower & valid_digit:
-            print "Good password"
-            print "Lower case count: " + str(lower_case_letters_count)
-            print "Upper case count: " + str(upper_case_letters_count)
-            print "Number count: " + str(numbers_count)
             return True
 
 def update_top10(new_move_value):
