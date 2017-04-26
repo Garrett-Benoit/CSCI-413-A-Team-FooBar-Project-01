@@ -4721,38 +4721,39 @@ def handle_input():
                         else:
                             print_input_error()
 
-                    # Store the current object positions into the dictionary.
-                    objects_current_positions['player'] = \
-                        player_object_position[0], player_object_position[1]
-                    objects_current_positions['chest'] = \
-                        chest_object_position[0], chest_object_position[1] 
-                    objects_current_positions['key'] = \
-                        key_object_position[0], key_object_position[1]
-                    objects_current_positions['door'] = \
-                        door_object_position[0], door_object_position[1]
-                    objects_current_positions['simple enemy'] = \
-                        simple_enemy_object_position[0], simple_enemy_object_position[1]
-                    objects_current_positions['smart enemy'] = \
-                        smart_enemy_object_position[0], smart_enemy_object_position[1]
-                    objects_current_positions['chest combination 1'] = \
-                        chest_combination_1_object_position[0], chest_combination_1_object_position[1]
-                    objects_current_positions['chest combination 2'] = \
-                        chest_combination_2_object_position[0], chest_combination_2_object_position[1]
-                    objects_current_positions['chest combination 3'] = \
-                        chest_combination_3_object_position[0], chest_combination_3_object_position[1]
+                    if input_string != "":
+                        # Store the current object positions into the dictionary.
+                        objects_current_positions['player'] = \
+                            player_object_position[0], player_object_position[1]
+                        objects_current_positions['chest'] = \
+                            chest_object_position[0], chest_object_position[1] 
+                        objects_current_positions['key'] = \
+                            key_object_position[0], key_object_position[1]
+                        objects_current_positions['door'] = \
+                            door_object_position[0], door_object_position[1]
+                        objects_current_positions['simple enemy'] = \
+                            simple_enemy_object_position[0], simple_enemy_object_position[1]
+                        objects_current_positions['smart enemy'] = \
+                            smart_enemy_object_position[0], smart_enemy_object_position[1]
+                        objects_current_positions['chest combination 1'] = \
+                            chest_combination_1_object_position[0], chest_combination_1_object_position[1]
+                        objects_current_positions['chest combination 2'] = \
+                            chest_combination_2_object_position[0], chest_combination_2_object_position[1]
+                        objects_current_positions['chest combination 3'] = \
+                            chest_combination_3_object_position[0], chest_combination_3_object_position[1]
 
-                    # Store the game states into the dictionary.
-                    current_game_states['player_grabbed_key'] = player_grabbed_key
-                    current_game_states['player_used_marker'] = player_used_marker
-                    current_game_states['player_opened_chest'] = player_opened_chest
-                    current_game_states['enemy_grabbed_player'] = enemy_grabbed_player
+                        # Store the game states into the dictionary.
+                        current_game_states['player_grabbed_key'] = player_grabbed_key
+                        current_game_states['player_used_marker'] = player_used_marker
+                        current_game_states['player_opened_chest'] = player_opened_chest
+                        current_game_states['enemy_grabbed_player'] = enemy_grabbed_player
 
-                    # Write the input to the replay file.
-                    write_to_replay_file(input_string)
-                    # Write the current object positions to the replay file.
-                    write_to_replay_file(str(objects_current_positions))
-                    # Write the current game states to the replay file.
-                    write_to_replay_file(str(current_game_states))
+                        # Write the input to the replay file.
+                        write_to_replay_file(input_string)
+                        # Write the current object positions to the replay file.
+                        write_to_replay_file(str(objects_current_positions))
+                        # Write the current game states to the replay file.
+                        write_to_replay_file(str(current_game_states))
 
                     # Clear the contents of the InputBox if it is clicked on.
                     if event.widget is input_box:
