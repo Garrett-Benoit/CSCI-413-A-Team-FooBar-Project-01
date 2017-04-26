@@ -2793,7 +2793,6 @@ def open_replay(number):
 
         # Draw the maze and the objects within it.
         draw_screen(screen)
-        draw_player_object(player_object, screen)
         draw_closed_chest_object(chest_object_closed, screen)
         draw_key_object(key_object, screen)
         draw_door_object(door_object, screen)
@@ -2802,6 +2801,7 @@ def open_replay(number):
         draw_chest_combination_1_object(chest_combination_1_object, screen)
         draw_chest_combination_2_object(chest_combination_2_object, screen)
         draw_chest_combination_3_object(chest_combination_3_object, screen)
+        draw_player_object(player_object, screen)
         # Update the InputText widget.
         sgc.update(5)
         # Update the console window to show changes.
@@ -3434,7 +3434,6 @@ def open_replay(number):
             ####################################################################
             ##### Comment out this code to enable the field of view system.#####
             if player_can_see == True:
-                draw_player_object(player_object, screen)
                 if not player_opened_chest:
                     draw_closed_chest_object(chest_object_closed, screen)
                 else:
@@ -3447,6 +3446,7 @@ def open_replay(number):
                 draw_chest_combination_1_object(chest_combination_1_object, screen)
                 draw_chest_combination_2_object(chest_combination_2_object, screen)
                 draw_chest_combination_3_object(chest_combination_3_object, screen)
+                draw_player_object(player_object, screen)
 
                 if player_used_marker == True:
                     for z in range(len(marked_tile_list)):
@@ -4860,7 +4860,6 @@ def handle_input():
             ####################################################################
             ##### Comment out this code to enable the field of view system.#####
             if player_can_see == True:
-                draw_player_object(player_object, screen)
                 if not player_opened_chest:
                     draw_closed_chest_object(chest_object_closed, screen)
                 else:
@@ -4872,6 +4871,7 @@ def handle_input():
                 draw_chest_combination_1_object(chest_combination_1_object, screen)
                 draw_chest_combination_2_object(chest_combination_2_object, screen)
                 draw_chest_combination_3_object(chest_combination_3_object, screen)
+                draw_player_object(player_object, screen)
 
                 if player_used_marker == True:
                     for z in range(len(marked_tile_list)):
