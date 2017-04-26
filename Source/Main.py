@@ -64,69 +64,17 @@ replay_file = None
 chosen_replay_filename = None
 # Declare a chosen replay file variable for global use.
 chosen_replay_file = None
-
-cell_margin = 3 # Pre-defined space between cells.
-cell_colors = (255, 255, 255), (0, 0, 0) # RBG values representing cell colors.
-player_object = "@" # Symbol representing the player character.
-player_object_color = (255, 255, 255) # Color of the player character.
-player_object_position = [0, 0] # Position of the player character.
-chest_object_closed = "C" # Symbol representing the closed chest.
-chest_object_opened = "O" # Symbol representing the opened chest.
-chest_object_color = (255, 255, 255) # Color of the chest.
-chest_object_position = [0, 0] # Position of the chest.
-key_object = "K" # Symbol representing the key.
-key_object_color = (255, 255, 255) # Color of the key.
-key_object_position = [0, 0] # Position of the key.
-door_object = "D" # Symbol representing the door.
-door_object_color = (255, 255, 255) # Color of the door.
-door_object_position = [0, 0] # Position of the door.
-simple_enemy_object = "E" # Symbol representing the simple enemy.
-simple_enemy_object_color = (255, 0, 0) # Color of the simple enemy.
-simple_enemy_object_position = [0, 0] # Position of the simple enemy.
-smart_enemy_object = "S" # Symbol representing the smart enemy.
-smart_enemy_object_color = (255, 0, 0) # Color of the smart enemy.
-smart_enemy_object_position = [0, 0] # Position of the smart enemy.
-# Symbol representing the first chest combination.
-chest_combination_1_object = str(random.randint(0, 9))
-# Color of the chest_combination_1_object.
-chest_combination_1_object_color = (255, 215, 0)
-# Position of the chest_combination_1_object.
-chest_combination_1_object_position = [0, 0]
-# Symbol representing the second chest combination.
-chest_combination_2_object = str(random.randint(0, 9))
-# Color of the chest_combination_2_object.
-chest_combination_2_object_color = (255, 215, 0)
-# Position of the chest_combination_2_object.
-chest_combination_2_object_position = [0, 0]
-# Symbol representing the third chest combination.
-chest_combination_3_object = str(random.randint(0, 9))
-# Color of the chest_combination_3_object.
-chest_combination_3_object_color = (255, 215, 0)
-# Position of the chest_combination_3_object.
-chest_combination_3_object_position = [0, 0]
-object_size = 35 # Size of all objects drawn to the console window.
-player_grabbed_key = False
-player_used_key = False
-player_used_marker = False
-player_unlocked_chest = False
-player_opened_chest = False
-enemy_grabbed_player = False
-player_is_invincible = False
-player_is_blind = False
-chest_combination = (chest_combination_1_object +
-                     chest_combination_2_object +
-                     chest_combination_3_object)
-maze_is_valid = False
-player_username = ""
-player_is_authenticated = False
-player_made_decision = False
-player_game_moves = 0
-show_replay_1 = False
-show_replay_2 = False
-show_replay_3 = False
-start_new_game = False
-game_complete = False
-exit_game = False
+# Initialize the pygame console window.
+pygame.init()
+# Set the caption for the console window.
+pygame.display.set_caption("")
+# Create a surface to draw on.
+screen = sgc.surface.Screen((630, 663))
+# Create and place an input box on the console window.
+input_box = sgc.InputBox((629, 35), label = "",
+                         default = "Input here, output console...")
+input_box.config(pos = (0, 627))
+input_box.add(order = 0)
 
 # A 18x18 Grid representing the game object positions.
 grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -148,42 +96,112 @@ grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
+# Pre-defined space between cells.
+cell_margin = 3
+# Size of all objects drawn to the console window.
+object_size = 35
+# Directory for the art assets.
+art_directory = "art"
+# Create and define the wall object.
+wall_object = pygame.image.load(os.path.join(art_directory, "wall.png")).convert()
+# Create and define the floor object.
+floor_object = pygame.image.load(os.path.join(art_directory, "floor.png")).convert()
+# Create a variable that stores the wall and floor object.
+cell_colors = wall_object, floor_object
+# Symbol representing the first chest combination.
+chest_combination_1_number = str(random.randint(0, 9))
+# Color of the chest_combination_1_object.
+chest_combination_1_object_color = (255, 255, 255)
+# Position of the chest_combination_1_object.
+chest_combination_1_object_position = [0, 0]
+# Create and define the chest_combination_1 object.
+chest_combination_1_object = pygame.font.Font(None, object_size).render(
+                                    chest_combination_1_number, False,
+                                    chest_combination_1_object_color)
+# Symbol representing the second chest combination.
+chest_combination_2_number = str(random.randint(0, 9))
+# Color of the chest_combination_2_object.
+chest_combination_2_object_color = (255, 255, 255)
+# Position of the chest_combination_2_object.
+chest_combination_2_object_position = [0, 0]
+# Create and define the chest_combination_2 object.
+chest_combination_2_object = pygame.font.Font(None, object_size).render(
+                                    chest_combination_2_number, False,
+                                    chest_combination_2_object_color)
+# Symbol representing the third chest combination.
+chest_combination_3_number = str(random.randint(0, 9))
+# Color of the chest_combination_3_object.
+chest_combination_3_object_color = (255, 255, 255)
+# Position of the chest_combination_3_object.
+chest_combination_3_object_position = [0, 0]
+# Create and define the chest_combination_3 object.
+chest_combination_3_object = pygame.font.Font(None, object_size).render(
+                                    chest_combination_3_number, False,
+                                    chest_combination_3_object_color)
+# Create and define the door object.
+door_object = pygame.image.load(os.path.join(art_directory, "door_closed.png"))
+# Position of the door.
+door_object_position = [0, 0]
+# Create and define the closed chest object.
+chest_object_closed = pygame.image.load(os.path.join(art_directory, "chest_closed.png"))
+# Create and define the opened chest object.
+chest_object_opened = pygame.image.load(os.path.join(art_directory, "chest_opened.png"))
+# Position of the chest.
+chest_object_position = [0, 0]
+# Create and define the key object.
+key_object = pygame.image.load(os.path.join(art_directory, "key.png"))
+# Position of the key.
+key_object_position = [0, 0]
+# Create and define the player object.
+player_object = pygame.image.load(os.path.join(art_directory, "player.png"))
+# Position of the player character.
+player_object_position = [0, 0]
+# Create and define the simple enemy object.
+simple_enemy_object =pygame.image.load(os.path.join(art_directory, "enemy_simple.png"))
+# Position of the simple enemy.
+simple_enemy_object_position = [0, 0]
+# Create and define the smart enemy object.
+smart_enemy_object = pygame.image.load(os.path.join(art_directory, "enemy_smart.png"))
+# Position of the smart enemy.
+smart_enemy_object_position = [0, 0]
+
+# Variables representing the different game objective states.
+player_grabbed_key = False
+player_used_key = False
+player_used_marker = False
+player_unlocked_chest = False
+player_opened_chest = False
+enemy_grabbed_player = False
+player_is_invincible = False
+player_is_blind = False
+chest_combination = (chest_combination_1_number +
+                     chest_combination_2_number +
+                     chest_combination_3_number)
+maze_is_valid = False
+player_username = ""
+player_is_authenticated = False
+player_made_decision = False
+player_game_moves = 0
+show_replay_1 = False
+show_replay_2 = False
+show_replay_3 = False
+start_new_game = False
+game_complete = False
+exit_game = False
+
 # Dictionary that holds the starting positions of the objects.
 objects_starting_positions = {}
-
 # Dictionary that holds the current positions of the objects.
 objects_current_positions = {}
-
 # Dictionary that holds the current states of the game.
 current_game_states = {}
-
 # List to hold the marked tile coordinates.
 marked_tile_list = []
-
 # List to hold the coordinates of tiles within the player field of view.
 visible_object_list = []
 
-# Initialize the pygame console window.
-pygame.init()
-
-# Set the caption for the console window.
-pygame.display.set_caption("")
-
-# Create a surface to draw on.
-screen = sgc.surface.Screen((630, 663))
-
-# Create and place an input box on the console window.
-input_box = sgc.InputBox((629, 35), label = "",
-                         default = "Input here, output console...")
-input_box.config(pos = (0, 627))
-input_box.add(order = 0)
-
-# Directory for the art assets.
-art_directory = "art"
-
 # Initialize the pygame sound mixer.
 pygame.mixer.init()
-
 # Load sounds and set their volumes.
 login_signup_music = pygame.mixer.Sound("sounds/login_signup_music.ogg")
 login_signup_music.set_volume(0.5)
@@ -196,15 +214,15 @@ replay_music.set_volume(0.3)
 game_over_music = pygame.mixer.Sound("sounds/game_over_music.wav")
 game_over_music.set_volume(0.5)
 go_sound = pygame.mixer.Sound("sounds/go_sound.wav")
-go_sound.set_volume(0.2)
+go_sound.set_volume(0.4)
 pain_sound = pygame.mixer.Sound("sounds/pain_sound.wav")
-pain_sound.set_volume(0.1)
+pain_sound.set_volume(0.2)
 die_sound = pygame.mixer.Sound("sounds/die_sound.wav")
 die_sound.set_volume(0.2)
 grab_key_sound = pygame.mixer.Sound("sounds/grab_key_sound.wav")
-grab_key_sound.set_volume(0.1)
+grab_key_sound.set_volume(0.3)
 open_chest_sound = pygame.mixer.Sound("sounds/open_chest_sound.wav")
-open_chest_sound.set_volume(0.2)
+open_chest_sound.set_volume(0.3)
 open_door_sound = pygame.mixer.Sound("sounds/open_door_sound.wav")
 open_door_sound.set_volume(0.2)
 treasure_sound = pygame.mixer.Sound("sounds/treasure_sound.wav")
@@ -212,9 +230,9 @@ treasure_sound.set_volume(0.1)
 unlock_door_sound = pygame.mixer.Sound("sounds/unlock_door_sound.wav")
 unlock_door_sound.set_volume(0.1)
 use_combo_sound = pygame.mixer.Sound("sounds/use_combo_sound.wav")
-use_combo_sound.set_volume(0.1)
+use_combo_sound.set_volume(0.2)
 use_marker_sound = pygame.mixer.Sound("sounds/use_marker_sound.wav")
-use_marker_sound.set_volume(0.2)
+use_marker_sound.set_volume(0.3)
 enemy_respawn_sound = pygame.mixer.Sound("sounds/enemy_respawn_sound.wav")
 enemy_respawn_sound.set_volume(0.2)
 
@@ -262,72 +280,6 @@ def main():
     global show_replay_3
     global start_new_game
     global cell_colors
-
-    # Create and define the door object.
-    #door_object = pygame.font.Font(None, object_size).render(
-    #    door_object, False, door_object_color)
-    door_object = pygame.image.load(os.path.join(art_directory, 
-                                                 "door_closed.png")) 
-
-    # Create and define the closed chest object.
-    #chest_object_closed = pygame.font.Font(None, object_size).render(
-    #    chest_object_closed, False,
-    #    chest_object_color)
-    chest_object_closed = pygame.image.load(os.path.join(art_directory, 
-                                                         "chest_closed.png"))
-
-    # Create and define the opened chest object.
-    #chest_object_opened = pygame.font.Font(None, object_size).render(
-    #    chest_object_opened, False,
-    #    chest_object_color)
-    chest_object_opened =pygame.image.load(os.path.join(art_directory,
-                                                        "chest_opened.png"))
-
-    # Create and define the key object.
-    #key_object = pygame.font.Font(None, object_size).render(
-    #    key_object, False, key_object_color)
-    key_object = pygame.image.load(os.path.join(art_directory, "key.png"))
-
-    # Create and define the player object.
-    #player_object = pygame.font.Font(None, object_size).render(
-    #    player_object, False, player_object_color)
-    player_object = pygame.image.load(os.path.join(art_directory, "player.png"))
-
-    # Create and define the simple enemy object.
-    #simple_enemy_object = pygame.font.Font(None, object_size).render(
-    #    simple_enemy_object, False,
-    #    simple_enemy_object_color)
-    simple_enemy_object =pygame.image.load(os.path.join(art_directory, 
-                                                        "enemy_simple.png"))
-
-    # Create and define the smart enemy object.
-    #smart_enemy_object = pygame.font.Font(None, object_size).render(
-    #    smart_enemy_object, False,
-    #    smart_enemy_object_color)
-    smart_enemy_object = pygame.image.load(os.path.join(art_directory, 
-                                                        "enemy_smart.png"))
-
-    # Create and define the chest_combination_1 object.
-    chest_combination_1_object = pygame.font.Font(None, object_size).render(
-                                     chest_combination_1_object, False,
-                                     chest_combination_1_object_color)
-
-    # Create and define the chest_combination_2 object.
-    chest_combination_2_object = pygame.font.Font(None, object_size).render(
-                                     chest_combination_2_object, False,
-                                     chest_combination_2_object_color)
-
-    # Create and define the chest_combination_3 object.
-    chest_combination_3_object = pygame.font.Font(None, object_size).render(
-                                     chest_combination_3_object, False,
-                                     chest_combination_3_object_color)
-
-    # Load cell colors for the wall and floor tiles.
-    wall = pygame.image.load(os.path.join(art_directory, 
-                                          "wall.png")).convert()
-    floor = pygame.image.load(os.path.join(art_directory, 
-                                           "floor.png")).convert()
-    cell_colors = wall, floor
 
     # Cue the music that will play during the login/signup screen.
     login_signup_music.play(-1)
