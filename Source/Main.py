@@ -4860,6 +4860,8 @@ def handle_input():
         # End the catch block and print the exception
         # (if one occurred) to the log file and continue.
         except:
+            # Clear the input box.
+            clear()
             # Store the exception.
             e = sys.exc_info()[0]
             # Piece the exception message together for printing.
@@ -4876,6 +4878,8 @@ def handle_input():
         # Update the users replays remotely.
         save_replays()
     except:
+        # Clear the input box.
+        clear()
         # Store the exception.
         e = sys.exc_info()[0]
         # Piece the exception message together for printing.
