@@ -4909,21 +4909,51 @@ def go(dx, dy):
 
     # Global variable declarations.
     global player_game_moves
+    global player_invincible
 
     # Call the function to reset the game if the player character
     # is in the same coordinate as either enemy.
     if player_object_position == simple_enemy_object_position \
         or player_object_position == smart_enemy_object_position:
-        # Set the value of enemy_grabbed_player equal to true.
-        enemy_grabbed_player = True
+        if player_invincible == False:
+            # Set the value of enemy_grabbed_player equal to true.
+            enemy_grabbed_player = True
 
-        # Print out an message informing the user that they lost.
-        print "Output: The enemy grabbed you! Your stuff was confiscated "
-        print "\tand you were returned to where you started. "
-        print "\tYou will have to try your luck again...\n"
+            # Print out an message informing the user that they lost.
+            print "Output: The enemy grabbed you! Your stuff was confiscated "
+            print "\tand you were returned to where you started. "
+            print "\tYou will have to try your luck again...\n"
 
-        # Reset the locations of all objects and state conditions.
-        reset_object_positions_and_state_conditions()
+            # Reset the locations of all objects and state conditions.
+            reset_object_positions_and_state_conditions()
+        else:
+            # Set x and y equal to the current player character object position.
+            x = player_object_position[0]
+            y = player_object_position[1]
+
+            # Set nx and ny equal to the new player character object position.
+            nx = x + dx
+            ny = y + dy
+
+            # Change the player character object position if the new position
+            # is in the game window and the cell is not pre-occupied.
+            if (nx > 0 and nx < len(grid) and ny > 0 and ny < len(grid) and \
+                        grid[ny][nx]):
+                player_object_position[0] = nx
+                player_object_position[1] = ny
+                # Play the sound for going
+                go_sound.play()
+                # Increment player moves.
+                player_game_moves = player_game_moves + 1
+            else:
+                # Print out an error for the invalid move.
+                print_go_error()
+                # Play the pain sound for running into wall.
+                pain_sound.play()
+
+            # Call the function to move the enemies.
+            move_simple_enemy()
+            move_smart_enemy()
     # Continue if the player has not been caught yet.
     else:
         # Set x and y equal to the current player character object position.
@@ -5391,12 +5421,17 @@ def move_simple_enemy():
     # is in the same coordinate as either enemy.
     if player_object_position == simple_enemy_object_position \
             or player_object_position == smart_enemy_object_position:
-        # Print out an message informing the user that they lost.
-        print "Output: The enemy grabbed you! Your stuff was confiscated "
-        print "\tand you were returned to where you started. "
-        print "\tYou will have to try your luck again...\n"
-        # Reset the locations of all objects and state conditions.
-        reset_object_positions_and_state_conditions()
+        if player_invincible == False:
+            # Set the value of enemy_grabbed_player equal to true.
+            enemy_grabbed_player = True
+
+            # Print out an message informing the user that they lost.
+            print "Output: The enemy grabbed you! Your stuff was confiscated "
+            print "\tand you were returned to where you started. "
+            print "\tYou will have to try your luck again...\n"
+
+            # Reset the locations of all objects and state conditions.
+            reset_object_positions_and_state_conditions()
 
     # Set x and y equal to the simple enemy object position.
     x = simple_enemy_object_position[0]
@@ -5433,13 +5468,18 @@ def move_simple_enemy():
     # Call the function to reset the game if the player character
     # is in the same coordinate as either enemy.
     if player_object_position == simple_enemy_object_position \
-            or player_object_position == smart_enemy_object_position:
-        # Print out an message informing the user that they lost.
-        print "Output: The enemy grabbed you! Your stuff was confiscated "
-        print "\tand you were returned to where you started. "
-        print "\tYou will have to try your luck again...\n"
-        # Reset the locations of all objects and state conditions.
-        reset_object_positions_and_state_conditions()
+        or player_object_position == smart_enemy_object_position:
+        if player_invincible == False:
+            # Set the value of enemy_grabbed_player equal to true.
+            enemy_grabbed_player = True
+
+            # Print out an message informing the user that they lost.
+            print "Output: The enemy grabbed you! Your stuff was confiscated "
+            print "\tand you were returned to where you started. "
+            print "\tYou will have to try your luck again...\n"
+
+            # Reset the locations of all objects and state conditions.
+            reset_object_positions_and_state_conditions()
 
 def move_smart_enemy():
     """
@@ -5452,13 +5492,18 @@ def move_smart_enemy():
     # Call the function to reset the game if the player character
     # is in the same coordinate as either enemy.
     if player_object_position == simple_enemy_object_position \
-            or player_object_position == smart_enemy_object_position:
-        # Print out an message informing the user that they lost.
-        print "Output: The enemy grabbed you! Your stuff was confiscated "
-        print "\tand you were returned to where you started. "
-        print "\tYou will have to try your luck again...\n"
-        # Reset the locations of all objects and state conditions.
-        reset_object_positions_and_state_conditions()
+        or player_object_position == smart_enemy_object_position:
+        if player_invincible == False:
+            # Set the value of enemy_grabbed_player equal to true.
+            enemy_grabbed_player = True
+
+            # Print out an message informing the user that they lost.
+            print "Output: The enemy grabbed you! Your stuff was confiscated "
+            print "\tand you were returned to where you started. "
+            print "\tYou will have to try your luck again...\n"
+
+            # Reset the locations of all objects and state conditions.
+            reset_object_positions_and_state_conditions()
 
     # Create a test grid to use with the A* algorithm.
     test_grid = GridWithWeights(15, 15)
@@ -5522,13 +5567,18 @@ def move_smart_enemy():
     # Call the function to reset the game if the player character
     # is in the same coordinate as either enemy.
     if player_object_position == simple_enemy_object_position \
-            or player_object_position == smart_enemy_object_position:
-        # Print out an message informing the user that they lost.
-        print "Output: The enemy grabbed you! Your stuff was confiscated "
-        print "\tand you were returned to where you started. "
-        print "\tYou will have to try your luck again...\n"
-        # Reset the locations of all objects and state conditions.
-        reset_object_positions_and_state_conditions()
+        or player_object_position == smart_enemy_object_position:
+        if player_invincible == False:
+            # Set the value of enemy_grabbed_player equal to true.
+            enemy_grabbed_player = True
+
+            # Print out an message informing the user that they lost.
+            print "Output: The enemy grabbed you! Your stuff was confiscated "
+            print "\tand you were returned to where you started. "
+            print "\tYou will have to try your luck again...\n"
+
+            # Reset the locations of all objects and state conditions.
+            reset_object_positions_and_state_conditions()
 
     '''# Variable that stores the enemy location.
     smart_enemy_location = (smart_enemy_object_position[0],
