@@ -5479,13 +5479,18 @@ def move_smart_enemy():
     # Get dictionaries mapping positions using the A* search algorithm.
     came_from, cost_so_far = a_star_search(test_grid, start, goal)
 
+    # 
+    temp_coordinates_list = []
     # Loop through cost_so_far until we find the next position to go to.
     for coordinates, cost in cost_so_far.iteritems():
         if cost == 1:
-            nx, ny = coordinates
-            break
+            temp_coordinates_list.append(coordinates)
 
-    # print cost_so_far
+    # Subtract 1 to prevent IndexErrors from being thrown.
+    rand = random.randint(0, len(temp_coordinates_list) - 1)
+    # Set the smart enemy coordinate to the 
+    # coordinate with the least amount of steps.
+    nx, ny = temp_coordinates_list[rand]
 
     '''# The current location of the smart enemy.
     start = (smart_enemy_object_position[0], smart_enemy_object_position[1])
