@@ -3441,9 +3441,6 @@ def open_replay(number):
                 draw_door_object(door_object, screen)
                 draw_simple_enemy_object(simple_enemy_object, screen)
                 draw_smart_enemy_object(smart_enemy_object, screen)
-                draw_chest_combination_1_object(chest_combination_1_object, screen)
-                draw_chest_combination_2_object(chest_combination_2_object, screen)
-                draw_chest_combination_3_object(chest_combination_3_object, screen)
                 draw_player_object(player_object, screen)
 
                 if player_used_marker == True:
@@ -3451,6 +3448,10 @@ def open_replay(number):
                         # Fill in the marked tiles with the color red.
                         screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[z], 
                                                                 screen))
+                
+                draw_chest_combination_1_object(chest_combination_1_object, screen)
+                draw_chest_combination_2_object(chest_combination_2_object, screen)
+                draw_chest_combination_3_object(chest_combination_3_object, screen)
 
             # Update the InputText widget.
             sgc.update(5)
@@ -4861,9 +4862,6 @@ def handle_input():
                 draw_door_object(door_object, screen)
                 draw_simple_enemy_object(simple_enemy_object, screen)
                 draw_smart_enemy_object(smart_enemy_object, screen)
-                draw_chest_combination_1_object(chest_combination_1_object, screen)
-                draw_chest_combination_2_object(chest_combination_2_object, screen)
-                draw_chest_combination_3_object(chest_combination_3_object, screen)
                 draw_player_object(player_object, screen)
 
                 if player_used_marker == True:
@@ -4871,6 +4869,10 @@ def handle_input():
                         # Fill in the marked tiles with the color red.
                         screen.fill((255, 0, 0), get_cell_rect(marked_tile_list[z],
                                                                 screen))
+
+                draw_chest_combination_1_object(chest_combination_1_object, screen)
+                draw_chest_combination_2_object(chest_combination_2_object, screen)
+                draw_chest_combination_3_object(chest_combination_3_object, screen)
 
             # Update the InputText widget.
             sgc.update(5)
