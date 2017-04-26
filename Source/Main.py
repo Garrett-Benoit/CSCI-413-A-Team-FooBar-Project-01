@@ -413,9 +413,15 @@ def show_login_signup_screen():
     temp_password = ""  # Variable used to store the password entered by the user.
     temp_email = ""  # Variable used to store the email entered by the user.
 
+    # Initialize a clock variable.
+    clock_refresh = pygame.time.Clock()
+
     # Continue running until the player chooses
     # a valid option or closes the window.
     while player_is_authenticated == False:
+        # Set the rate in which to refresh the screen.
+        refresh_rate = clock_refresh.tick(60)
+
         # Iterate through all of the events gathered from pygame.
         for event in pygame.event.get():
             sgc.event(event)
@@ -731,7 +737,7 @@ def show_login_signup_screen():
         # Call the function to draw the maze and the objects inside.
         draw_screen(screen)
         # Update the InputText widget.
-        sgc.update(5)
+        sgc.update(refresh_rate)
         # Update the console window to show changes.
         pygame.display.update()
 
@@ -780,9 +786,15 @@ def show_title_screen():
     print "2. open replay <1, 2, 3>"
     print "3. exit"
 
+    # Initialize a clock variable. 
+    clock_refresh = pygame.time.Clock()
+
     # Continue running until the player chooses
     # a valid option or closes the window.
     while player_made_decision == False:
+        # Set the rate in which to refresh the screen.
+        refresh_rate = clock_refresh.tick(60)
+
         # Iterate through all of the events gathered from pygame.
         for event in pygame.event.get():
             sgc.event(event)
@@ -879,7 +891,7 @@ def show_title_screen():
         # Call the function to draw the maze and the objects inside.
         draw_screen(screen)
         # Update the InputText widget.
-        sgc.update(5)
+        sgc.update(refresh_rate)
         # Update the console window to show changes.
         pygame.display.update()
 
@@ -2801,8 +2813,8 @@ def open_replay(number):
         draw_chest_combination_2_object(chest_combination_2_object, screen)
         draw_chest_combination_3_object(chest_combination_3_object, screen)
         draw_player_object(player_object, screen)
-        # Update the InputText widget.
-        sgc.update(5)
+        # Clear the input box.
+        clear()
         # Update the console window to show changes.
         pygame.display.update()
 
@@ -2829,9 +2841,15 @@ def open_replay(number):
         # Variable to determine if the replay is at the end of the file or not.
         end_of_file = False
 
+        # Initialize a clock variable. 
+        clock_refresh = pygame.time.Clock()
+
         # Continue running until the player completes
         # the game or closes the window.
         while game_complete == False:
+            # Set the rate in which to refresh the screen.
+            refresh_rate = clock_refresh.tick(60)
+
             # Continue only if the replay is not paused.
             if replay_is_paused == False:
                 # Subtract time if i is less than the maximum and the 
@@ -3453,7 +3471,7 @@ def open_replay(number):
                 draw_chest_combination_3_object(chest_combination_3_object, screen)
 
             # Update the InputText widget.
-            sgc.update(5)
+            sgc.update(refresh_rate)
             # Update the console window to show changes.
             pygame.display.update()
 
@@ -4672,8 +4690,14 @@ def handle_input():
     # Dictionary containing the starting positions of all objects in the grid.
     write_to_replay_file(str(objects_starting_positions))
 
+    # Initialize a clock variable. 
+    clock_refresh = pygame.time.Clock()
+
     # Continue running until the player completes the game or closes the window.
     while game_complete == False:
+        # Set the rate in which to refresh the screen.
+        refresh_rate = clock_refresh.tick(60)
+
         # Begin the try block to catch all exceptions
         # that may occur while accepting user input.
         try:
@@ -4982,7 +5006,7 @@ def handle_input():
                 draw_chest_combination_3_object(chest_combination_3_object, screen)
 
             # Update the InputText widget.
-            sgc.update(5)
+            sgc.update(refresh_rate)
             # Update the console window to show changes.
             pygame.display.update()
         # End the catch block and print the exception
