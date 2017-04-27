@@ -1108,7 +1108,6 @@ def password_check(password_input):
                 numbers_count += 1
             elif character.islower():
                 lower_case_letters_count += 1
-                print lower_case_letters_count
             elif character.isupper():
                 upper_case_letters_count += 1
 
