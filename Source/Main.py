@@ -5672,6 +5672,33 @@ def move_smart_enemy():
             # Reset the locations of all objects and state conditions.
             reset_object_positions_and_state_conditions()
 
+    '''# The current location of the smart enemy.
+    start = (smart_enemy_object_position[0], smart_enemy_object_position[1])
+    # The current location of the player.
+    goal = (player_object_position[0], player_object_position[1])
+
+    # The DFS calling.
+    dict = {}
+    depth_first_search(start, goal, grid, dict)
+    goal_path_list = draw_hierarchy(dict, goal)
+
+    # The BFS calling.
+    dict1 = {}
+    breath_first_search(start, goal, grid, dict1)
+    goal_path_list1 = draw_hierarchy(dict1, goal)
+
+    if len(goal_path_list) == 1:
+        next_coordinates = goal_path_list[0]
+    else:
+        next_coordinates = goal_path_list[-2]'''
+
+    # Variable that stores the enemy location.
+    smart_enemy_location = (smart_enemy_object_position[0],
+                                smart_enemy_object_position[1])
+    # Variable that stores the current location.
+    player_location = (player_object_position[0],
+                                player_object_position[1])
+
     # Create a test grid to use with the A* algorithm.
     test_grid = GridWithWeights(15, 15)
 
@@ -5698,38 +5725,53 @@ def move_smart_enemy():
         if cost == 1:
             temp_coordinates_list.append(coordinates)
 
-    # Subtract 1 to prevent IndexErrors from being thrown.
-    rand = random.randint(0, len(temp_coordinates_list) - 1)
-    # Set the smart enemy coordinate to the 
-    # coordinate with the least amount of steps.
-    nx, ny = temp_coordinates_list[rand]
+    # Execute search algorithm 1.
+    #A1, cost_so_far = a_star_search(grid, smart_enemy_location, player_location)
+    A1 = temp_coordinates_list[random.randint(0, len(temp_coordinates_list) - 1)]
 
-    '''# The current location of the smart enemy.
-    start = (smart_enemy_object_position[0], smart_enemy_object_position[1])
-    # The current location of the player.
-    goal = (player_object_position[0], player_object_position[1])
+    # Execute search algorithm 2.
+    #A2, cost_so_far = a_star_search(grid, smart_enemy_location, player_location)
+    A2 = temp_coordinates_list[random.randint(0, len(temp_coordinates_list) - 1)]
 
-    # The DFS calling.
-    dict = {}
-    depth_first_search(start, goal, grid, dict)
-    goal_path_list = draw_hierarchy(dict, goal)
+    # Execute search algorithm 3.
+    #A3, cost_so_far = a_star_search(grid, smart_enemy_location, player_location)
+    A3 = temp_coordinates_list[random.randint(0, len(temp_coordinates_list) - 1)]
+    
+    # Initialize variables for the smart enemy position.
+    new_x = 0
+    new_y = 0
 
-    # The BFS calling.
-    dict1 = {}
-    breath_first_search(start, goal, grid, dict1)
-    goal_path_list1 = draw_hierarchy(dict1, goal)
-
-    if len(goal_path_list) == 1:
-        next_coordinates = goal_path_list[0]
+    # Compare the 3 search algorithms for equality.
+    if A1 == A2:
+        if A2 == A3:
+            # All search algorithms match.
+            new_x = A1[0]
+            new_y = A1[1]
+        elif A1 != A3:
+            # A3 does not match.
+            new_x = A1[0]
+            new_y = A1[1]
+        else:
+            # Logic error, re-spawn enemy.
+            respawn_smart_enemy()
+    elif A1 == A3:
+        # A2 does not match.
+        new_x = A1[0]
+        new_y = A1[1]
+    elif A2 == A3:
+        # A1 does not match.
+        new_x = A2[0]
+        new_y = A2[1]
     else:
-        next_coordinates = goal_path_list[-2]'''
+        # No two algorithms match, re-spawn enemy.
+        respawn_smart_enemy()
 
     # Change the simple enemy object position if the new position
     # is in the game window and the cell is not pre-occupied.
-    if (nx > 0 and nx < len(grid) and ny > 0 and ny < len(grid) and \
-                grid[ny][nx]):
-        smart_enemy_object_position[0] = nx
-        smart_enemy_object_position[1] = ny
+    if (new_x > 0 and new_x < len(grid) and new_y > 0 and new_y < len(grid) and \
+                grid[new_y][new_x]):
+        smart_enemy_object_position[0] = new_x
+        smart_enemy_object_position[1] = new_y
 
     # Call the function to reset the game if the player character
     # is in the same coordinate as either enemy.
@@ -5746,65 +5788,6 @@ def move_smart_enemy():
 
             # Reset the locations of all objects and state conditions.
             reset_object_positions_and_state_conditions()
-
-    '''# Variable that stores the enemy location.
-    smart_enemy_location = (smart_enemy_object_position[0],
-                                smart_enemy_object_position[1])
-    # Variable that stores the current location.
-    player_location = (player_object_position[0],
-                                player_object_position[1])
-
-    # Call the a_star_search algorithm to get the next position to move to.
-    test_grid = GridWithWeights(15, 15) # Test grid.
-
-    # Traverse the grid to grab all of the wall locations
-    for row in xrange(len(grid)):
-        for column in xrange(len(grid[0])):
-            if grid[column][row] == 0:
-                wall = (row, column)
-                # Add the wall locations to the graph's list of walls
-                test_grid.walls.append(wall)
-
-    # The location of the smart enemy.
-    start = (smart_enemy_object_position[0], smart_enemy_object_position[1])
-    # The position of the player.
-    goal = (player_object_position[0], player_object_position[1])
-
-    came_from, cost_so_far = a_star_search(test_grid, start, goal)
-
-    # Execute search algorithm 1.
-    A1, cost_so_far = a_star_search(grid, smart_enemy_location, player_location)
-
-    # Execute search algorithm 2.
-    A2, cost_so_far = a_star_search(grid, smart_enemy_location, player_location)
-
-    # Execute search algorithm 3.
-    A3, cost_so_far = a_star_search(grid, smart_enemy_location, player_location)
-
-    # Compare the 3 search algorithms for equality.
-    if A1 == A2:
-        if A2 == A3:
-            # All search algorithms match.
-            smart_enemy_object_position[0] = A1[0]
-            smart_enemy_object_position[1] = A1[1]
-        elif A1 != A3:
-            # A3 does not match.
-            smart_enemy_object_position[0] = A1[0]
-            smart_enemy_object_position[1] = A1[1]
-        else:
-            # Logic error, re-spawn enemy.
-            respawn_smart_enemy()
-    elif A1 == A3:
-        # A2 does not match.
-        smart_enemy_object_position[0] = A1[0]
-        smart_enemy_object_position[1] = A1[1]
-    elif A2 == A3:
-        # A1 does not match.
-        smart_enemy_object_position[0] = A2[0]
-        smart_enemy_object_position[1] = A2[1]
-    else:
-        # No two algorithms match, re-spawn enemy.
-        respawn_smart_enemy()'''
 
 def respawn_smart_enemy():
     """
