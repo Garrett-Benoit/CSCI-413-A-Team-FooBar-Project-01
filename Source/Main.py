@@ -5368,6 +5368,9 @@ def open_chest():
 
                 # Set player_grabbed_chest equal to True.
                 player_opened_chest = True
+                # Stop the combo sound from playing
+                # when the open chest sound starts.
+                use_combo_sound.stop()
                 # Play the sound for opening the chest.
                 open_chest_sound.play()
                 # Play the treasure sound.
