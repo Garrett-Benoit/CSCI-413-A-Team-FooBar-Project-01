@@ -374,7 +374,6 @@ def show_login_signup_screen():
     global grid
     global player_username
     global player_is_authenticated
-    global exit_game
     
     # Set the grid to be the frame of the screen.
     grid = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -404,7 +403,6 @@ def show_login_signup_screen():
     print "\nPlease choose one of the following options:"
     print "1. login"
     print "2. signup"
-    print "3. exit"
 
     i = 0  # Variable used as a counter for the following loop.
     login_attempt = False  # Variable used to determine if the user chose to login.
@@ -447,11 +445,6 @@ def show_login_signup_screen():
                         # Set signup_attempt equal to true if the 
                         # player attempts to make an account.
                         signup_attempt = True
-                    elif input_string == "exit":
-                        # Exit the game if user chooses to.
-                        exit_game = True
-                        player_is_authenticated = True
-                        player_made_decision = True
                     elif input_string == "":
                         # Print error message if user input is empty.
                         print "Output: Please enter a command."
@@ -588,7 +581,6 @@ def show_login_signup_screen():
                             print "\nPlease choose one of the following options:"
                             print "1. login"
                             print "2. signup"
-                            print "3. exit"
                 elif signup_attempt == True:
                     if i == 0:
                         # Print a message informing the
@@ -727,7 +719,6 @@ def show_login_signup_screen():
                             print "\nPlease choose one of the following options:"
                             print "1. login"
                             print "2. signup"
-                            print "3. exit"
 
                 # Clear the contents of the InputBox if it is clicked on.
                 if event.widget is input_box:
@@ -806,7 +797,6 @@ def show_title_screen():
     if number_of_replay_files >= 3:
         # There are three replay files available.
         print "2. open replay <1, 2, 3>"
-    print "3. exit"
 
     # Initialize a clock variable. 
     clock_refresh = pygame.time.Clock()
@@ -895,9 +885,6 @@ def show_title_screen():
                     else:
                         print "Output: Chosen replay file does not exist." \
                               "\nHow about starting a new game?"
-                elif input_string == "exit":
-                    exit_game = True
-                    player_made_decision = True
                 else:
                     # Not even close to a valid command or contains some
                     # form of misspelling or incorrect input
@@ -3078,10 +3065,6 @@ def open_replay(number):
                     if event.widget is input_box:
                         clear()
 
-                # Quit the game if the user closes the window.
-                if event.type == QUIT:
-                    clear()
-
             if reverse_command == True:
                 # Reset the value to False to prevent
                 # unnecessary command reversals.
@@ -3502,9 +3485,6 @@ def open_replay(number):
 
         # Clear the inputBox before returning.
         clear()
-        # Exit the current scope and back to the 
-        # loop that controls the game state.
-        return
 
     # There is an error with the first line of the replay file,
     # so print an error message and don't mess with anything.
@@ -4995,10 +4975,6 @@ def handle_input():
                         # Write the current game states to the replay file.
                         write_to_replay_file(str(current_game_states))
 
-                # Quit the game if the user closes the window.
-                elif event.type == QUIT:
-                    clear()
-
             # Clear the contents of the screen.
             screen.fill((0, 0, 0))
             # Get objects within the field of view and store them into a list.
@@ -5067,7 +5043,6 @@ def handle_input():
 
     # Exit the current scope and back to the loop that controls the game state.
     clear()
-    return
 
 
 
