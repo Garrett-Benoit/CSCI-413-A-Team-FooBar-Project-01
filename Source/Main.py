@@ -5530,14 +5530,8 @@ def player_next_to_object(x, y, a, b):
     # Check the location that the player character object currently is.
     if x == a and y == b:
         return True
-    # Check the location above and to the left of the player character object.
-    elif x - 1 == a and y - 1 == b:
-        return True
     # Check the location directly above the player character object.
     elif x == a and y - 1 == b:
-        return True
-    # Check the location above and to the right of the player character object.
-    elif x + 1 == a and y - 1 == b:
         return True
     # Check the location to the left of the player character object.
     elif x - 1 == a and y == b:
@@ -5545,16 +5539,34 @@ def player_next_to_object(x, y, a, b):
     # Check the location to the right of the player character object.
     elif x + 1 == a and y == b:
         return True
-    # Check the location below and to the left of the player character object.
-    elif x - 1 == a and y + 1 == b:
-        return True
     # Check the location directly below the player character object.
     elif x == a and y + 1 == b:
         return True
-    # Check the location below and to the right of the player character object.
-    elif x + 1 == a and y + 1 == b:
-        return True
 
+    # Check the location above and to the left of the player character object.
+    if x - 1 == a and y - 1 == b:
+        # Determine if there is a wall to the left of the
+        # player and if there is a wall above the player.
+        if not position_is_wall(x - 1, y) or not position_is_wall(x, y - 1):
+            return True
+    # Check the location above and to the right of the player character object.
+    if x + 1 == a and y - 1 == b:
+        # Determine if there is a wall to the right of the 
+        # player and if there is a wall above the player.
+        if not position_is_wall(x + 1, y) or not position_is_wall(x, y - 1):
+            return True
+    # Check the location below and to the left of the player character object.
+    if x - 1 == a and y + 1 == b:
+        # Determine if there is a wall to the left of the 
+        # player and if there is a wall below the player.
+        if not position_is_wall(x - 1, y) or not position_is_wall(x, y + 1):
+            return True
+    # Check the location below and to the right of the player character object.
+    if x + 1 == a and y + 1 == b:
+        # Determine if there is a wall to the right of the 
+        # player and if there is a wall below the player.
+        if not position_is_wall(x + 1, y) or not position_is_wall(x, y + 1):
+            return True
     # Return False if the player is not located directly next to an object.
     return False
 
