@@ -5010,7 +5010,8 @@ def handle_input():
                     draw_closed_chest_object(chest_object_closed, screen)
                 else:
                     draw_opened_chest_object(chest_object_opened, screen)
-                draw_key_object(key_object, screen)
+                if not player_grabbed_key:
+                    draw_key_object(key_object, screen)
                 draw_door_object(door_object, screen)
                 draw_simple_enemy_object(simple_enemy_object, screen)
                 draw_smart_enemy_object(smart_enemy_object, screen)
