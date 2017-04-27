@@ -779,11 +779,32 @@ def show_title_screen():
     # Set the caption for the console window.
     pygame.display.set_caption("Title Screen")
 
+    # Get the list of all directory filenames.
+    general_filenames_list = os.listdir(os.getcwd())
+    # Variable to store the number of replay files.
+    number_of_replay_files = 0
+    # Iterate through the general_filenames_list and store each
+    # replay file's filename into the replay_filenames_list.
+    for replay_filename in general_filenames_list:
+        if replay_filename[:7] == "Replay_":
+            number_of_replay_files = number_of_replay_files + 1
+
     # Print introduction message to the user.
     print "\n\n\nTitle Screen: "
     print "\nPlease choose one of the following options:"
     print "1. open new game"
-    print "2. open replay <1, 2, 3>"
+    if number_of_replay_files == 0:
+        # There are no replay files are available.
+        print "2. open replay <>"
+    if number_of_replay_files == 1:
+        # There is one replay files available.
+        print "2. open replay <1>"
+    if number_of_replay_files == 2:
+        # There are two replay files available.
+        print "2. open replay <1, 2>"
+    if number_of_replay_files >= 3:
+        # There are three replay files available.
+        print "2. open replay <1, 2, 3>"
     print "3. exit"
 
     # Initialize a clock variable. 
