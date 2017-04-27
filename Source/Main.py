@@ -232,7 +232,7 @@ use_combo_sound.set_volume(0.2)
 use_marker_sound = pygame.mixer.Sound("sounds/use_marker_sound.wav")
 use_marker_sound.set_volume(0.3)
 enemy_respawn_sound = pygame.mixer.Sound("sounds/enemy_respawn_sound.wav")
-enemy_respawn_sound.set_volume(0.2)
+enemy_respawn_sound.set_volume(0.4)
 
 
 
