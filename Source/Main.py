@@ -5485,6 +5485,10 @@ def open_door():
             background_music.stop()
             # Play the congratulatory game over sound.
             game_over_music.play()
+
+            # Pause the main thread to wait for the game over sound to finish.
+            time.sleep(5)
+
             # Call function to update top 10 moves if needed.
             print "Number of moves made: ", player_game_moves
             print "\n\n"
