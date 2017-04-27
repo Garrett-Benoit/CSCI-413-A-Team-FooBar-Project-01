@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?><project name="FooBar_Game_GanttChart" company="17S CSCI 413 Team FooBar" webLink="http://" view-date="2017-01-22" view-index="0" gantt-divider-location="354" resource-divider-location="300" version="2.8.3" locale="en_US">
+<?xml version="1.0" encoding="UTF-8"?><project name="FooBar_Game_GanttChart" company="17S CSCI 413 Team FooBar" webLink="http://" view-date="2017-02-26" view-index="1" gantt-divider-location="329" resource-divider-location="300" version="2.8.3" locale="en_US">
     <description/>
     <view zooming-state="default:7" id="gantt-chart">
-        <field id="tpd3" name="Name" width="195" order="0"/>
-        <field id="tpd4" name="Begin date" width="77" order="1"/>
-        <field id="tpd5" name="End date" width="76" order="2"/>
+        <field id="tpd3" name="Name" width="180" order="0"/>
+        <field id="tpd4" name="Begin date" width="72" order="1"/>
+        <field id="tpd5" name="End date" width="71" order="2"/>
         <timeline><![CDATA[0]]></timeline>
-        <option id="color.recent"><![CDATA[#ffcc33 #ff9900]]></option>
+        <option id="color.recent"><![CDATA[#99ccff #eeeeee #ffcc00 #ff9900 #66ccff #0099cc #6699ff #000000 #ffcc33]]></option>
     </view>
     <view id="resource-table">
         <field id="0" name="Name" width="209" order="0"/>
@@ -35,96 +35,188 @@
             <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
             <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
         </taskproperties>
-        <task id="0" name="Setup/Plan" color="#ff9900" meeting="false" start="2017-01-31" duration="13" complete="0" expand="false">
-            <depend id="44" type="2" difference="0" hardness="Strong"/>
-            <depend id="45" type="2" difference="0" hardness="Strong"/>
-            <depend id="51" type="2" difference="0" hardness="Strong"/>
-            <depend id="129" type="2" difference="0" hardness="Strong"/>
-            <task id="15" name="Select Tools" color="#8cb6ce" meeting="false" start="2017-01-31" duration="4" complete="0" expand="true">
-                <depend id="16" type="2" difference="0" hardness="Strong"/>
+        <task id="150" name="Version 1" meeting="false" start="2017-01-31" duration="48" complete="0" expand="false">
+            <depend id="151" type="2" difference="0" hardness="Strong"/>
+            <depend id="157" type="2" difference="0" hardness="Strong"/>
+            <depend id="159" type="2" difference="0" hardness="Strong"/>
+            <depend id="197" type="2" difference="0" hardness="Strong"/>
+            <depend id="198" type="2" difference="0" hardness="Strong"/>
+            <depend id="205" type="2" difference="0" hardness="Strong"/>
+            <task id="0" name="Setup/Plan" color="#ff9900" meeting="false" start="2017-01-31" duration="13" complete="0" expand="false">
+                <depend id="44" type="2" difference="0" hardness="Strong"/>
+                <depend id="45" type="2" difference="0" hardness="Strong"/>
+                <depend id="51" type="2" difference="0" hardness="Strong"/>
+                <depend id="129" type="2" difference="0" hardness="Strong"/>
+                <task id="15" name="Select Tools" color="#8cb6ce" meeting="false" start="2017-01-31" duration="4" complete="0" expand="true">
+                    <depend id="16" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="114" name="Work Breakdown" color="#8cb6ce" meeting="false" start="2017-02-01" duration="3" complete="0" expand="true"/>
+                <task id="16" name="Setup maze/GUI" color="#8cb6ce" meeting="false" start="2017-02-04" duration="9" complete="0" expand="true"/>
             </task>
-            <task id="114" name="Work Breakdown" color="#8cb6ce" meeting="false" start="2017-02-01" duration="3" complete="0" expand="true"/>
-            <task id="16" name="Setup maze/GUI" color="#8cb6ce" meeting="false" start="2017-02-04" duration="9" complete="0" expand="true"/>
-        </task>
-        <task id="135" name="Asset Creation" color="#ff9900" meeting="false" start="2017-01-31" duration="13" complete="0" expand="false">
-            <depend id="44" type="2" difference="0" hardness="Strong"/>
-            <depend id="129" type="2" difference="0" hardness="Strong"/>
-            <task id="55" name="Design Combo tiles" color="#8cb6ce" meeting="false" start="2017-01-31" duration="3" complete="0" expand="true">
+            <task id="135" name="Asset Creation" color="#ff9900" meeting="false" start="2017-01-31" duration="13" complete="0" expand="false">
+                <depend id="44" type="2" difference="0" hardness="Strong"/>
+                <depend id="129" type="2" difference="0" hardness="Strong"/>
+                <task id="55" name="Design Combo tiles" color="#8cb6ce" meeting="false" start="2017-01-31" duration="3" complete="0" expand="true">
+                    <depend id="56" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="141" name="Design closed chest" color="#8cb6ce" meeting="false" start="2017-01-31" duration="3" complete="0" expand="true"/>
+                <task id="142" name="Design open chest" color="#8cb6ce" meeting="false" start="2017-01-31" duration="3" complete="0" expand="true"/>
+                <task id="143" name="Design closed door" color="#8cb6ce" meeting="false" start="2017-02-02" duration="6" complete="0" expand="true"/>
+                <task id="144" name="Design open door" color="#8cb6ce" meeting="false" start="2017-02-02" duration="6" complete="0" expand="true"/>
+                <task id="145" name="Design avatar" color="#8cb6ce" meeting="false" start="2017-02-02" duration="6" complete="0" expand="true"/>
+                <task id="146" name="Design key" color="#8cb6ce" meeting="false" start="2017-02-08" duration="5" complete="0" expand="true"/>
+                <task id="147" name="Design marker" color="#8cb6ce" meeting="false" start="2017-02-08" duration="5" complete="0" expand="true"/>
+                <task id="148" name="Design game icon" color="#8cb6ce" meeting="false" start="2017-02-08" duration="5" complete="0" expand="true"/>
+            </task>
+            <task id="44" name="Basic Function" color="#ff9900" meeting="false" start="2017-02-13" duration="10" complete="0" expand="true">
+                <depend id="45" type="2" difference="0" hardness="Strong"/>
+                <depend id="51" type="2" difference="0" hardness="Strong"/>
                 <depend id="56" type="2" difference="0" hardness="Strong"/>
-            </task>
-            <task id="141" name="Design closed chest" color="#8cb6ce" meeting="false" start="2017-01-31" duration="3" complete="0" expand="true"/>
-            <task id="142" name="Design open chest" color="#8cb6ce" meeting="false" start="2017-01-31" duration="3" complete="0" expand="true"/>
-            <task id="143" name="Design closed door" color="#8cb6ce" meeting="false" start="2017-02-02" duration="6" complete="0" expand="true"/>
-            <task id="144" name="Design open door" color="#8cb6ce" meeting="false" start="2017-02-02" duration="6" complete="0" expand="true"/>
-            <task id="145" name="Design avatar" color="#8cb6ce" meeting="false" start="2017-02-02" duration="6" complete="0" expand="true"/>
-            <task id="146" name="Design key" color="#8cb6ce" meeting="false" start="2017-02-08" duration="5" complete="0" expand="true"/>
-            <task id="147" name="Design marker" color="#8cb6ce" meeting="false" start="2017-02-08" duration="5" complete="0" expand="true"/>
-            <task id="148" name="Design game icon" color="#8cb6ce" meeting="false" start="2017-02-08" duration="5" complete="0" expand="true"/>
-        </task>
-        <task id="44" name="Basic Function" color="#ff9900" meeting="false" start="2017-02-13" duration="10" complete="0" expand="false">
-            <depend id="45" type="2" difference="0" hardness="Strong"/>
-            <depend id="51" type="2" difference="0" hardness="Strong"/>
-            <depend id="56" type="2" difference="0" hardness="Strong"/>
-            <depend id="59" type="2" difference="0" hardness="Strong"/>
-            <depend id="82" type="2" difference="0" hardness="Strong"/>
-            <depend id="123" type="2" difference="0" hardness="Strong"/>
-            <depend id="125" type="2" difference="0" hardness="Strong"/>
-            <depend id="127" type="2" difference="0" hardness="Strong"/>
-            <depend id="129" type="2" difference="0" hardness="Strong"/>
-            <task id="3" name="Rendering of Objects" color="#8cb6ce" meeting="false" start="2017-02-13" duration="4" complete="0" expand="true">
-                <depend id="9" type="2" difference="0" hardness="Strong"/>
-            </task>
-            <task id="9" name="Positioning of Objects" color="#8cb6ce" meeting="false" start="2017-02-17" duration="3" complete="0" expand="true">
-                <depend id="28" type="2" difference="0" hardness="Strong"/>
-            </task>
-            <task id="28" name="Player Commands" color="#8cb6ce" meeting="false" start="2017-02-20" duration="2" complete="0" expand="true">
-                <depend id="41" type="2" difference="0" hardness="Strong"/>
-            </task>
-            <task id="41" name="Error Handling" color="#8cb6ce" meeting="false" start="2017-02-22" duration="1" complete="0" expand="true"/>
-        </task>
-        <task id="125" name="Advanced Features" color="#ff9900" meeting="false" start="2017-02-23" duration="15" complete="0" expand="false">
-            <depend id="126" type="2" difference="0" hardness="Strong"/>
-            <depend id="128" type="2" difference="0" hardness="Strong"/>
-            <depend id="129" type="2" difference="0" hardness="Strong"/>
-            <task id="45" name="Rndm Maze Generation" color="#8cb6ce" meeting="false" start="2017-02-23" duration="6" complete="0" expand="true">
-                <depend id="94" type="2" difference="0" hardness="Strong"/>
-            </task>
-            <task id="123" name="Pathfinders" color="#ffcc33" meeting="false" start="2017-02-23" duration="10" complete="0" expand="false">
-                <task id="59" name="Quick Pathfinder" color="#8cb6ce" meeting="false" start="2017-02-23" duration="4" complete="0" expand="true">
-                    <depend id="56" type="2" difference="0" hardness="Strong"/>
+                <depend id="59" type="2" difference="0" hardness="Strong"/>
+                <depend id="82" type="2" difference="0" hardness="Strong"/>
+                <depend id="123" type="2" difference="0" hardness="Strong"/>
+                <depend id="125" type="2" difference="0" hardness="Strong"/>
+                <depend id="127" type="2" difference="0" hardness="Strong"/>
+                <depend id="129" type="2" difference="0" hardness="Strong"/>
+                <task id="3" name="Rendering of Objects" color="#8cb6ce" meeting="false" start="2017-02-13" duration="4" complete="0" expand="true">
+                    <depend id="9" type="2" difference="0" hardness="Strong"/>
                 </task>
-                <task id="68" name="Optimal Pathfinder" color="#8cb6ce" meeting="false" start="2017-03-01" duration="4" complete="0" expand="true">
-                    <depend id="56" type="2" difference="0" hardness="Strong"/>
+                <task id="9" name="Positioning of Objects" color="#8cb6ce" meeting="false" start="2017-02-17" duration="3" complete="0" expand="true">
+                    <depend id="28" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="28" name="Player Commands" color="#8cb6ce" meeting="false" start="2017-02-20" duration="2" complete="0" expand="true">
+                    <depend id="41" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="41" name="Error Handling" color="#8cb6ce" meeting="false" start="2017-02-22" duration="1" complete="0" expand="true"/>
+            </task>
+            <task id="125" name="Advanced Features" color="#ff9900" meeting="false" start="2017-02-23" duration="15" complete="0" expand="false">
+                <depend id="126" type="2" difference="0" hardness="Strong"/>
+                <depend id="128" type="2" difference="0" hardness="Strong"/>
+                <depend id="129" type="2" difference="0" hardness="Strong"/>
+                <task id="45" name="Rndm Maze Generation" color="#8cb6ce" meeting="false" start="2017-02-23" duration="6" complete="0" expand="true">
+                    <depend id="94" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="123" name="Pathfinders" color="#ffcc33" meeting="false" start="2017-02-23" duration="10" complete="0" expand="false">
+                    <task id="59" name="Quick Pathfinder" color="#8cb6ce" meeting="false" start="2017-02-23" duration="4" complete="0" expand="true">
+                        <depend id="56" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                    <task id="68" name="Optimal Pathfinder" color="#8cb6ce" meeting="false" start="2017-03-01" duration="4" complete="0" expand="true">
+                        <depend id="56" type="2" difference="0" hardness="Strong"/>
+                    </task>
+                </task>
+                <task id="51" name="Variable Length Go Command" color="#8cb6ce" meeting="false" start="2017-02-23" duration="3" complete="0" expand="true"/>
+                <task id="82" name="Marker System" color="#8cb6ce" meeting="false" start="2017-02-23" duration="4" complete="0" expand="true"/>
+                <task id="56" name="Implement Combo tiles" color="#8cb6ce" meeting="false" start="2017-03-05" duration="5" complete="0" expand="true"/>
+            </task>
+            <task id="126" name="Enemies" color="#ff9900" meeting="false" start="2017-03-10" duration="5" complete="0" expand="false">
+                <depend id="128" type="2" difference="0" hardness="Strong"/>
+                <depend id="129" type="2" difference="0" hardness="Strong"/>
+                <task id="96" name="Implement Rndm Enemy" color="#8cb6ce" meeting="false" start="2017-03-10" duration="2" complete="0" expand="true">
+                    <depend id="98" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="98" name="Implement Smart Enemy" color="#8cb6ce" meeting="false" start="2017-03-12" duration="3" complete="0" expand="true">
+                    <depend id="94" type="2" difference="0" hardness="Strong"/>
+                    <depend id="119" type="2" difference="0" hardness="Strong"/>
                 </task>
             </task>
-            <task id="51" name="Variable Length Go Command" color="#8cb6ce" meeting="false" start="2017-02-23" duration="3" complete="0" expand="true"/>
-            <task id="82" name="Marker System" color="#8cb6ce" meeting="false" start="2017-02-23" duration="4" complete="0" expand="true"/>
-            <task id="56" name="Implement Combo tiles" color="#8cb6ce" meeting="false" start="2017-03-05" duration="5" complete="0" expand="true"/>
-        </task>
-        <task id="126" name="Enemies" color="#ff9900" meeting="false" start="2017-03-10" duration="5" complete="0" expand="false">
-            <depend id="128" type="2" difference="0" hardness="Strong"/>
-            <depend id="129" type="2" difference="0" hardness="Strong"/>
-            <task id="96" name="Implement Rndm Enemy" color="#8cb6ce" meeting="false" start="2017-03-10" duration="2" complete="0" expand="true">
-                <depend id="98" type="2" difference="0" hardness="Strong"/>
+            <task id="127" name="Testing" color="#ff9900" meeting="false" start="2017-03-02" duration="13" complete="0" expand="false">
+                <task id="92" name="Develop Test Cases" color="#8cb6ce" meeting="false" start="2017-03-02" duration="13" complete="0" expand="true"/>
             </task>
-            <task id="98" name="Implement Smart Enemy" color="#8cb6ce" meeting="false" start="2017-03-12" duration="3" complete="0" expand="true">
-                <depend id="94" type="2" difference="0" hardness="Strong"/>
-                <depend id="119" type="2" difference="0" hardness="Strong"/>
+            <task id="128" name="Reliability" color="#ff9900" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2017-03-15" duration="4" complete="0" expand="true">
+                <task id="119" name="R&amp;D/N-Version Prog" color="#8cb6ce" meeting="false" start="2017-03-15" duration="4" complete="0" expand="true"/>
+                <task id="94" name="Log File Implementation" color="#8cb6ce" meeting="false" start="2017-03-15" duration="4" complete="0" expand="true"/>
+                <task id="107" name="Game Over Condition" color="#8cb6ce" meeting="false" start="2017-03-15" duration="4" complete="0" expand="true"/>
+            </task>
+            <task id="129" name="Documentation" color="#ff9900" meeting="false" start="2017-03-15" duration="5" complete="0" expand="false">
+                <task id="111" name="Submission Report" color="#8cb6ce" meeting="false" start="2017-03-15" duration="4" complete="0" expand="true">
+                    <depend id="115" type="2" difference="0" hardness="Strong"/>
+                </task>
+                <task id="115" name="Final Report" color="#8cb6ce" meeting="false" start="2017-03-19" duration="1" complete="0" expand="true"/>
             </task>
         </task>
-        <task id="127" name="Testing" color="#ff9900" meeting="false" start="2017-03-02" duration="13" complete="0" expand="false">
-            <task id="92" name="Develop Test Cases" color="#8cb6ce" meeting="false" start="2017-03-02" duration="13" complete="0" expand="true"/>
-        </task>
-        <task id="128" name="Reliability" color="#ff9900" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2017-03-15" duration="4" complete="0" expand="false">
-            <task id="119" name="R&amp;D/N-Version Prog" color="#8cb6ce" meeting="false" start="2017-03-15" duration="4" complete="0" expand="true"/>
-            <task id="94" name="Log File Implementation" color="#8cb6ce" meeting="false" start="2017-03-15" duration="4" complete="0" expand="true"/>
-            <task id="107" name="Game Over Condition" color="#8cb6ce" meeting="false" start="2017-03-15" duration="4" complete="0" expand="true"/>
-        </task>
-        <task id="129" name="Documentation" color="#ff9900" meeting="false" start="2017-03-15" duration="5" complete="0" expand="false">
-            <task id="111" name="Submission Report" color="#8cb6ce" meeting="false" start="2017-03-15" duration="4" complete="0" expand="true">
-                <depend id="115" type="2" difference="0" hardness="Strong"/>
+        <task id="151" name="Version 2" color="#000000" meeting="false" start="2017-03-20" duration="39" complete="0" expand="false">
+            <task id="157" name="V1.0 Unfinished" color="#ff9900" meeting="false" start="2017-03-20" duration="4" complete="0" expand="false">
+                <depend id="155" type="2" difference="0" hardness="Strong"/>
+                <depend id="161" type="2" difference="0" hardness="Strong"/>
+                <task id="196" name="Pathfinders" color="#ffcc00" meeting="false" start="2017-03-20" duration="4" complete="0" expand="false">
+                    <task id="197" name="Next A* Coordinates" color="#99ccff" meeting="false" start="2017-03-20" duration="4" complete="0" expand="true"/>
+                    <task id="198" name="Next BFS/DFS Coordinates" color="#99ccff" meeting="false" start="2017-03-20" duration="4" complete="0" expand="true"/>
+                </task>
+                <task id="205" name="Log File" color="#ff9900" meeting="false" start="2017-03-20" duration="4" complete="0" expand="true"/>
+                <task id="159" name="Bugs/Crashes" color="#ff9900" meeting="false" start="2017-03-20" duration="4" complete="0" expand="true">
+                    <depend id="218" type="2" difference="0" hardness="Strong"/>
+                    <depend id="220" type="2" difference="0" hardness="Strong"/>
+                </task>
             </task>
-            <task id="115" name="Final Report" color="#8cb6ce" meeting="false" start="2017-03-19" duration="1" complete="0" expand="true"/>
+            <task id="155" name="Basic Functions" color="#ff9900" meeting="false" start="2017-03-24" duration="2" complete="0" expand="false">
+                <depend id="161" type="2" difference="0" hardness="Strong"/>
+                <task id="218" name="Synonymous Go Functions" color="#99ccff" meeting="false" start="2017-03-24" duration="2" complete="0" expand="true"/>
+                <task id="220" name="Enemy Placement" color="#99ccff" meeting="false" start="2017-03-24" duration="2" complete="0" expand="true"/>
+            </task>
+            <task id="161" name="Replay System" color="#ff9900" meeting="false" start="2017-03-26" duration="13" complete="0" expand="false">
+                <depend id="163" type="2" difference="0" hardness="Strong"/>
+                <depend id="165" type="2" difference="0" hardness="Strong"/>
+                <task id="232" name="Create Replay File" color="#ff9900" meeting="false" start="2017-03-26" duration="3" complete="0" expand="true"/>
+                <task id="234" name="User Interface" color="#ff9900" meeting="false" start="2017-03-26" duration="3" complete="0" expand="true"/>
+                <task id="238" name="Commands" color="#ffcc00" meeting="false" start="2017-03-28" duration="4" complete="0" expand="false">
+                    <task id="240" name="Use pause" color="#99ccff" meeting="false" start="2017-03-28" duration="2" complete="0" expand="true"/>
+                    <task id="242" name="Use resume" color="#99ccff" meeting="false" start="2017-03-28" duration="2" complete="0" expand="true"/>
+                    <task id="244" name="Go back number" color="#99ccff" meeting="false" start="2017-03-28" duration="2" complete="0" expand="true"/>
+                    <task id="246" name="Go forward number" color="#99ccff" meeting="false" start="2017-03-28" duration="2" complete="0" expand="true"/>
+                    <task id="249" name="Use stop" color="#99ccff" meeting="false" start="2017-03-29" duration="3" complete="0" expand="true"/>
+                    <task id="251" name="Go faster" color="#99ccff" meeting="false" start="2017-03-29" duration="3" complete="0" expand="true"/>
+                    <task id="253" name="Go slower" color="#99ccff" meeting="false" start="2017-03-29" duration="3" complete="0" expand="true"/>
+                </task>
+                <task id="255" name="List Replay Files" color="#ff9900" meeting="false" start="2017-03-31" duration="3" complete="0" expand="true"/>
+                <task id="257" name="File Extension for Replay Files" color="#ff9900" meeting="false" start="2017-03-31" duration="3" complete="0" expand="true"/>
+                <task id="259" name="File Encryption/Decryption" color="#ffcc00" meeting="false" start="2017-04-03" duration="5" complete="0" expand="false">
+                    <task id="263" name="Caesar Cipher" color="#99ccff" meeting="false" start="2017-04-03" duration="3" complete="0" expand="true"/>
+                    <task id="265" name="AES algorithm" color="#99ccff" meeting="false" start="2017-04-03" duration="3" complete="0" expand="true"/>
+                    <task id="267" name="Hard-coded encryption" color="#99ccff" meeting="false" start="2017-04-05" duration="3" complete="0" expand="true"/>
+                    <task id="261" name="Encryption decision logic" color="#99ccff" meeting="false" start="2017-04-05" duration="3" complete="0" expand="true"/>
+                </task>
+            </task>
+            <task id="163" name="Database" color="#ff9900" meeting="false" start="2017-04-08" duration="5" complete="0" expand="false">
+                <task id="309" name="Create username and password" color="#ff9900" meeting="false" start="2017-04-08" duration="3" complete="0" expand="true"/>
+                <task id="311" name="Store replay" color="#ff9900" meeting="false" start="2017-04-08" duration="3" complete="0" expand="true"/>
+                <task id="313" name="Exception handling" color="#ff9900" meeting="false" start="2017-04-10" duration="3" complete="0" expand="true"/>
+            </task>
+            <task id="165" name="User Interface" color="#ff9900" meeting="false" start="2017-04-08" duration="5" complete="0" expand="false">
+                <depend id="169" type="2" difference="0" hardness="Strong"/>
+                <task id="318" name="Login Screen" color="#ff9900" meeting="false" start="2017-04-08" duration="3" complete="0" expand="true"/>
+                <task id="319" name="Main Menu/Title Screen" color="#ff9900" meeting="false" start="2017-04-10" duration="3" complete="0" expand="true"/>
+            </task>
+            <task id="169" name="Lagniappe" color="#ff9900" meeting="false" start="2017-04-13" duration="9" complete="0" expand="false">
+                <depend id="171" type="2" difference="0" hardness="Strong"/>
+                <task id="326" name="Enemy Interaction" color="#ff9900" meeting="false" start="2017-04-13" duration="3" complete="0" expand="true"/>
+                <task id="327" name="Leaderboard" color="#ff9900" meeting="false" start="2017-04-13" duration="4" complete="0" expand="true"/>
+                <task id="328" name="Custom art assets" color="#ffcc00" meeting="false" start="2017-04-13" duration="5" complete="0" expand="false">
+                    <task id="329" name="Open door graphic" color="#99ccff" meeting="false" start="2017-04-13" duration="2" complete="0" expand="true"/>
+                    <task id="330" name="Closed door graphic" color="#99ccff" meeting="false" start="2017-04-13" duration="2" complete="0" expand="true"/>
+                    <task id="333" name="Open chest graphic" color="#99ccff" meeting="false" start="2017-04-14" duration="2" complete="0" expand="true"/>
+                    <task id="334" name="Closed chest graphic" color="#99ccff" meeting="false" start="2017-04-14" duration="2" complete="0" expand="true"/>
+                    <task id="335" name="Key graphic" color="#99ccff" meeting="false" start="2017-04-15" duration="2" complete="0" expand="true"/>
+                    <task id="381" name="SImple enemy graphic" color="#99ccff" meeting="false" start="2017-04-15" duration="2" complete="0" expand="true"/>
+                    <task id="383" name="Smart enemy graphic" color="#99ccff" meeting="false" start="2017-04-15" duration="2" complete="0" expand="true"/>
+                    <task id="385" name="Wall tiles" color="#99ccff" meeting="false" start="2017-04-16" duration="2" complete="0" expand="true"/>
+                    <task id="387" name="Floor tiles" color="#99ccff" meeting="false" start="2017-04-16" duration="2" complete="0" expand="true"/>
+                </task>
+                <task id="347" name="Repeated action" color="#ff9900" meeting="false" start="2017-04-15" duration="2" complete="0" expand="true"/>
+                <task id="346" name="Sound System" color="#ff9900" meeting="false" start="2017-04-16" duration="4" complete="0" expand="true"/>
+                <task id="349" name="Maze generation" color="#ff9900" meeting="false" start="2017-04-19" duration="3" complete="0" expand="true"/>
+            </task>
+            <task id="167" name="Testing" color="#ff9900" meeting="false" start="2017-04-21" duration="5" complete="0" expand="false">
+                <task id="362" name="Deveop test cases" color="#ff9900" meeting="false" start="2017-04-21" duration="3" complete="0" expand="true"/>
+                <task id="363" name="Test software" color="#ff9900" meeting="false" start="2017-04-23" duration="3" complete="0" expand="true"/>
+            </task>
+            <task id="171" name="Documentation" color="#ff9900" meeting="false" start="2017-04-22" duration="6" complete="0" expand="false">
+                <task id="369" name="PyDocs" color="#ff9900" meeting="false" start="2017-04-22" duration="2" complete="0" expand="true"/>
+                <task id="370" name="UML Diagrams" color="#ff9900" meeting="false" start="2017-04-22" duration="2" complete="0" expand="true"/>
+                <task id="366" name="Team participation" color="#ff9900" meeting="false" start="2017-04-24" duration="2" complete="0" expand="true"/>
+                <task id="367" name="Work Breakdown Structure" color="#ff9900" meeting="false" start="2017-04-24" duration="2" complete="0" expand="true"/>
+                <task id="368" name="Risk management" color="#ff9900" meeting="false" start="2017-04-24" duration="3" complete="0" expand="true"/>
+                <task id="379" name="Final Submission Folder" color="#ff9900" meeting="false" start="2017-04-26" duration="2" complete="0" expand="true"/>
+            </task>
         </task>
     </tasks>
     <resources>
@@ -140,6 +232,21 @@
         <allocation task-id="94" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
         <allocation task-id="107" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
         <allocation task-id="111" resource-id="0" function="Default:1" responsible="true" load="50.0"/>
+        <allocation task-id="151" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="368" resource-id="0" function="Default:1" responsible="false" load="100.0"/>
+        <allocation task-id="363" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="347" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="349" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="232" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="234" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="238" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="255" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="257" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="218" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="220" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="159" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="197" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
+        <allocation task-id="198" resource-id="0" function="Default:1" responsible="true" load="100.0"/>
         <allocation task-id="3" resource-id="1" function="SoftwareDevelopment:5" responsible="true" load="100.0"/>
         <allocation task-id="59" resource-id="1" function="SoftwareDevelopment:5" responsible="true" load="100.0"/>
         <allocation task-id="92" resource-id="1" function="SoftwareDevelopment:5" responsible="false" load="100.0"/>
@@ -150,13 +257,39 @@
         <allocation task-id="144" resource-id="1" function="SoftwareDevelopment:5" responsible="true" load="50.0"/>
         <allocation task-id="146" resource-id="1" function="SoftwareDevelopment:5" responsible="true" load="50.0"/>
         <allocation task-id="147" resource-id="1" function="SoftwareDevelopment:5" responsible="true" load="50.0"/>
+        <allocation task-id="151" resource-id="1" function="SoftwareDevelopment:5" responsible="false" load="100.0"/>
+        <allocation task-id="368" resource-id="1" function="SoftwareDevelopment:5" responsible="false" load="100.0"/>
+        <allocation task-id="362" resource-id="1" function="SoftwareDevelopment:5" responsible="false" load="100.0"/>
+        <allocation task-id="363" resource-id="1" function="SoftwareDevelopment:5" responsible="false" load="100.0"/>
+        <allocation task-id="328" resource-id="1" function="SoftwareDevelopment:5" responsible="true" load="100.0"/>
+        <allocation task-id="329" resource-id="1" function="SoftwareDevelopment:5" responsible="true" load="100.0"/>
+        <allocation task-id="330" resource-id="1" function="SoftwareDevelopment:5" responsible="true" load="100.0"/>
+        <allocation task-id="333" resource-id="1" function="SoftwareDevelopment:5" responsible="true" load="100.0"/>
+        <allocation task-id="334" resource-id="1" function="SoftwareDevelopment:5" responsible="true" load="100.0"/>
+        <allocation task-id="335" resource-id="1" function="SoftwareDevelopment:5" responsible="true" load="100.0"/>
+        <allocation task-id="319" resource-id="1" function="SoftwareDevelopment:5" responsible="true" load="100.0"/>
+        <allocation task-id="263" resource-id="1" function="SoftwareDevelopment:5" responsible="true" load="100.0"/>
         <allocation task-id="68" resource-id="2" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
         <allocation task-id="92" resource-id="2" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
         <allocation task-id="111" resource-id="2" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
+        <allocation task-id="151" resource-id="2" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
+        <allocation task-id="368" resource-id="2" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
+        <allocation task-id="362" resource-id="2" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="363" resource-id="2" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
+        <allocation task-id="326" resource-id="2" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="267" resource-id="2" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="261" resource-id="2" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
         <allocation task-id="96" resource-id="3" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
         <allocation task-id="98" resource-id="3" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
         <allocation task-id="111" resource-id="3" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
         <allocation task-id="119" resource-id="3" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="151" resource-id="3" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
+        <allocation task-id="368" resource-id="3" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
+        <allocation task-id="363" resource-id="3" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
+        <allocation task-id="327" resource-id="3" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="309" resource-id="3" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="311" resource-id="3" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="313" resource-id="3" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
         <allocation task-id="28" resource-id="4" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
         <allocation task-id="55" resource-id="4" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
         <allocation task-id="92" resource-id="4" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
@@ -165,6 +298,17 @@
         <allocation task-id="115" resource-id="4" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
         <allocation task-id="145" resource-id="4" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
         <allocation task-id="148" resource-id="4" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="151" resource-id="4" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
+        <allocation task-id="369" resource-id="4" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="370" resource-id="4" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="366" resource-id="4" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="367" resource-id="4" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="368" resource-id="4" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="379" resource-id="4" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="363" resource-id="4" function="SoftwareDevelopment:2" responsible="false" load="100.0"/>
+        <allocation task-id="346" resource-id="4" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="318" resource-id="4" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
+        <allocation task-id="265" resource-id="4" function="SoftwareDevelopment:2" responsible="true" load="100.0"/>
     </allocations>
     <vacations/>
     <previous/>
