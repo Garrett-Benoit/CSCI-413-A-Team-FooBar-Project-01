@@ -1,4 +1,4 @@
-Audio content obtained through http://soundbible.com
+The following audio content was obtained through http://soundbible.com
 Published under the license of Creative Commons Attribution 3.0
 
 die_sound.wav
@@ -12,8 +12,19 @@ treasure_sound.wav
 unlock_door_sound.wav
 use_combo_sound.wav
 use_marker_sound.wav
-background_sound.wav
 enemy_respawn_sound.wav
+
+
+
+The following audio content was obtained through https://opengameart.org/
+Direct link to music files: https://opengameart.org/content/generic-8-bit-jrpg-soundtrack
+Published under the license of Creative Commons Attribution 3.0
+
+background_music.wav
+game_over_music.wav
+login_signup_music.ogg
+replay_music.ogg
+title_music.ogg
 
 
 
