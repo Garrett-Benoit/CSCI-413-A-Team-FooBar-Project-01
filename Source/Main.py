@@ -512,7 +512,7 @@ def show_login_signup_screen():
                             write_to_log_file(exception_message)
                         else:
                             # Determine if the username exists on the server.
-                            if result != "":
+                            if result != "" and result != None:
                                 # Get the password from the server and decrypt it.
                                 decrypted_password = database_decrypt(
                                     key_caesar_cipher, result['password'])
@@ -564,6 +564,7 @@ def show_login_signup_screen():
                                           + " Incorrect password."
                             # The username does not exist.
                             else:
+                                clear()
                                 print "Output: Authentication Error." \
                                       + " Incorrect username."
 
