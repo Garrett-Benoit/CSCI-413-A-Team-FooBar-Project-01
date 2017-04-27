@@ -600,11 +600,11 @@ def show_login_signup_screen():
                         # Print a message informing the
                         # user to input a password.
                         print "Output: Please enter a password: " \
-                              "\nYour password must contain:" \
-                              "\nat least 8 characters," \
-                              "\nat least one digit," \
-                              "\nat least one lowercase letter," \
-                              "\nand at least one uppercase letter."
+                              "\n\tPassword must contain:" \
+                              "\n\t1) At least 8 characters" \
+                              "\n\t2) At least one digit" \
+                              "\n\t3) At least one lowercase letter" \
+                              "\n\t4) At least one uppercase letter"
 
                         # Increment the value of i.
                         i = i + 1
