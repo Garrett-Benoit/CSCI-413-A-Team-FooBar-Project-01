@@ -60,7 +60,7 @@ http://stackoverflow.com/questions/6318156/adding-python-path-on-windows-7
 
 <br />
 
-Run Instructions (Player):
+Run Instructions (Playing/Testing):
 
 1) Download Version 2.0 from the releases tab.
 
