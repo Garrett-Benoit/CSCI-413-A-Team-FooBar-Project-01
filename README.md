@@ -17,11 +17,12 @@ Assignment:       Team-Programming-Assignment-01
 
 Language:         Python
 
-Tools:            Pygame (Library), Microsoft Visual Studios (IDE).
+Tools:            Pygame (Library), Microsoft Visual Studios (IDE), 
+		   PyCharm (IDE), Gimp (Image editor), iTunes (Music Converter).
 
 <br />
 
-Build Instructions (Developer):
+Build Instructions (Development):
 
 1) Install Python 2.7.13 x32: https://www.python.org/
 
@@ -32,14 +33,25 @@ Build Instructions (Developer):
 	<br /> Enter into a command window: pip install python-firebase
 
 4) Install SGC: https://launchpad.net/simplegc
-	<br /> (Everything that you need is already in the repository, don't bother trying to install)
+	<br /> (Don't bother installing this. Everything that you need 
+	<br />  is already in the repository, this is just for the sake of propriety)
+	
+5) Clone or download the main branch of this repository.
 
-5) Install cx_Freeze x32 for Python 2.7:
+6) Load Main.py using IDLE and run the script or use your favorite Python IDE.
+
+<br />
+
+Build Instructions (Distribution):
+
+1) Follow the above directions up to and including step 5.
+
+2) Install cx_Freeze x32 for Python 2.7:
 https://pypi.python.org/pypi?:action=display&name=cx_Freeze&version=5.0.1
 
-6) Open a command window and navigate to CSCI-413-A-Team-FooBar-Project-01/Source/
+3) Open a command window and navigate to CSCI-413-A-Team-FooBar-Project-01/Source/
 
-7) In the command window, enter: python Setup.py build
+4) In the command window, enter: python Setup.py build
 
 You may need to add the python directory location to your PATH if you have a
 problem running python in the command window. Here is a walkthrough for
@@ -48,18 +60,8 @@ http://stackoverflow.com/questions/6318156/adding-python-path-on-windows-7
 
 <br />
 
-Run Instructions If Supplied With An Executable (Player):
+Run Instructions (Playing/Testing):
 
-1) Ensure that you have recieved the collection of files from one of the team members.
+1) Download Version 2.0 from the releases tab.
 
-2) Execute Main.exe in the directory CSCI-413-A-Team-FooBar-Project-01/Source/build/exe.win32-2.7/
-
-<br />
-
-Run Instructions If Not Supplied With An Executable (Developer):
-
-1) Perform the first three steps in the build instructions! 
-	<br /> p.s. I will laugh at you if your failure to run the build 
-	is the result of you not following the provided instructions.
-
-2) Execute Main.py in CSCI-413-A-Team-FooBar-Project-01/Source/
+2) Execute Main.exe in the directory build/exe.win32-2.7/
