@@ -40,6 +40,8 @@ Build Instructions (Development):
 
 6) Load Main.py using IDLE and run the script or use your favorite Python IDE.
 
+<br />
+
 Build Instructions (Distribution):
 
 1) Follow the above directions up to and including step 5.
